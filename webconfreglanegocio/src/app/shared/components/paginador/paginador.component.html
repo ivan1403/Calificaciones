@@ -1,0 +1,23 @@
+<div class="d-flex justify-content-center" style="text-align:center!important">
+
+    <ul *ngIf="paginador!= undefined && paginador.paginas != undefined && paginador.paginas.length>0 && paginador.MostrarPaginacion==true" class="pagination">
+
+        <li class="page-item" [ngClass]="{'disabled': paginador.current_page== 1}"><a class="page-link" (click)="paginaSeleccionada(paginador.current_page-1)">Atras</a></li>
+        <li *ngFor="let pagina of paginador.paginas" class="page-item" [ngClass]="{'active':pagina==paginador.current_page}" (click)="paginaSeleccionada(pagina)">
+            <a class="page-link">{{pagina}}</a>
+        </li>
+        <li class="page-item" [ngClass]="{'disabled': paginador.current_page== paginador.last_page}"><a class="page-link" (click)="paginaSeleccionada(paginador.current_page+1)">Siguiente</a></li>
+
+
+    </ul>
+
+<!-- <ul *ngIf="paginador!= undefined && paginador.paginas != undefined && paginador.paginas.length==1 && paginador.MostrarPaginacion==true" class="pagination" >
+    <li  class="page-item" [ngClass]="{'active':pagina==paginador.current_page}" (click)="paginaSeleccionada(pagina)">
+        <a class="page-link">{{pagina}}</a>
+    </li>
+</ul> -->
+
+<span *ngIf= "paginador.MostrarSinResultados">
+No se encontraron resultados
+</span>
+</div>

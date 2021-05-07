@@ -1,0 +1,52 @@
+/* You can add global styles to this file, and also import other style files */
+
+@import 'https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700';
+@import 'https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.6.1/fullcalendar.min.css';
+@import '~@fullcalendar/daygrid/main.css';
+@import '~nvd3/build/nv.d3.css';
+@import '~angular-calendar/css/angular-calendar.css';
+@import '~@circlon/angular-tree-component/css/angular-tree-component.css';
+.text-white {
+    color: #fff;
+}
+
+.top-title {
+    background: #FF9800;
+    margin: 0;
+    padding: 1%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1020;
+    transition: box-shadow 0.2s linear;
+    display: flex;
+    flex: 1;
+}
+
+.header.navbar-custom {
+    background: #FF9800;
+}
+
+.header.navbar-custom .navbar-brand {
+    color: white;
+    font-weight: bold;
+    font-size: 1.3em;
+}
+
+.header.navbar-custom .navbar-toggle .icon-bar {
+    background: white
+}
+
+.header.navbar-custom .navbar-nav>li>a {
+    color: white
+}
+
+.input-error {
+    border-color: red;
+    border-width: 1px;
+}
+
+body {
+    background-color: #fff!important;
+}
