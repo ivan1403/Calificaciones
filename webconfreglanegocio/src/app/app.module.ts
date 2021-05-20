@@ -24,11 +24,17 @@ import { SharedModule } from './shared/shared.module';
 import { AuthComponent } from './shared/components/auth/auth.component';
 // import { TreeModule } from 'ng2-tree';
 import { TreeModule } from '@circlon/angular-tree-component';
+import { ModalSelRefCondComponent } from './modules/procesos/modals/modal-sel-ref-cond/modal-sel-ref-cond.component';
+import { ModalTareasComponent } from './modules/procesos/modals/modal-tareas/modal-tareas.component';
+import { ModalVerLogComponent } from './modules/procesos/modals/modal-ver-log/modal-ver-log.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    AuthComponent
+    AuthComponent,
+    ModalSelRefCondComponent,
+    ModalTareasComponent,
+    ModalVerLogComponent
   ],
   imports: [
     AppRoutingModule,

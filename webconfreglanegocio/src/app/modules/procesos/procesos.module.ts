@@ -1,19 +1,22 @@
 import { NgModule } from '@angular/core';
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import { CommonModule } from '@angular/common';
-
+import { FormsModule,ReactiveFormsModule } from '@angular/forms';
+import { SharedModule } from '../../shared/shared.module';
 import { ProcesosRoutingModule } from './procesos-routing.module';
-import { Routes } from '@angular/router';
 import { ProcesosComponent } from './pages/procesos/procesos.component';
 
-const routes: Routes = [
-  { path: '',component:ProcesosComponent,data:{title:'Procesos'}}
-];
+
 
 @NgModule({
-  declarations: [],
+  declarations: [ProcesosComponent],
   imports: [
     CommonModule,
-    ProcesosRoutingModule
+    ProcesosRoutingModule,
+    FormsModule,
+    ReactiveFormsModule,
+    SharedModule,
+    NgbModule 
   ]
 })
 export class ProcesosModule { }

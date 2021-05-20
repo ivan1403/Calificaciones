@@ -1,0 +1,11 @@
+tbody>tr>:nth-child(n+5){
+    text-align:center;
+   }
+   
+td{
+    vertical-align: middle;
+}
+th{
+    text-align: left;
+}
+

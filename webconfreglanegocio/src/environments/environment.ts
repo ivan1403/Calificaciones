@@ -8,6 +8,7 @@ export const environment = {
   production: false,
   // urlApiContabilidad: '/ApiContabilidad/api/',
   urlApiContabilidad: 'http://localhost:59514/api/',
+  urlApiConfReglasNegocio: 'http://localhost:65137/api/',
   urlApiGeneral: 'https://localhost:44327/api/',
   URL_INFORMATICA_INFERPAPI001: 'https://localhost:44304/api/',
   version: '21.03.29.1'

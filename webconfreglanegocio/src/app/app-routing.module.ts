@@ -5,6 +5,8 @@ import { CommonModule } from '@angular/common';
 // Home
 import { AuthComponent } from './shared/components/auth/auth.component';
 
+import { ProcesosModule } from './modules/procesos/procesos.module';
+
 const routes: Routes = [
   //{ path: '', redirectTo: '/home', pathMatch: 'full' },
   { path: 'auth', component: AuthComponent },

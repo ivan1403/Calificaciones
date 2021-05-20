@@ -12,7 +12,7 @@ export class AuthgenService {
 
   genToken(user: UserJwt) {
 
-    let url =`${environment.urlApiContabilidad}auth/Token`;
+    let url =`${environment.urlApiConfReglasNegocio}auth/Token`;
     return this.httpClient.post(url, user);
   }
 }
