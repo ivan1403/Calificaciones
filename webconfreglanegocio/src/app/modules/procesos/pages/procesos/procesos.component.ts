@@ -86,12 +86,12 @@ public pageSize=5;
 
   abrirEditModalTareas() {
 
-    const modalTareasComponent = this.modalService.open(ModalTareasComponent, {ariaLabelledBy: 'modal-basic-title', windowClass : "modalSize" , backdrop: 'static'});
+    // const modalTareasComponent = this.modalService.open(ModalTareasComponent, {ariaLabelledBy: 'modal-basic-title', windowClass : "modalSize" , backdrop: 'static'});
 
-    modalTareasComponent.result.then((result) => {
-      console.log(result);
-    }, (reason) => {
-    });
+    // modalTareasComponent.result.then((result) => {
+    //   console.log(result);
+    // }, (reason) => {
+    // });
   }
 
   onChangeProgramacionCalendarizada(e) {
