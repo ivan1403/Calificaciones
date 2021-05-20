@@ -16,19 +16,19 @@ steps:
   displayName: 'Install Node.js'
 
 - script: |
-    cd webconfreglasnegocio
+    cd webconfreglanegocio
     npm install -g @angular/cli@10.1.7
     npm install
   displayName: 'npm install'
 
 - script: |
-    cd webconfreglasnegocio
+    cd webconfreglanegocio
     ng build --base-href "/ConfReglasNegocio/" --prod
   displayName: 'ng build'
 
 - task: ArchiveFiles@2
   inputs:
-    rootFolderOrFile: 'webconfreglasnegocio/dist/'
+    rootFolderOrFile: 'webconfreglanegocio/dist/'
     includeRootFolder: false
     archiveType: 'zip'
     archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
