@@ -233,10 +233,6 @@ export class ModalTareasComponent implements OnInit {
     }
   }
 
-  // onDateSelected(){
-  //   console.log(this.FechaInicio);
-  // }
-
   CargarRefCondSelected(){
 
     this.refcondData.reglaRefCondNueva.subscribe(reglarefCondSelected=>this.reglarefCondSelected=reglarefCondSelected)
@@ -279,8 +275,10 @@ export class ModalTareasComponent implements OnInit {
   }
 
   AgregarNuevoProceso(){
+    //validar
     this.ValidarForm()
 
+    //Preparar datos
     if(this.FormValido){
       let DiasSemana:any=undefined;
       if(this.RepetirDiasSemana.length!=0){
@@ -328,10 +326,6 @@ export class ModalTareasComponent implements OnInit {
       RepetirMes=this.RepetirMes;
     }
 
-    // if(DiasSemana!=undefined){
-
-    // }
-
     this.procesoNuevo.idCondicion=RefCond
     this.procesoNuevo.comentario=Comentarios
     this.procesoNuevo.frecuencia=Frecuencia
@@ -342,7 +336,7 @@ export class ModalTareasComponent implements OnInit {
     this.procesoNuevo.repetirDia=RepetirDia
     this.procesoNuevo.repetirDiaMes=RepetirMes
 
-    
+    //agregar
     this.procesoService.agregarproceso(this.procesoNuevo).then((response: ApiResult)=>{
       this.LimpiarForm()
       if(DiasSemana!=undefined){
@@ -356,22 +350,17 @@ export class ModalTareasComponent implements OnInit {
           })
         });
       }
-
-
       this.toastr.success("Se agrego tarea exitosamente.");
       }, error=> {
         console.log(error);
         this.toastr.error("Ocurrio un error al agregar tarea.");
     });
-
     }
     else{
       this.toastr.error("Verifique los campos.");
     }
     
   }
-
-
 
   ValidarForm(){
     this.FormValido=true;

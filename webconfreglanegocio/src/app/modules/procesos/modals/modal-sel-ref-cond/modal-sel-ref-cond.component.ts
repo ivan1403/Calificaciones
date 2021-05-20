@@ -20,7 +20,7 @@ export class ModalSelRefCondComponent implements OnInit {
 
   reglasRefCond:Array<RefCond> = [];
   reglarefCondSelected:any;
-  selRefCond:string;
+  InputBuscarRefCond:string;
 
 
   ngOnInit(): void {

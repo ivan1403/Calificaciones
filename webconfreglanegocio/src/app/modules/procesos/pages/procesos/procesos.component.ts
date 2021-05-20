@@ -36,7 +36,7 @@ public pageSize=5;
   CargarProcesos(){
     this.procesoService.Cargar().subscribe((proceso:ApiResult)=>{
       this.procesos = proceso.result;
-      console.log(this.procesos);
+   //   console.log(this.procesos);
 
     }, error=> {
       console.log(error);
@@ -116,7 +116,7 @@ public pageSize=5;
   CargarRefCondSelected(){
   
     this.refcondData.reglaRefCond.subscribe(reglarefCondSelected=>this.reglarefCondSelected=reglarefCondSelected)
-    console.log(this.reglarefCondSelected)
+  //  console.log(this.reglarefCondSelected)
     if(this.reglarefCondSelected.nombreCondicion!=undefined)
     this.InputSelRefCond=this.reglarefCondSelected.nombreCondicion+ ' / ' +this.reglarefCondSelected.referenciaCondicion
 
@@ -125,11 +125,11 @@ public pageSize=5;
   
   CargarTareasFiltrada(){
     if(this.reglarefCondSelected!=undefined){
-      console.log(this.reglarefCondSelected.idCondicion)
+      // console.log(this.reglarefCondSelected.idCondicion)
 
       this.procesoService.CargarXId(this.reglarefCondSelected.idCondicion).subscribe((proceso:ApiResult)=>{
         this.procesos = proceso.result;
-        console.log(this.procesos);
+      //  console.log(this.procesos);
   
       }, error=> {
         console.log(error);
