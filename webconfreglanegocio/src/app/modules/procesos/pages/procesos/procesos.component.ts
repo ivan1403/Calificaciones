@@ -35,11 +35,13 @@ public pageSize=5;
 
   CargarProcesos(){
     this.procesoService.Cargar().subscribe((proceso:ApiResult)=>{
+      console.log(proceso.result)
       if(proceso.result!=null){
       this.procesos = proceso.result;
-     console.log(this.procesos);
+     console.log('entro' +this.procesos);
       }
-      console.log(this.procesos);
+      else{this.procesos=[]}
+    //  console.log(this.procesos);
 
     }, error=> {
       console.log(error);
@@ -136,6 +138,7 @@ public pageSize=5;
         this.procesos = proceso.result;
       //  console.log(this.procesos);
         }
+        else{this.procesos=[]}
       }, error=> {
         console.log(error);
       });
