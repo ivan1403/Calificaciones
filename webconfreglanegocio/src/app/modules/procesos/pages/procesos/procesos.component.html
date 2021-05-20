@@ -61,7 +61,7 @@
             </thead>
             <tbody>
                 <tr *ngIf="!procesos || procesos?.length==0">
-                    <td colspan="9">No hay tareas registradas o con los parametros de busqueda aplicados</td>
+                    <td colspan="9">No hay tareas registradas o con los parámetros de busqueda aplicados</td>
                 </tr>
                 <tr *ngFor="let proceso of procesos| slice: (page-1) * pageSize : page * pageSize">
                     <td>{{proceso.descripcionCondicion}}</td>  
