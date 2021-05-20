@@ -30,13 +30,16 @@ public pageSize=5;
   InputSelRefCond:string;
 
   ngOnInit(): void {
-    this.CargarProcesos();
+    this.CargarProcesos();     
   }
 
   CargarProcesos(){
     this.procesoService.Cargar().subscribe((proceso:ApiResult)=>{
+      if(proceso.result!=null){
       this.procesos = proceso.result;
-   //   console.log(this.procesos);
+     console.log(this.procesos);
+      }
+      console.log(this.procesos);
 
     }, error=> {
       console.log(error);
@@ -47,6 +50,7 @@ public pageSize=5;
         this.toastr.error(error);
       }
     });
+ 
   }
 
   abrirModalSelRefCond() {
@@ -128,17 +132,15 @@ public pageSize=5;
       // console.log(this.reglarefCondSelected.idCondicion)
 
       this.procesoService.CargarXId(this.reglarefCondSelected.idCondicion).subscribe((proceso:ApiResult)=>{
+        if(proceso.result!=null){
         this.procesos = proceso.result;
       //  console.log(this.procesos);
-  
+        }
       }, error=> {
         console.log(error);
       });
 
     }
-
- 
-
   }
   
 }
