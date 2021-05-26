@@ -69,8 +69,6 @@
             <div class="col-sm-3" >
                 <div ngbDropdown>
                     <input  type="text" autocomplete="off" onkeypress="return false"  [disabled]="!checkboxHoraFin && !inputHoraFin"  class="form-control " [(ngModel)]="HoraFin" name="HoraFin" ngbDropdownToggle >
-
-                    <label  *ngIf="!checkboxHoraFin">Esta desabilitado</label>
                     <div ngbDropdownMenu class="hora">
                       <ngb-timepicker   [(ngModel)]="SelHoraFin" (ngModelChange)="onTimeChangeSelectHoraFin($event)" [ngModelOptions]="{standalone:true}">
                       </ngb-timepicker>

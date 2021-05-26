@@ -1,16 +1,16 @@
 import { Component, Injectable, OnInit } from '@angular/core';
 import { NgbModal,NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { FormBuilder, FormGroup, FormArray, FormControl, Validators ,ReactiveFormsModule} from '@angular/forms';
+import { FormBuilder, FormGroup, FormArray, FormControl, Validators ,ReactiveFormsModule, NumberValueAccessor} from '@angular/forms';
 import {ModalSelRefCondComponent} from '../../modals/modal-sel-ref-cond/modal-sel-ref-cond.component';
 import { DatePipe } from '@angular/common';
 import {NgbCalendar, NgbDateAdapter, NgbDateParserFormatter, NgbDateStruct} from '@ng-bootstrap/ng-bootstrap';
 import { templateJitUrl } from '@angular/compiler';
-import { RefCondDataService } from '../../../../services/ref-cond-data.service';
 import { ProcesoService } from '../../../../services/proceso.service';
 import {Proceso} from '../../../../models/proceso'
 import {ProcesoSemanal} from '../../../../models/procesoSemanal'
 import { ApiResult } from '../../../../models/common/apiResult';
 import {ProcesosComponent} from '../../../procesos/pages/procesos/procesos.component'
+import { RefCondService } from '../../../../services/ref-cond.service';
 import { ToastrService } from 'ngx-toastr';
 import { EMPTY } from 'rxjs';
 @Injectable()
@@ -45,11 +45,14 @@ export class CustomDateParserFormatter extends NgbDateParserFormatter {
 })
 export class ModalTareasComponent implements OnInit {
 
-  constructor(private modalService: NgbModal,public modalActive: NgbActiveModal, private refcondData:RefCondDataService,
-    private procesoService:ProcesoService, private toastr: ToastrService) { }
+  constructor(private modalService: NgbModal,public modalActive: NgbActiveModal,
+    private procesoService:ProcesoService, private toastr: ToastrService, private refCondService:RefCondService) { }
 
   procesoNuevo:any= new Proceso;
   procesoSemana:any= new ProcesoSemanal;
+  procesoEditar:any= new Proceso;
+
+  Modificando:boolean = false;
 
   DiasSemana: Array<any> = [
     { name: 'Lunes', value: 'Lunes',checked:false },
@@ -96,18 +99,23 @@ export class ModalTareasComponent implements OnInit {
   
   FormValido=false;
 
+
+
   ngOnInit(): void {
    this.reglarefCondSelected=null;  
   }
 
   abrirModalSelRefCond() {
-    this.refcondData.SelectTipo("Nueva");
+   // this.refcondData.SelectTipo("Nueva");
     const modalSelRefCondComponent = this.modalService.open(ModalSelRefCondComponent, {ariaLabelledBy: 'modal-basic-title',size: 'md' , backdrop: 'static'});
-    
+        modalSelRefCondComponent.componentInstance.evt.subscribe(arg=>{
+     // console.log(arg)
+      this.CargarRefCondSelected(arg)
+    })
     modalSelRefCondComponent.result.then((result) => {
 
     }, (reason) => {
-       this.CargarRefCondSelected();          
+
     });
   }
 
@@ -146,8 +154,13 @@ export class ModalTareasComponent implements OnInit {
   }  
 
   onChangeFrecuenciaSelect(e){
-    this.FrecuenciaSelected=e.target.value;
-    switch (e.target.value) {
+    if(e.target)
+    {this.FrecuenciaSelected=e.target.value;}
+    else{this.FrecuenciaSelected=e
+    //console.log(e)
+    }
+
+    switch (this.FrecuenciaSelected) {
       case 'Hora':
         this.FrecuenciaHora =true;
         this.FrecuenciaDiario=false;
@@ -233,14 +246,10 @@ export class ModalTareasComponent implements OnInit {
     }
   }
 
-  CargarRefCondSelected(){
-
-    this.refcondData.reglaRefCondNueva.subscribe(reglarefCondSelected=>this.reglarefCondSelected=reglarefCondSelected)
-    this.reglarefCondSelectedLocal=this.reglarefCondSelected
-    if(this.reglarefCondSelected.nombreCondicion!=undefined)
+  CargarRefCondSelected(reglaRefCond:any){
+    this.reglarefCondSelectedLocal=reglaRefCond
+    if(this.reglarefCondSelectedLocal.nombreCondicion!=undefined)
     this.InputselRefCond=this.reglarefCondSelectedLocal.nombreCondicion+ ' / ' +this.reglarefCondSelectedLocal.referenciaCondicion
-    this.refcondData.ClearReglaRefCond();    
-
   }
 
   LimpiarForm(){
@@ -277,29 +286,40 @@ export class ModalTareasComponent implements OnInit {
   AgregarNuevoProceso(){
     //validar
     this.ValidarForm()
-
+    //console.log(this.reglarefCondSelectedLocal)
     //Preparar datos
     if(this.FormValido){
       let DiasSemana:any=undefined;
       if(this.RepetirDiasSemana.length!=0){
-        DiasSemana=this.RepetirDiasSemana.replace(/\s/g, '').split(",");
+        DiasSemana=this.RepetirDiasSemana.replace(/\s/g, '')
+        if(!this.RepetirDiasSemana.includes(',')){
+          DiasSemana=DiasSemana+','
+        }
+        //DiasSemana=this.RepetirDiasSemana.replace(/\s/g, '').split(",");
+       
       }
+     
     let RefCond=this.reglarefCondSelectedLocal.idCondicion
-
+ 
      let Comentarios=this.Comentarios
      if(this.Comentarios==undefined)
      {
        Comentarios='';
      }
     let Frecuencia= this.FrecuenciaSelected
+
     const datepipe: DatePipe = new DatePipe('en-US')    
 
     let FechaInicio:any; 
-
-    if(this.FechaInicio!=undefined ||this.FechaInicio!='' )
+    if(this.FechaInicio!=undefined)
     {
-      let UnformatedFechaInicio=    Date.parse(this.FechaInicio.year+'-'+this.FechaInicio.month +'-'+this.FechaInicio.day)
-      FechaInicio= datepipe.transform(UnformatedFechaInicio, 'yyyy-MM-dd'); 
+      if(this.FechaInicio!=''){
+        let UnformatedFechaInicio=  this.FechaInicio.year+'-'+this.FechaInicio.month +'-'+this.FechaInicio.day
+
+        FechaInicio= datepipe.transform(UnformatedFechaInicio, 'yyyy-MM-dd'); 
+      }
+
+
     }else{FechaInicio=null}
 
     let HoraInicio:any
@@ -325,36 +345,55 @@ export class ModalTareasComponent implements OnInit {
     if(this.RepetirMes!=''){
       RepetirMes=this.RepetirMes;
     }
-
-    this.procesoNuevo.idCondicion=RefCond
-    this.procesoNuevo.comentario=Comentarios
-    this.procesoNuevo.frecuencia=Frecuencia
-    this.procesoNuevo.fechaInicio=FechaInicio
-    this.procesoNuevo.horaInicio=HoraInicio
-    this.procesoNuevo.horaFin=HoraFin
-    this.procesoNuevo.repetirHora=RepetirHora
-    this.procesoNuevo.repetirDia=RepetirDia
-    this.procesoNuevo.repetirDiaMes=RepetirMes
-
     //agregar
-    this.procesoService.agregarproceso(this.procesoNuevo).then((response: ApiResult)=>{
-      this.LimpiarForm()
-      if(DiasSemana!=undefined){
-        DiasSemana.forEach((d) => {      
-          this.procesoSemana.dia=d
-          this.procesoSemana.idTarea=response.objModResultado.id
-          this.procesoService.agregarprocesoSemana(this.procesoSemana).then((response: ApiResult)=>{
-  
-           }, error=> {
-            console.log(error);
-          })
+    if(!this.Modificando)
+    {
+      this.procesoNuevo.idCondicion=RefCond
+      this.procesoNuevo.comentario=Comentarios
+      this.procesoNuevo.frecuencia=Frecuencia
+      this.procesoNuevo.fechaInicio=FechaInicio
+      this.procesoNuevo.horaInicio=HoraInicio
+      this.procesoNuevo.horaFin=HoraFin
+      this.procesoNuevo.repetirHora=RepetirHora
+      this.procesoNuevo.repetirDia=RepetirDia
+      this.procesoNuevo.repetirDiaMes=RepetirMes
+      this.procesoNuevo.diasSemana=DiasSemana
+
+      this.procesoService.agregarproceso(this.procesoNuevo).then((response: ApiResult)=>{
+        this.LimpiarForm()
+
+        this.toastr.success("Se agrego tarea exitosamente.");
+        }, error=> {
+          console.log(error);
+          this.toastr.error("Ocurrio un error al agregar la tarea.");
+      });
+    }
+    else{
+      
+    //modificar
+      this.procesoEditar.idCondicion=RefCond
+      this.procesoEditar.comentario=Comentarios
+      this.procesoEditar.frecuencia=Frecuencia
+      this.procesoEditar.fechaInicio=FechaInicio
+      this.procesoEditar.horaInicio=HoraInicio
+      this.procesoEditar.horaFin=HoraFin
+      this.procesoEditar.repetirHora=RepetirHora
+      this.procesoEditar.repetirDia=RepetirDia
+      this.procesoEditar.repetirDiaMes=RepetirMes
+      this.procesoEditar.diasSemana=DiasSemana
+   //  console.log(this.procesoEditar)
+     
+      this.procesoService.ModificarProceso(this.procesoEditar).then((response: ApiResult)=>{
+
+        this.LimpiarForm()
+        this.modalActive.dismiss()
+        this.toastr.success("Se actualizo tarea exitosamente.");
+        }, error=> {
+          console.log(error);
+          this.toastr.error("Ocurrio un error al actualizar la tarea.");
         });
+
       }
-      this.toastr.success("Se agrego tarea exitosamente.");
-      }, error=> {
-        console.log(error);
-        this.toastr.error("Ocurrio un error al agregar tarea.");
-    });
     }
     else{
       this.toastr.error("Verifique los campos.");
@@ -364,8 +403,12 @@ export class ModalTareasComponent implements OnInit {
 
   ValidarForm(){
     this.FormValido=true;
-    if(this.reglarefCondSelectedLocal==undefined){
-      this.FormValido=false;
+
+    if(this.reglarefCondSelectedLocal== undefined){
+         this.FormValido=false;
+    }
+    if(this.InputselRefCond== undefined){
+        this.FormValido=false;      
     }
     if(this.FrecuenciaSelected==undefined){
       this.FormValido=false;
@@ -408,6 +451,110 @@ export class ModalTareasComponent implements OnInit {
       }
     }
  
+    if(this.Comentarios==null || this.Comentarios==undefined || this.Comentarios.trim()==''){
+      this.FormValido=false;
+    }
+ 
+  }
+
+  ModificarDatos(procesoAbuscar:any){
+
+    this.Modificando=true;
+    this.procesoService.CargarDatosEditar(procesoAbuscar.idTarea).then((response: ApiResult)=>{
+    if(response.objModResultado.error){
+      this.toastr.error(response.objModResultado.mensajeError,'Error al cargar datos');
+    }else{
+      this.procesoEditar=response.result[0];
+
+      this.CargarRefCondxId(this.procesoEditar.idCondicion)
+      
+      
+     // this.InputselRefCond=this.reglarefCondSelectedLocal.nombreCondicion;
+      this.Comentarios=this.procesoEditar.comentario;
+      this.SelectFrecuencia=this.procesoEditar.frecuencia
+      this.onChangeFrecuenciaSelect(this.procesoEditar.frecuencia);
+      if(this.procesoEditar.frecuencia!="Manual"){        
+
+      const datepipeanio: DatePipe = new DatePipe('en-US')
+      const datepipemes: DatePipe = new DatePipe('en-US')
+      const datepipedia: DatePipe = new DatePipe('en-US')
+       
+      this.FechaInicio={year:Number(datepipeanio.transform(new Date(this.procesoEditar.fechaInicio), 'yyyy')),
+        month:Number(datepipemes.transform(new Date(this.procesoEditar.fechaInicio), 'MM')),
+        day:Number(datepipedia.transform(new Date(this.procesoEditar.fechaInicio), 'dd'))};
+
+      const datepipeHora: DatePipe = new DatePipe('en-US')
+      const datepipeMinuto: DatePipe = new DatePipe('en-US')
+      const datepipeHoraCompleta: DatePipe = new DatePipe('en-US')
+      let Hora= datepipeHora.transform(this.procesoEditar.horaInicio, 'HH');   
+      let Minuto= datepipeMinuto.transform(this.procesoEditar.horaInicio, 'mm');  
+      this.HoraInicio= datepipeHoraCompleta.transform(this.procesoEditar.horaInicio, 'HH:mm');  
+      this.SelHoraInicio = {hour: Number(Hora), minute: Number(Minuto)};
+
+      if(this.procesoEditar.horaFin!=null){
+        this.checkboxHoraFin=true
+        const datepipeHora: DatePipe = new DatePipe('en-US')
+        const datepipeMinuto: DatePipe = new DatePipe('en-US')
+        const datepipeHoraCompleta: DatePipe = new DatePipe('en-US')
+        let Hora= datepipeHora.transform(this.procesoEditar.horaFin, 'HH');   
+        let Minuto= datepipeMinuto.transform(this.procesoEditar.horaFin, 'mm');  
+        this.HoraFin= datepipeHoraCompleta.transform(this.procesoEditar.horaFin, 'HH:mm');  
+        this.SelHoraFin = {hour: Number(Hora), minute: Number(Minuto)};
+      }
+
+      if(this.procesoEditar.frecuencia=="Diario"){
+        this.RepetirDia=this.procesoEditar.repetirDia;
+      }
+      if(this.procesoEditar.frecuencia=="Mensual"){
+        this.RepetirMes=this.procesoEditar.repetirDiaMes;
+      }
+      if(this.procesoEditar.frecuencia=="Hora"){
+        this.RepetirHora=this.procesoEditar.repetirHora;
+      }
+      if(this.procesoEditar.frecuencia=="Semanal"){
+        this.procesoService.CargarDatosEditarSemanal(this.procesoEditar.idTarea).then((response: ApiResult)=>{
+          if(response.objModResultado.error){
+            this.toastr.error(response.objModResultado.mensajeError,'Error al cargar datos');
+          }else{
+           // console.log(response.result);
+            let diasSemana =response.result
+            this.DiasSemana.forEach((D)=>{
+
+              diasSemana.forEach((d) => {
+                if(D.name==d.dia){
+                  D.checked=true;
+                }
+               });               
+            })
+            let DiasSemanaSeleccionado = [];
+            this.DiasSemana.filter(d =>d.checked===true).forEach((d) => {
+              DiasSemanaSeleccionado.push(d.name); 
+            });
+            this.RepetirDiasSemana=DiasSemanaSeleccionado.join(', ');
+          }
+         }, error=> {
+           console.log(error);
+        });
+      }
+      }
+    }
+   }, error=> {
+     console.log(error);
+  });
+  }
+
+  CargarRefCondxId(id:number){
+    this.refCondService.CargarRefCondxId(id).subscribe((refCond:ApiResult)=>{
+      this.reglarefCondSelectedLocal = refCond.result[0];
+      this.InputselRefCond=this.reglarefCondSelectedLocal.nombreCondicion+ ' / ' +this.reglarefCondSelectedLocal.referenciaCondicion
+    }, error=> {
+      if(typeof error==="object"){
+        this.toastr.error("Ocurrio un error al conectarse al servidor.");
+      } else {
+        this.toastr.error(error);
+      }
+    });
+    
   }
 
 

@@ -13,7 +13,7 @@
         <label class="text-right h4 mt-2">Referencia / Condición</label>
     </div>
 
-    <div class="col-sm-3">
+    <div class="col-sm-5">
         <div class="input-group">
             <input readonly type="text" name="selRefCond" [(ngModel)]="InputSelRefCond" class="form-control">
             <div class="input-group-append">
@@ -21,24 +21,25 @@
             </div>
         </div>
     </div>
-
+<!-- 
     <div class="col-sm-2 text-center">
         <label class="text-right h4 mt-1"  >Estatus de programación</label>
     </div>
 
     <div class="col-sm-2">
-        <select class="form-control form-select">
-            <option value="0">Programado</option>
-            <option value="1">No Programado</option>
-            <option value="2">Todos</option>
+        <select [(ngModel)]="SelectEstatusProgramacion" class="form-control form-select">
+            <option value="Todos">Todos</option>
+            <option value="Programado">Programado</option>
+            <option value="No Programado">No Programado</option>
+
         </select>
-    </div>
+    </div> -->
 
     <div class="col-sm-1">
-        <button class="btn btn-primary pull-right ml-1" (click)="CargarTareasFiltrada()"><i class="fa fa-search" aria-hidden="true"></i> Buscar</button>
+        <button class="btn btn-primary pull-right ml-1" (click)="CargarTareasFiltrada(1)"><i class="fa fa-search" aria-hidden="true"></i> Buscar</button>
     </div>
     <div class="col-sm-2">
-        <button class="btn btn-primary pull-right ml-1" (click)="CargarProcesos()"><i class="fa fa-search" aria-hidden="true"></i> Mostrar Todas</button>
+        <button class="btn btn-primary pull-right ml-1" (click)="LimpiarFiltro()"><i class="fa fa-search" aria-hidden="true"></i> Limpiar Filtro</button>
     </div>
 
 </div>
@@ -63,7 +64,7 @@
                 <tr *ngIf="!procesos || procesos?.length==0">
                     <td colspan="9">No hay tareas registradas o con los parámetros de busqueda aplicados</td>
                 </tr>
-                <tr *ngFor="let proceso of procesos| slice: (page-1) * pageSize : page * pageSize">
+                <tr *ngFor="let proceso of procesos">
                     <td>{{proceso.descripcionCondicion}}</td>  
                     <td>{{proceso.frecuencia}}</td>
                     <td>{{proceso.fechaInsert|date:"dd-MM-yyyy"}}</td>
@@ -81,7 +82,7 @@
                         </div>
                     </td>
                     <td>
-                        <i (click)="abrirEditModalTareas()" class="far fa-edit fa-2x" style="cursor: pointer;"></i>
+                        <i (click)="abrirEditModalTareas(proceso)" class="far fa-edit fa-2x" style="cursor: pointer;"></i>
                     </td>
                     <td>
                         <div class="switcher">
@@ -92,6 +93,9 @@
                 </tr>
             </tbody>
         </table>
-        <ngb-pagination class="d-flex justify-content-center" [(page)]="page"   [pageSize]="pageSize"  [collectionSize]="procesos.length"></ngb-pagination>
+        <!-- <app-paginador [paginador] = "paginador"  ></app-paginador> -->
+        <app-paginador  *ngIf="!procesosFiltrados" [paginador] = "paginador" (evtPaginaSeleccionada)="evtPaginaSeleccionada($event)" ></app-paginador>
+        <app-paginador  *ngIf="procesosFiltrados" [paginador] = "paginadorFiltrado" (evtPaginaSeleccionada)="evtPaginaSeleccionada($event)" ></app-paginador>
+        <!-- <ngb-pagination class="d-flex justify-content-center" [(page)]="page"   [pageSize]="pageSize"  [collectionSize]="procesos.length"></ngb-pagination> -->
     </div>
 </div>
