@@ -1,10 +1,10 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input ,Output,EventEmitter} from '@angular/core';
 import { NgbModal,NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { RefCondService } from '../../../../services/ref-cond.service';
 import { ApiResult } from '../../../../models/common/apiResult';
 import { RefCond } from '../../../../models/refCond';
 import {ProcesosComponent} from '../../../../modules/procesos/pages/procesos/procesos.component'
-import { RefCondDataService } from '../../../../services/ref-cond-data.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-modal-sel-ref-cond',
@@ -14,18 +14,19 @@ import { RefCondDataService } from '../../../../services/ref-cond-data.service';
 export class ModalSelRefCondComponent implements OnInit {
 
   constructor(private modalService: NgbModal, public modalActive: NgbActiveModal,
-  private refCondService:RefCondService, private refcondData:RefCondDataService,  ) { }
+  private refCondService:RefCondService, private toastr: ToastrService  ) { }
 
-  tipo:string;
+  tipo:string; 
 
   reglasRefCond:Array<RefCond> = [];
   reglarefCondSelected:any;
   InputBuscarRefCond:string;
 
+  @Output() evt = new EventEmitter<any>(); 
 
   ngOnInit(): void {
     this.CargarListaRefCond();
-    this.tipo= this.refcondData.tipo
+  //  this.tipo= this.refcondData.tipo
 
     
   }
@@ -35,22 +36,17 @@ export class ModalSelRefCondComponent implements OnInit {
       this.reglasRefCond = refCond.result;
 
     }, error=> {
-      console.log(error);
+      if(typeof error==="object"){
+        this.toastr.error("Ocurrio un error al conectarse al servidor.");
+      } else {
+        this.toastr.error(error);
+      }
     });
   }
 
   onSelectRefCond(Regla:any){
-    if(this.tipo=="Buscar"){
-      this.refcondData.reglaRefCond.subscribe(reglarefCondSelected=>this.reglarefCondSelected=reglarefCondSelected)
-      this.refcondData.SelectRegla(Regla);   
-      this.modalActive.dismiss();
-    } 
-    if(this.tipo=="Nueva"){
-      this.refcondData.reglaRefCondNueva.subscribe(reglarefCondSelected=>this.reglarefCondSelected=reglarefCondSelected)
-      this.refcondData.SelectReglaNueva(Regla);   
-      this.modalActive.dismiss();
-      
-    }  
+    this.evt.emit(Regla)
+    this.modalActive.dismiss();
   }
 
 
@@ -60,7 +56,11 @@ export class ModalSelRefCondComponent implements OnInit {
       this.reglasRefCond = refCond.result;
 
     }, error=> {
-      console.log(error);
+      if(typeof error==="object"){
+        this.toastr.error("Ocurrio un error al conectarse al servidor.");
+      } else {
+        this.toastr.error(error);
+      }
     });
   }
 

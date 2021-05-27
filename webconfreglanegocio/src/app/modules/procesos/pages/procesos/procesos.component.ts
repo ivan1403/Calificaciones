@@ -6,8 +6,11 @@ import {ModalTareasComponent} from '../../modals/modal-tareas/modal-tareas.compo
 import { ProcesoService } from '../../../../services/proceso.service';
 import { ApiResult } from '../../../../models/common/apiResult';
 import { Proceso } from '../../../../models/proceso';
-import { RefCondDataService } from '../../../../services/ref-cond-data.service';
 import { ToastrService } from 'ngx-toastr';
+import { PaginadorComponent } from '../../../../shared/components/paginador/paginador.component';
+import { Paginador } from '../../../../models/common/paginador';
+
+
 
 @Component({
   selector: 'app-procesos',
@@ -15,12 +18,17 @@ import { ToastrService } from 'ngx-toastr';
   styleUrls: ['./procesos.component.css']
 })
 export class ProcesosComponent implements OnInit {
-public page=1;
-public pageSize=5;
+// public page=1;
+// public pageSize=5;
 
+paginador = new Paginador()
+paginadorFiltrado = new Paginador()
+rpp = 10;
+paginaActual = 1;
+procesosFiltrados:boolean;
 
   constructor(private modalService: NgbModal, private procesoService:ProcesoService,
-    private refcondData:RefCondDataService, private toastr: ToastrService) { }
+     private toastr: ToastrService) { }
 
   reglarefCondSelected:any;
   checkboxpEliminarProgramacion:boolean=false;
@@ -28,42 +36,48 @@ public pageSize=5;
   procesos:Array<Proceso> = [];
   
   InputSelRefCond:string;
-
+  //lol:string;
   ngOnInit(): void {
-    this.CargarProcesos();     
+    this.CargarProcesos(1);  
+    
+    this.procesosFiltrados=false; 
   }
 
-  CargarProcesos(){
-    this.procesoService.Cargar().subscribe((proceso:ApiResult)=>{
-      console.log(proceso.result)
+
+  CargarProcesos(pagina:number){
+    this.procesosFiltrados=false;
+    this.procesoService.Cargar(this.rpp, pagina).subscribe((proceso:ApiResult)=>{
       if(proceso.result!=null){
       this.procesos = proceso.result;
-     console.log('entro' +this.procesos);
+      this.paginador.inicializar(proceso.existeOtraPagina, pagina);
       }
       else{this.procesos=[]}
-    //  console.log(this.procesos);
+     // console.log(this.procesos);
 
     }, error=> {
-      console.log(error);
+   //   console.log(error);
       if(typeof error==="object"){
         this.toastr.error("Ocurrio un error al conectarse al servidor.");
-        console.error('obtenerPolizas()',error);
       } else {
         this.toastr.error(error);
       }
-    });
- 
+    }); 
   }
 
   abrirModalSelRefCond() {
-    this.refcondData.SelectTipo("Buscar");
+   // this.refcondData.SelectTipo("Buscar");
    
     const modalSelRefCondComponent = this.modalService.open(ModalSelRefCondComponent, {ariaLabelledBy: 'modal-basic-title',size: 'md' , backdrop: 'static'});
-
+    modalSelRefCondComponent.componentInstance.evt.subscribe(arg=>{
+      //console.log(arg)
+      this.CargarRefCondSelected(arg)
+    })
     modalSelRefCondComponent.result.then((result) => {
       console.log(result);
     }, (reason) => {
-      this.CargarRefCondSelected()
+
+    
+
     });
   }
 
@@ -86,18 +100,21 @@ public pageSize=5;
     modalTareasComponent.result.then((result) => {
       console.log(result);
     }, (reason) => {
-      this.CargarProcesos();
+      this.CargarProcesos(1);
     });
   }
 
-  abrirEditModalTareas() {
+  abrirEditModalTareas(proceso:any) {
 
-    // const modalTareasComponent = this.modalService.open(ModalTareasComponent, {ariaLabelledBy: 'modal-basic-title', windowClass : "modalSize" , backdrop: 'static'});
+    const modalTareasComponent = this.modalService.open(ModalTareasComponent, {ariaLabelledBy: 'modal-basic-title', windowClass : "modalSize" , backdrop: 'static'});
 
-    // modalTareasComponent.result.then((result) => {
-    //   console.log(result);
-    // }, (reason) => {
-    // });
+    modalTareasComponent.result.then((result) => {
+      console.log(result);
+    }, (reason) => {
+    });
+    const procesoClone = JSON.parse(JSON.stringify(proceso));
+    modalTareasComponent.componentInstance.ModificarDatos(procesoClone);
+
   }
 
   onChangeProgramacionCalendarizada(e) {
@@ -119,23 +136,22 @@ public pageSize=5;
     }    
   }
 
-  CargarRefCondSelected(){
-  
-    this.refcondData.reglaRefCond.subscribe(reglarefCondSelected=>this.reglarefCondSelected=reglarefCondSelected)
-  //  console.log(this.reglarefCondSelected)
+  CargarRefCondSelected(relgaRefCond:any){  
+  this.reglarefCondSelected=relgaRefCond
     if(this.reglarefCondSelected.nombreCondicion!=undefined)
     this.InputSelRefCond=this.reglarefCondSelected.nombreCondicion+ ' / ' +this.reglarefCondSelected.referenciaCondicion
 
   }
 
   
-  CargarTareasFiltrada(){
+  CargarTareasFiltrada(pagina:number){
+  //  console.log(this.reglarefCondSelected)
     if(this.reglarefCondSelected!=undefined){
-      // console.log(this.reglarefCondSelected.idCondicion)
-
-      this.procesoService.CargarXId(this.reglarefCondSelected.idCondicion).subscribe((proceso:ApiResult)=>{
+      this.procesosFiltrados=true;
+      this.procesoService.CargarXId(this.reglarefCondSelected.idCondicion,this.rpp, pagina).subscribe((proceso:ApiResult)=>{
         if(proceso.result!=null){
         this.procesos = proceso.result;
+        this.paginadorFiltrado.inicializar(proceso.existeOtraPagina, pagina);
       //  console.log(this.procesos);
         }
         else{this.procesos=[]}
@@ -144,6 +160,23 @@ public pageSize=5;
       });
 
     }
+  }
+
+  evtPaginaSeleccionada(pagina) {
+    if(!this.procesosFiltrados){
+      this.CargarProcesos(pagina);
+    }
+    else{
+
+      this.CargarTareasFiltrada(pagina)
+    }
+  }
+
+  LimpiarFiltro(){
+    this.reglarefCondSelected=undefined
+    this.InputSelRefCond=''
+    this.CargarProcesos(1)
+
   }
   
 }

@@ -19,4 +19,5 @@ export class Proceso
     fechaModifica:Date;
     fechaBaja:Date
     estatus:boolean;
+    diasSemana:string;
 }

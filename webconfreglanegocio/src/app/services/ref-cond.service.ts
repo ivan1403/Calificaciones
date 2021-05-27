@@ -20,4 +20,7 @@ export class RefCondService {
     return this.httpClient.get<ApiResult>(this.url+'cargarXDescripcion?descripcion=' + descripcion);
   }
 
+  CargarRefCondxId(id:number){
+    return this.httpClient.get<ApiResult>(this.url+'cargarXDescripcion?descripcion=' + id);
+  }
 }
