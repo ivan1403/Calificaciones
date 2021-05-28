@@ -15,7 +15,11 @@
                         <button  (click)="abrirModalSelRefCond()" [disabled]="btnAbrirModalSelRefCond" class="btn btn-primary" type="button"><i class="fas fa-search fa-lg"></i></button>
                     </div>
                 </div>
+
             </div>
+        </div>        
+        <div *ngIf="ReferenciaRequerido" class="col-sm-12 alert alert-danger">
+            Referencia / Condición es requerido.
         </div>
         <div class="form-group row">
             <label class="col-sm-2 h6 mt-2">Frecuencia</label>
@@ -29,6 +33,9 @@
                     <option value="Hora">Hora</option>
                 </select>
             </div>
+        </div>
+        <div *ngIf="FrecuenciaRequerido" class="col-sm-12 alert alert-danger">
+            Frecuencia es requerida.
         </div>
         <div class="form-group row">
             <label class="col-sm-2 h6 mt-2">Fecha Inicio</label>
@@ -44,6 +51,9 @@
                       </div>
                 </div>
             </div>
+        </div>
+        <div *ngIf="FechaInicioRequerido" class="col-sm-12 alert alert-danger">
+            Fecha de inicio es requerida.
         </div>
         <div class="form-group row">
             <label class="col-sm-2 h6 mt-2">Hora inicio</label>
@@ -76,22 +86,40 @@
                 </div>
             </div>
         </div>
+        <div class="form-group row">
+
+            <div *ngIf="HoraInicioRequerido" class="col-sm-6 alert alert-danger text-left">
+                Hora de inicio es requerida.
+            </div>
+            <div *ngIf="HoraFinRequerido && !HoraInicioRequerido" class="col-sm-6 float-right">
+            </div>
+            <div *ngIf="HoraFinRequerido" class="col-sm-6 alert alert-danger float-right">
+                Hora de fin es requerida.
+            </div>
+        </div>
+
         <label class="text-right h6">Repetir cada</label>
         <div class="repetirCada">
             <div class="form-group row">
                 <label class="col-sm-2 h6  mt-2">Hora</label>
                 <div class="col-sm-3 " >
-                    <input type="number" min="1" oninput="validity.valid||(value='');" name="RepetirHora" [disabled]="!FrecuenciaHora" [(ngModel)]="RepetirHora" class="form-control">
+                    <input type="number" min="1" max="24" oninput="validity.valid||(value='');" name="RepetirHora" [disabled]="!FrecuenciaHora" [(ngModel)]="RepetirHora" class="form-control">
                 </div>
             </div>
+            <div *ngIf="RepetirHoraRequerido" class="col-sm-5 alert alert-danger">
+                Repetir hora es requerida.
+            </div>
             <div class="form-group row">
-                <label class="col-sm-2 h6 mt-2">Dia</label>
+                <label class="col-sm-2 h6 mt-2">Día</label>
                 <div class="col-sm-3" >
-                    <input type="number" min="1" max="24" oninput="validity.valid||(value='');" name="RepetirDia" [disabled]="!FrecuenciaDiario"  [(ngModel)]="RepetirDia" class="form-control">
+                    <input type="number" min="1" max="366" oninput="validity.valid||(value='');" name="RepetirDia" [disabled]="!FrecuenciaDiario"  [(ngModel)]="RepetirDia" class="form-control">
                 </div>
             </div>
+            <div *ngIf="RepetirDiaRequerido" class="col-sm-5 alert alert-danger">
+                Repetir día es requerida.
+            </div>
             <div class="form-group row">
-                <label class="col-sm-2 h6 mt-2">Dia de la semana</label>
+                <label class="col-sm-2 h6 mt-2">Día de la semana</label>
                 <div class="col-sm-10 " >
                     <div ngbDropdown>
                         <input type="text" autocomplete="off"  onkeypress="return false" [disabled]="!FrecuenciaSemanal" name="RepetirDiasSemana" [(ngModel)]="RepetirDiasSemana" name="RepetirDiasSemana" class="form-control " ngbDropdownToggle >
@@ -107,11 +135,17 @@
                     </div>
                 </div>
             </div>
+            <div *ngIf="RepetirSemanaRequedio" class="col-sm-12 alert alert-danger">
+                Repetir día de la semana es requerida.
+            </div>
             <div class="form-group row">
                 <label class="col-sm-2 h6 mt-2">Dia del mes</label>
                 <div class="col-sm-3 mt-1" >
                     <input type="number" min="1" max="31" oninput="validity.valid||(value='');" name="RepetirMes" [disabled]="!FrecuenciaMensual" [(ngModel)]="RepetirMes" class="form-control">
                 </div>
+            </div>
+            <div *ngIf="RepetirMesRequerido" class="col-sm-5 alert alert-danger">
+                Repetir día del mes es requerida.
             </div>
         </div>
         <div class="form-group row">
@@ -119,6 +153,9 @@
             <div class="col-sm-10 " >
                 <textarea class="form-control" [(ngModel)]="Comentarios" name="Comentarios" style="width: 100%; max-width: 100%;resize: none;" name="Text1"  rows="2"></textarea>
             </div>
+        </div>
+        <div *ngIf="ComentariosRequerido" class="col-sm-12 alert alert-danger">
+            Comentario es requerida.
         </div>
     </div>
     <div class="modal-footer">

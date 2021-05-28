@@ -39,7 +39,7 @@
         <button class="btn btn-primary pull-right ml-1" (click)="CargarTareasFiltrada(1)"><i class="fa fa-search" aria-hidden="true"></i> Buscar</button>
     </div>
     <div class="col-sm-2">
-        <button class="btn btn-primary pull-right ml-1" (click)="LimpiarFiltro()"><i class="fa fa-search" aria-hidden="true"></i> Limpiar Filtro</button>
+        <button class="btn btn-primary pull-right ml-1" (click)="LimpiarFiltro()"> Limpiar Filtro</button>
     </div>
 
 </div>
@@ -57,7 +57,7 @@
                     <th style="vertical-align: middle;">Ver log</th>
                     <th>Programación<br>calendarizada</th>
                     <th>Modificar<br>programación</th>
-                    <th>Eliminar<br>programación</th>
+                    <th>Programación<br>activa</th>
                 </tr>
             </thead>
             <tbody>
@@ -76,18 +76,18 @@
                         <i (click)="abrirModalVerLog()" class="fas fa-bars fa-2x" style="cursor: pointer;"></i>
                     </td>
                     <td>
-                        <div class="switcher">
+                        <div class="switcher switcher-success">
                             <input type="checkbox" (change)="onChangeProgramacionCalendarizada($event)"  id="switcherProgramacionCalendarizada,{{proceso.idTarea}}" >
                             <label for="switcherProgramacionCalendarizada,{{proceso.idTarea}}"></label>
                         </div>
                     </td>
                     <td>
-                        <i (click)="abrirEditModalTareas(proceso)" class="far fa-edit fa-2x" style="cursor: pointer;"></i>
+                        <i (click)="abrirEditModalTareas(proceso)" class=" btn btn-success fas fa-lg fa-pencil-alt" style="cursor: pointer;"></i>
                     </td>
                     <td>
-                        <div class="switcher">
-                            <input type="checkbox" (change)="onChangeEliminarProgramacion($event)"  id="switcherEliminarProgramacion,{{proceso.idTarea}}" >
-                            <label for="switcherEliminarProgramacion,{{proceso.idTarea}}"></label>
+                        <div class="switcher switcher-success">
+                            <input data-theme="default" type="checkbox" [checked]="!proceso.estatus" (change)="onChangeEliminarProgramacion($event,proceso)"  id="{{proceso.idTarea}}" >
+                            <label for="{{proceso.idTarea}}"></label>
                         </div>
                     </td>
                 </tr>

@@ -1,0 +1,54 @@
+<div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Configuración adicional repetitivos contables</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modalActive.dismiss()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<form>
+    <div class="modal-body">
+        <h4 class="text-left h5 " >Referencia: Generación de pólizas de bancos</h4>
+        <label class="text-left h6">SP que obtiene infromación por documento del sistema origen para enviarla a contabilidad</label>
+        <div class="form-group row mt-3" >            
+            <div class="col-sm-2 text-left">
+                <label class="text-left h5 ">Store Procedure</label>
+            </div>        
+            <div class="col-sm-3">
+                <input type="text" name="InputStoredProcedure" [(ngModel)]="InputStoredProcedure" class="form-control">
+            </div>        
+            <div class="col-sm text-left">
+                <label class="text-right h5 mt-2">Opción</label>
+            </div>        
+            <div class="col-sm">
+                <input type="number" min="1" oninput="validity.valid||(value='');" name="InputOpcion" [(ngModel)]="InputOpcion" class="form-control">
+            </div>
+            <div class="col-sm text-left">
+                <label class="text-right h5 mt-2">IdPlantilla</label>
+            </div>        
+            <div class="col-sm">
+                <input type="number" min="1" oninput="validity.valid||(value='');" name="InputIdPlantilla" [(ngModel)]="InputIdPlantilla" class="form-control">
+            </div>
+            <div class="col-sm">
+                <button type="submit"  class="btn btn-primary">Cargar</button>
+            </div>
+           
+        </div>
+            
+        <div class="form-group text-left row" >            
+            <div class="col-sm-3 text-left">
+                <label class="text-left h5">Número de intentos para generar póliza</label>
+            </div>        
+            <div class="col-sm-2 text-left">
+                <input type="number" min="1" oninput="validity.valid||(value='');" name="InputIntentoPoliza" [(ngModel)]="InputIntentoPoliza" class="form-control">
+            </div>       
+            <div class="col-sm-2 text-left">
+                <label class="text-right h5 mt-2">IdPrueba</label>
+            </div>        
+            <div class="col-sm-2">
+                <input type="number" min="1" oninput="validity.valid||(value='');" name="InputIdPrueba" [(ngModel)]="InputIdPrueba" class="form-control">
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="submit"  class="btn btn-success">Agregar</button>
+    </div>
+</form>

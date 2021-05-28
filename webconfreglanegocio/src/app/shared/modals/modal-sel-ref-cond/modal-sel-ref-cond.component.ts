@@ -1,10 +1,11 @@
 import { Component, OnInit, Input ,Output,EventEmitter} from '@angular/core';
 import { NgbModal,NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { RefCondService } from '../../../../services/ref-cond.service';
-import { ApiResult } from '../../../../models/common/apiResult';
-import { RefCond } from '../../../../models/refCond';
-import {ProcesosComponent} from '../../../../modules/procesos/pages/procesos/procesos.component'
+import { RefCondService } from '../../../services/ref-cond.service';
+import { ApiResult } from '../../../models/common/apiResult';
+import { RefCond } from '../../../models/refCond';
+import {ProcesosComponent} from '../../../modules/SERRNEG001MW/pages/procesos/procesos.component'
 import { ToastrService } from 'ngx-toastr';
+import { Paginador } from '../../../models/common/paginador';
 
 @Component({
   selector: 'app-modal-sel-ref-cond',
@@ -21,19 +22,33 @@ export class ModalSelRefCondComponent implements OnInit {
   reglasRefCond:Array<RefCond> = [];
   reglarefCondSelected:any;
   InputBuscarRefCond:string;
+  modaltitulo:string;
+  labelInputDescripcion:string;
+
+  paginador = new Paginador()
+  rpp =5;
+  paginaActual = 1;
+
+  SinBusqueda:boolean=true;
 
   @Output() evt = new EventEmitter<any>(); 
 
   ngOnInit(): void {
-    this.CargarListaRefCond();
-  //  this.tipo= this.refcondData.tipo
-
-    
+   
   }
 
-  CargarListaRefCond(){
-    this.refCondService.Cargar().subscribe((refCond:ApiResult)=>{
+  CargarListaRefCond(pagina:number){
+    if(this.InputBuscarRefCond==undefined||this.InputBuscarRefCond==null){
+      this.InputBuscarRefCond='';
+    }
+    this.refCondService.CargarXDescripcion(this.InputBuscarRefCond,this.rpp, pagina).subscribe((refCond:ApiResult)=>{
+      if(refCond.result!=null){
+      this.SinBusqueda=false;  
       this.reglasRefCond = refCond.result;
+      this.paginador.inicializar(refCond.existeOtraPagina, pagina);
+
+      }
+      else{this.reglasRefCond=[]}
 
     }, error=> {
       if(typeof error==="object"){
@@ -49,19 +64,8 @@ export class ModalSelRefCondComponent implements OnInit {
     this.modalActive.dismiss();
   }
 
-
-
-  CargarRefCondxDescripcion(descripcion:string){
-    this.refCondService.CargarXDescripcion(descripcion).subscribe((refCond:ApiResult)=>{
-      this.reglasRefCond = refCond.result;
-
-    }, error=> {
-      if(typeof error==="object"){
-        this.toastr.error("Ocurrio un error al conectarse al servidor.");
-      } else {
-        this.toastr.error(error);
-      }
-    });
+  evtPaginaSeleccionada(pagina) {
+      this.CargarListaRefCond(pagina);
   }
 
 

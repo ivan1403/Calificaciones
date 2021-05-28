@@ -5,12 +5,14 @@ import { CommonModule } from '@angular/common';
 // Home
 import { AuthComponent } from './shared/components/auth/auth.component';
 
-import { ProcesosModule } from './modules/procesos/procesos.module';
+import { ProcesosModule } from './modules/SERRNEG001MW/procesos.module';
+import { SERRNEG002MWModule } from './modules/SERRNEG002MW/serrneg002mw.module';
 
 const routes: Routes = [
   //{ path: '', redirectTo: '/home', pathMatch: 'full' },
   { path: 'auth', component: AuthComponent },
-  { path: 'procesos',  loadChildren:  () => import('./modules/procesos/procesos.module').then(m => m.ProcesosModule), data:{title: 'Procesos'}}
+  { path: 'SERRNEG001MW',  loadChildren:  () => import('./modules/SERRNEG001MW/procesos.module').then(m => m.ProcesosModule), data:{title: 'SERRNEG001MW'}},
+  { path: 'SERRNEG002MW',  loadChildren:  () => import('./modules/SERRNEG002MW/serrneg002mw.module').then(m => m.SERRNEG002MWModule), data:{title: 'SERRNEG002MW'}}
 ];
 
 @NgModule({

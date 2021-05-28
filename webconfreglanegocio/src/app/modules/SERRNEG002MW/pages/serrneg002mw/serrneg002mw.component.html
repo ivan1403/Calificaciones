@@ -1,0 +1,79 @@
+<div class="row top-title" >
+    <div class="col-xs-12">
+        <h1 class="text-white-lighter">Configuración técnica de reglas de negocio tipo ejecución de procesos</h1>
+    </div>
+</div>
+
+
+<div class="form-group row mt-4" >
+
+    <div class="col-sm text-left">
+        <label class="text-left h4 mt-2">Referencia</label>
+    </div>
+
+    <div class="col-sm-3">
+        <div class="input-group">
+            <input readonly type="text" name="InputSelReferencia" [(ngModel)]="InputSelReferencia" class="form-control">
+            <div class="input-group-append">
+                <button  class="btn btn-primary" (click)="AbrirModalRefencia()" type="button"><i class="fas fa-search fa-lg"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm text-center">
+        <label class="text-right h4 mt-2">Regla/Condición</label>
+    </div>
+
+    <div class="col-sm-3">
+        <div class="input-group">
+            <input readonly type="text" name="InputSelRegCond" [(ngModel)]="InputSelRegCond" class="form-control">
+            <div class="input-group-append">
+                <button   class="btn btn-primary" (click)="AbrirModalSelRegCond()" type="button"><i class="fas fa-search fa-lg"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm">
+        <button class="btn btn-primary pull-right ml-1"><i class="fa fa-search" aria-hidden="true"></i> Buscar</button>
+    </div>
+    <div class="col-sm">
+        <button class="btn btn-primary pull-right ml-1"><i class="fa fa-search" aria-hidden="true"></i> Limpiar Filtro</button>
+    </div>
+
+</div>
+
+<div class="row mt-4">
+    <div class="col-xs-12">
+        <table class="table table-responsive-md table-hover table-bordered table-striped">
+            <thead class="thead-dark">
+                <tr class="text-center">
+                    <th style="vertical-align: middle;">Asiento repetitivo</th>
+                    <th style="vertical-align: middle;">StoreProcedure</th>
+                    <th style="vertical-align: middle;">Opción</th>
+                    <!-- <th style="vertical-align: middle;">Fecha</th> -->
+                    <th style="vertical-align: middle;">Modificar</th>
+                    <th>Eliminar<br>configuración</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let conf of confTecnica">
+                    <td>{{conf.nombreCondicion}}</td>  
+                    <td>{{conf.storeProcedure}}</td>
+                    <td>{{conf.opcion | number:'2.0' }}</td>
+                    <!-- <td>{{conf.idConfTecnica}}</td> -->
+                    <td>
+                        <i (click)="AbrirModalAddModTec()"  class=" btn btn-success fas fa-lg fa-pencil-alt" style="cursor: pointer;"></i>
+                    </td>
+                    <td>
+                        <div class="switcher switcher-success">
+                            <input type="checkbox" id="{{conf.idConfTecnica}}" >
+                            <label for="{{conf.idConfTecnica}}"></label>
+                        </div>
+                    </td>
+                  </tr>
+                
+            </tbody>
+        </table>
+        <app-paginador  [paginador] = "paginador" (evtPaginaSeleccionada)="evtPaginaSeleccionada($event)" ></app-paginador>
+      </div>
+</div>

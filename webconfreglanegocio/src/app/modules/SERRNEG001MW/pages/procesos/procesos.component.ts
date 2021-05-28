@@ -1,6 +1,6 @@
 import { Component, OnInit,Input } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import {ModalSelRefCondComponent} from '../../modals/modal-sel-ref-cond/modal-sel-ref-cond.component';
+import {ModalSelRefCondComponent} from '../../../../shared/modals/modal-sel-ref-cond/modal-sel-ref-cond.component';
 import {ModalVerLogComponent} from '../../modals/modal-ver-log/modal-ver-log.component';
 import {ModalTareasComponent} from '../../modals/modal-tareas/modal-tareas.component';
 import { ProcesoService } from '../../../../services/proceso.service';
@@ -9,6 +9,7 @@ import { Proceso } from '../../../../models/proceso';
 import { ToastrService } from 'ngx-toastr';
 import { PaginadorComponent } from '../../../../shared/components/paginador/paginador.component';
 import { Paginador } from '../../../../models/common/paginador';
+import { ModalSelRefComponent } from '../../../SERRNEG002MW/modals/modal-sel-ref/modal-sel-ref.component';
 
 
 
@@ -49,6 +50,7 @@ procesosFiltrados:boolean;
     this.procesoService.Cargar(this.rpp, pagina).subscribe((proceso:ApiResult)=>{
       if(proceso.result!=null){
       this.procesos = proceso.result;
+      console.log(this.procesos)
       this.paginador.inicializar(proceso.existeOtraPagina, pagina);
       }
       else{this.procesos=[]}
@@ -57,7 +59,7 @@ procesosFiltrados:boolean;
     }, error=> {
    //   console.log(error);
       if(typeof error==="object"){
-        this.toastr.error("Ocurrio un error al conectarse al servidor.");
+        this.toastr.error("Ocurrió un error al conectarse al servidor.");
       } else {
         this.toastr.error(error);
       }
@@ -66,8 +68,10 @@ procesosFiltrados:boolean;
 
   abrirModalSelRefCond() {
    // this.refcondData.SelectTipo("Buscar");
-   
+ 
     const modalSelRefCondComponent = this.modalService.open(ModalSelRefCondComponent, {ariaLabelledBy: 'modal-basic-title',size: 'md' , backdrop: 'static'});
+    modalSelRefCondComponent.componentInstance.modaltitulo="Búsqueda Referencia / Condición"
+    modalSelRefCondComponent.componentInstance.labelInputDescripcion="Referencia / Condición"
     modalSelRefCondComponent.componentInstance.evt.subscribe(arg=>{
       //console.log(arg)
       this.CargarRefCondSelected(arg)
@@ -97,6 +101,7 @@ procesosFiltrados:boolean;
     const modalTareasComponent = this.modalService.open(ModalTareasComponent, {ariaLabelledBy: 'modal-basic-title', windowClass : "modalSize",  backdrop: 'static'});
      modalTareasComponent.componentInstance.inputAbrirModalSelRefCond=true;
      modalTareasComponent.componentInstance.btnAbrirModalSelRefCond=false;
+
     modalTareasComponent.result.then((result) => {
       console.log(result);
     }, (reason) => {
@@ -127,12 +132,22 @@ procesosFiltrados:boolean;
 
   }
 
-  onChangeEliminarProgramacion(e) {
+  onChangeEliminarProgramacion(e,procesoselect) {
     if(e.target.checked){
-      console.log(e.target.id+' esta prendido')
+      this.procesoService.EstatusProgramacion(procesoselect).then((response: ApiResult)=>{
+        this.toastr.success("Se activó la programación de "+procesoselect.comentario+'de condición '+procesoselect.descripcionCondicion+'.');
+        }, error=> {
+          console.log(error);
+          this.toastr.error("Ocurrió un error al agregar la tarea.");
+      });
     }
-    else{
-      console.log(e.target.id+' esta apagado')
+    else{   
+      this.procesoService.EstatusProgramacion(procesoselect).then((response: ApiResult)=>{
+        this.toastr.success("Se desactivó la programación de "+procesoselect.comentario+'de condición '+procesoselect.descripcionCondicion+'.');
+        }, error=> {
+          console.log(error);
+          this.toastr.error("Ocurrió un error al agregar la tarea.");
+      });
     }    
   }
 
