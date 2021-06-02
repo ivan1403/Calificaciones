@@ -11,6 +11,8 @@ export class RefCondService {
 
   constructor(private httpClient:HttpClient) { }
   url = `${environment.urlApiConfReglasNegocio}reglasrefcond/`;
+  urlRef = `${environment.urlApiConfReglasNegocio}condicion/`;
+
   Cargar(rpp:number, pagina:number):Observable<ApiResult>
   {
     return this.httpClient.get<ApiResult>(`${this.url}cargar?rpp=${rpp}&pagina=${pagina}`);
@@ -22,6 +24,10 @@ export class RefCondService {
 
   CargarRefCondxId(id:number){
     return this.httpClient.get<ApiResult>(this.url+'cargarXId?Id=' + id);
+  }
+  
+  CargarRedXCond(descripcion:string,rpp:number, pagina:number){
+    return this.httpClient.get<ApiResult>(`${this.urlRef}CargarPorReferencia?ReferenciaCondicion=${descripcion}&rpp=${rpp}&pagina=${pagina}`);
   }
 
 

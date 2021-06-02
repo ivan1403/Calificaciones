@@ -37,7 +37,7 @@
         <button class="btn btn-primary pull-right ml-1"><i class="fa fa-search" aria-hidden="true"></i> Buscar</button>
     </div>
     <div class="col-sm">
-        <button class="btn btn-primary pull-right ml-1"><i class="fa fa-search" aria-hidden="true"></i> Limpiar Filtro</button>
+        <button class="btn btn-primary pull-right ml-1"> Limpiar Filtro</button>
     </div>
 
 </div>
@@ -47,12 +47,12 @@
         <table class="table table-responsive-md table-hover table-bordered table-striped">
             <thead class="thead-dark">
                 <tr class="text-center">
-                    <th style="vertical-align: middle;">Asiento repetitivo</th>
+                    <th style="vertical-align: middle;">Condición</th>
                     <th style="vertical-align: middle;">StoreProcedure</th>
                     <th style="vertical-align: middle;">Opción</th>
                     <!-- <th style="vertical-align: middle;">Fecha</th> -->
                     <th style="vertical-align: middle;">Modificar</th>
-                    <th>Eliminar<br>configuración</th>
+                    <th>Configuración<br>activa</th>
                 </tr>
             </thead>
             <tbody>
@@ -62,11 +62,11 @@
                     <td>{{conf.opcion | number:'2.0' }}</td>
                     <!-- <td>{{conf.idConfTecnica}}</td> -->
                     <td>
-                        <i (click)="AbrirModalAddModTec()"  class=" btn btn-success fas fa-lg fa-pencil-alt" style="cursor: pointer;"></i>
+                        <i (click)="AbrirModalAddModTec(conf)"  class=" btn btn-success fas fa-lg fa-pencil-alt" style="cursor: pointer;"></i>
                     </td>
                     <td>
                         <div class="switcher switcher-success">
-                            <input type="checkbox" id="{{conf.idConfTecnica}}" >
+                            <input type="checkbox" [checked]="!conf.estatus" (change)="onChangeConfiguracionActiva($event,conf)" id="{{conf.idConfTecnica}}" >
                             <label for="{{conf.idConfTecnica}}"></label>
                         </div>
                     </td>

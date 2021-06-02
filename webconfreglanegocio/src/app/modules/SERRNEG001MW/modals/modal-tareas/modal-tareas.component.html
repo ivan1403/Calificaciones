@@ -157,6 +157,9 @@
         <div *ngIf="ComentariosRequerido" class="col-sm-12 alert alert-danger">
             Comentario es requerida.
         </div>
+        <div *ngIf="ComentariosSobrepasa" class="col-sm-12 alert alert-danger">
+            Comentario sobrepasa el limite por {{comentarioLimite}} caracteres.
+        </div>
     </div>
     <div class="modal-footer">
         <button type="submit" (click)="AgregarNuevoProceso()" class="btn btn-primary">Guardar</button>

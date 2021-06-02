@@ -138,7 +138,7 @@ procesosFiltrados:boolean;
         this.toastr.success("Se activó la programación de "+procesoselect.comentario+'de condición '+procesoselect.descripcionCondicion+'.');
         }, error=> {
           console.log(error);
-          this.toastr.error("Ocurrió un error al agregar la tarea.");
+          this.toastr.error("Ocurrió un error al activar la tarea.");
       });
     }
     else{   
@@ -146,7 +146,7 @@ procesosFiltrados:boolean;
         this.toastr.success("Se desactivó la programación de "+procesoselect.comentario+'de condición '+procesoselect.descripcionCondicion+'.');
         }, error=> {
           console.log(error);
-          this.toastr.error("Ocurrió un error al agregar la tarea.");
+          this.toastr.error("Ocurrió un error al desactivar la tarea.");
       });
     }    
   }

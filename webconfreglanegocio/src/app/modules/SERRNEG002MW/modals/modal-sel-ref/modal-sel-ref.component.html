@@ -15,9 +15,9 @@
             <div class="col-12 mt-2">
                 <label class="h5 mt-2">Descripción</label>
                 <div class="input-group">
-                    <input type="text" name="InputBuscarRefCond" [(ngModel)]="InputBuscarRefCond" class="form-control" placeholder="Descripción" >
+                    <input type="text" name="InputBuscarRef" [(ngModel)]="InputBuscarRef" class="form-control" placeholder="Descripción" >
                     <div class="input-group-append">
-                        <button class="btn btn-primary"   type="submit"><i class="fa fa-search" aria-hidden="true"></i></button>
+                        <button class="btn btn-primary"  (click)="CargarListaRef(1)" type="submit"><i class="fa fa-search" aria-hidden="true"></i></button>
                     </div>
                 </div>
             </div>
@@ -31,13 +31,22 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>                        
-                        <td>Asientos repetitivos 1</td>  
-                        <td class="text-center"><button class="btn btn-primary"  type="button"><i class="fa fa-share"></i></button></td>
+                    <tr *ngIf="(!reglasRef || reglasRef?.length==0) && !SinBusqueda ">
+                        <td colspan="9">No hay registros con la descripción ingresada</td>
+                    </tr>
+                    <tr *ngIf="SinBusqueda">
+                        <td colspan="9">Realice una búsqueda para cargar datos</td>
+                    </tr>
+                    <tr *ngFor="let regla of reglasRef">
+                        <!-- <td>Rep. refacciones</td>
+                        <td>Generacion de poliza repetitivo de refacciones</td> -->
+                        <td>{{regla.referencia}}</td>
+                        <td class="text-center"><button class="btn btn-success"  (click)="onSelectRefCond(regla)"  type="button"><i class="fa fa-share"></i></button></td>
                     </tr>
 
                     </tbody>
                 </table>
+                <app-paginador  [paginador] = "paginador" (evtPaginaSeleccionada)="evtPaginaSeleccionada($event)" ></app-paginador>
             </div>
         </div>
     </div>

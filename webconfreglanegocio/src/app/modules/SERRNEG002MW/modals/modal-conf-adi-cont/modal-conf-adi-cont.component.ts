@@ -10,6 +10,12 @@ export class ModalConfAdiContComponent implements OnInit {
 
   constructor(private modalService: NgbModal, public modalActive: NgbActiveModal) { }
 
+  InputStoredProcedure:string;
+  InputOpcion:number;
+  InputIdPlantilla:number;
+  InputIntentoPoliza:number;
+  InputIdPrueba:number;
+
   ngOnInit(): void {
   }
 
