@@ -42,4 +42,8 @@ export class ProcesoService {
     return this.httpClient.post<ApiResult>(this.url+'modificarproceso',proceso).toPromise();
   }
 
+  EstatusProgramacion(id:number){
+    return this.httpClient.post<ApiResult>(this.url+'estatusprogramacion',id).toPromise();
+  }
+
 }

@@ -1,7 +1,7 @@
 import { Component, Injectable, OnInit } from '@angular/core';
 import { NgbModal,NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { FormBuilder, FormGroup, FormArray, FormControl, Validators ,ReactiveFormsModule, NumberValueAccessor} from '@angular/forms';
-import {ModalSelRefCondComponent} from '../../modals/modal-sel-ref-cond/modal-sel-ref-cond.component';
+import {ModalSelRefCondComponent} from '../../../../shared/modals/modal-sel-ref-cond/modal-sel-ref-cond.component';
 import { DatePipe } from '@angular/common';
 import {NgbCalendar, NgbDateAdapter, NgbDateParserFormatter, NgbDateStruct} from '@ng-bootstrap/ng-bootstrap';
 import { templateJitUrl } from '@angular/compiler';
@@ -9,7 +9,7 @@ import { ProcesoService } from '../../../../services/proceso.service';
 import {Proceso} from '../../../../models/proceso'
 import {ProcesoSemanal} from '../../../../models/procesoSemanal'
 import { ApiResult } from '../../../../models/common/apiResult';
-import {ProcesosComponent} from '../../../procesos/pages/procesos/procesos.component'
+import {ProcesosComponent} from '../../pages/procesos/procesos.component'
 import { RefCondService } from '../../../../services/ref-cond.service';
 import { ToastrService } from 'ngx-toastr';
 import { EMPTY } from 'rxjs';
@@ -57,7 +57,7 @@ export class ModalTareasComponent implements OnInit {
   DiasSemana: Array<any> = [
     { name: 'Lunes', value: 'Lunes',checked:false },
     { name: 'Martes', value: 'Martes' ,checked:false },
-    { name: 'Miercoles', value: 'Miercoles' ,checked:false },
+    { name: 'Miércoles', value: 'Miércoles' ,checked:false },
     { name: 'Jueves', value: 'Jueves' ,checked:false },
     { name: 'Viernes', value: 'Viernes',checked:false  },
     { name: 'Sábado', value: 'Sábado',checked:false  },
@@ -99,7 +99,16 @@ export class ModalTareasComponent implements OnInit {
   
   FormValido=false;
 
-
+  ReferenciaRequerido:boolean=false;
+  FrecuenciaRequerido:boolean=false;
+  FechaInicioRequerido:boolean=false;
+  HoraInicioRequerido:boolean=false;
+  HoraFinRequerido:boolean=false;
+  RepetirHoraRequerido:boolean=false;
+  RepetirDiaRequerido:boolean=false;
+  RepetirMesRequerido:boolean=false;
+  RepetirSemanaRequedio:boolean=false;
+  ComentariosRequerido:boolean=false;
 
   ngOnInit(): void {
    this.reglarefCondSelected=null;  
@@ -108,7 +117,9 @@ export class ModalTareasComponent implements OnInit {
   abrirModalSelRefCond() {
    // this.refcondData.SelectTipo("Nueva");
     const modalSelRefCondComponent = this.modalService.open(ModalSelRefCondComponent, {ariaLabelledBy: 'modal-basic-title',size: 'md' , backdrop: 'static'});
-        modalSelRefCondComponent.componentInstance.evt.subscribe(arg=>{
+    modalSelRefCondComponent.componentInstance.modaltitulo="Búsqueda Referencia / Condición";
+    modalSelRefCondComponent.componentInstance.labelInputDescripcion="Referencia / Condición";
+    modalSelRefCondComponent.componentInstance.evt.subscribe(arg=>{
      // console.log(arg)
       this.CargarRefCondSelected(arg)
     })
@@ -154,6 +165,14 @@ export class ModalTareasComponent implements OnInit {
   }  
 
   onChangeFrecuenciaSelect(e){
+    this.FrecuenciaRequerido=false;
+    this.FechaInicioRequerido=false;
+    this.HoraInicioRequerido=false;
+    this.HoraFinRequerido=false;
+    this.RepetirHoraRequerido=false;
+    this.RepetirDiaRequerido=false;
+    this.RepetirMesRequerido=false;
+    this.RepetirSemanaRequedio=false;
     if(e.target)
     {this.FrecuenciaSelected=e.target.value;}
     else{this.FrecuenciaSelected=e
@@ -361,11 +380,11 @@ export class ModalTareasComponent implements OnInit {
 
       this.procesoService.agregarproceso(this.procesoNuevo).then((response: ApiResult)=>{
         this.LimpiarForm()
+        this.toastr.success("Se agregó tarea exitosamente.");
 
-        this.toastr.success("Se agrego tarea exitosamente.");
         }, error=> {
           console.log(error);
-          this.toastr.error("Ocurrio un error al agregar la tarea.");
+          this.toastr.error("Ocurrió un error al agregar la tarea.");
       });
     }
     else{
@@ -387,10 +406,10 @@ export class ModalTareasComponent implements OnInit {
 
         this.LimpiarForm()
         this.modalActive.dismiss()
-        this.toastr.success("Se actualizo tarea exitosamente.");
+        this.toastr.success("Se actualizó tarea exitosamente.");
         }, error=> {
           console.log(error);
-          this.toastr.error("Ocurrio un error al actualizar la tarea.");
+          this.toastr.error("Ocurrió un error al actualizar la tarea.");
         });
 
       }
@@ -402,27 +421,45 @@ export class ModalTareasComponent implements OnInit {
   }
 
   ValidarForm(){
+
     this.FormValido=true;
+    this.ReferenciaRequerido=false;
+    this.FrecuenciaRequerido=false;
+    this.FechaInicioRequerido=false;
+    this.HoraInicioRequerido=false;
+    this.HoraFinRequerido=false;
+    this.RepetirHoraRequerido=false;
+    this.RepetirDiaRequerido=false;
+    this.RepetirMesRequerido=false;
+    this.RepetirSemanaRequedio=false;
+    this.ComentariosRequerido=false;
 
     if(this.reglarefCondSelectedLocal== undefined){
+        this.ReferenciaRequerido=true;
          this.FormValido=false;
     }
     if(this.InputselRefCond== undefined){
-        this.FormValido=false;      
+        this.FormValido=false;     
+        this.ReferenciaRequerido=true;
     }
     if(this.FrecuenciaSelected==undefined){
       this.FormValido=false;
+      this.FrecuenciaRequerido=true;
     }
-    if(this.FrecuenciaSelected!='Manual'){
+    if(this.FrecuenciaSelected!='Manual' && this.FrecuenciaSelected!=undefined){
+     
       if(this.FechaInicio=='' || this.FechaInicio==undefined){ 
         this.FormValido=false;
+        this.FechaInicioRequerido=true;
       }
       if(this.HoraInicio=='' || this.HoraInicio==undefined){ 
         this.FormValido=false;
+        this.HoraInicioRequerido=true;
       }
       if(this.checkboxHoraFin==true){ 
         if(this.HoraFin=='' || this.HoraFin==undefined){ 
           this.FormValido=false;
+          this.HoraFinRequerido=true;
         }
       }
     }
@@ -430,29 +467,34 @@ export class ModalTareasComponent implements OnInit {
       if(this.RepetirDia==undefined || this.RepetirDia=='' )
       {
         this.FormValido=false;
+        this.RepetirDiaRequerido=true;
       }
     }
     if(this.FrecuenciaSelected=='Semanal'){
       if(this.RepetirDiasSemana==undefined || this.RepetirDiasSemana=='' )
       {
         this.FormValido=false;
+        this.RepetirSemanaRequedio=true;
       }
     }
     if(this.FrecuenciaSelected=='Mensual'){
       if(this.RepetirMes==undefined || this.RepetirMes=='' )
       {
         this.FormValido=false;
+        this.RepetirMesRequerido=true;
       }
     }
     if(this.FrecuenciaSelected=='Hora'){
       if(this.RepetirHora==undefined || this.RepetirHora=='' )
       {
         this.FormValido=false;
+        this.RepetirHoraRequerido=true;
       }
     }
- 
-    if(this.Comentarios==null || this.Comentarios==undefined || this.Comentarios.trim()==''){
+
+    if(this.Comentarios==null || this.Comentarios==undefined || this.Comentarios.trim()==''|| this.Comentarios.length>1000 ){
       this.FormValido=false;
+      this.ComentariosRequerido=true;
     }
  
   }
@@ -460,15 +502,13 @@ export class ModalTareasComponent implements OnInit {
   ModificarDatos(procesoAbuscar:any){
 
     this.Modificando=true;
+
     this.procesoService.CargarDatosEditar(procesoAbuscar.idTarea).then((response: ApiResult)=>{
     if(response.objModResultado.error){
       this.toastr.error(response.objModResultado.mensajeError,'Error al cargar datos');
     }else{
       this.procesoEditar=response.result[0];
-
-      this.CargarRefCondxId(this.procesoEditar.idCondicion)
-      
-      
+      this.CargarRefCondxId(this.procesoEditar.idCondicion)           
      // this.InputselRefCond=this.reglarefCondSelectedLocal.nombreCondicion;
       this.Comentarios=this.procesoEditar.comentario;
       this.SelectFrecuencia=this.procesoEditar.frecuencia
@@ -544,12 +584,16 @@ export class ModalTareasComponent implements OnInit {
   }
 
   CargarRefCondxId(id:number){
-    this.refCondService.CargarRefCondxId(id).subscribe((refCond:ApiResult)=>{
+       this.refCondService.CargarRefCondxId(id).subscribe((refCond:ApiResult)=>{
+      if(refCond.result!=null){
       this.reglarefCondSelectedLocal = refCond.result[0];
       this.InputselRefCond=this.reglarefCondSelectedLocal.nombreCondicion+ ' / ' +this.reglarefCondSelectedLocal.referenciaCondicion
+      }
+      else{this.reglarefCondSelectedLocal=[]}
+      
     }, error=> {
       if(typeof error==="object"){
-        this.toastr.error("Ocurrio un error al conectarse al servidor.");
+        this.toastr.error("Ocurrió un error al conectarse al servidor.");
       } else {
         this.toastr.error(error);
       }

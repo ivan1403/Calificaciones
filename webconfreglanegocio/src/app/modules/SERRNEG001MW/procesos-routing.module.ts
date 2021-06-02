@@ -4,7 +4,7 @@ import { ProcesosComponent } from './pages/procesos/procesos.component';
 
 
 const routes: Routes = [
-  { path: '',component:ProcesosComponent,data:{title:'Procesos'}},
+  { path: '',component:ProcesosComponent,data:{title:'SERRNEG001MW'}},
 ];
 
 @NgModule({
