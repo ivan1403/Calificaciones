@@ -109,6 +109,8 @@ export class ModalTareasComponent implements OnInit {
   RepetirMesRequerido:boolean=false;
   RepetirSemanaRequedio:boolean=false;
   ComentariosRequerido:boolean=false;
+  ComentariosSobrepasa:boolean=false;
+  comentarioLimite:number
 
   ngOnInit(): void {
    this.reglarefCondSelected=null;  
@@ -433,6 +435,7 @@ export class ModalTareasComponent implements OnInit {
     this.RepetirMesRequerido=false;
     this.RepetirSemanaRequedio=false;
     this.ComentariosRequerido=false;
+    this.ComentariosSobrepasa=false;
 
     if(this.reglarefCondSelectedLocal== undefined){
         this.ReferenciaRequerido=true;
@@ -492,10 +495,19 @@ export class ModalTareasComponent implements OnInit {
       }
     }
 
-    if(this.Comentarios==null || this.Comentarios==undefined || this.Comentarios.trim()==''|| this.Comentarios.length>1000 ){
+    if(this.Comentarios==null || this.Comentarios==undefined || this.Comentarios.trim()==''){
       this.FormValido=false;
       this.ComentariosRequerido=true;
     }
+    if(this.Comentarios!=undefined){
+      if(this.Comentarios.length>1000 )
+      {
+        this.FormValido=false;
+        this.ComentariosSobrepasa=true;
+        this.comentarioLimite=this.Comentarios.length-1000
+      }
+    }
+
  
   }
 

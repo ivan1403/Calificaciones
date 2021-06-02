@@ -7,6 +7,7 @@ import { Paginador } from '../../../../models/common/paginador';
 import { ConftecnicaService } from '../../../../services/conftecnica.service';
 import { ApiResult } from '../../../../models/common/apiResult';
 import { ToastrService } from 'ngx-toastr';
+import {ConfTecnica} from '../../../../models/confTecnica'
 
 @Component({
   selector: 'app-serrneg002mw',
@@ -22,8 +23,10 @@ export class Serrneg002mwComponent implements OnInit {
   rpp = 10;
   paginaActual = 1;
 
-  confTecnica:Array<any> = [];
+  confTecnica:Array<ConfTecnica> = [];
 
+  InputSelReferencia:string;
+  InputSelRegCond:string;
 
   ngOnInit(): void {
    this.CargarConfTecnica(1);
@@ -50,7 +53,7 @@ export class Serrneg002mwComponent implements OnInit {
      });
    }
 
-   AbrirModalAddModTec() {
+   AbrirModalAddModTec(confTecnica) {
     const modalAddModTecComponent = this.modalService.open(ModalAddModTecComponent, {ariaLabelledBy: 'modal-basic-title',size: 'lg' , backdrop: 'static'});
 
     modalAddModTecComponent.result.then((result) => {
@@ -58,14 +61,16 @@ export class Serrneg002mwComponent implements OnInit {
     }, (reason) => {     
 
     });
+    const ConfTecClone = JSON.parse(JSON.stringify(confTecnica));
+    modalAddModTecComponent.componentInstance.CargarConfTecModificar(ConfTecClone);
   }
 
-  CargarConfTecnica(pagina:number){
+    CargarConfTecnica(pagina:number){
     this.confTecnicaService.Cargar(this.rpp, pagina).subscribe((confTecnica:ApiResult)=>{
       if(confTecnica.result!=null){
       this.confTecnica = confTecnica.result;
       this.paginador.inicializar(confTecnica.existeOtraPagina, pagina);
-      console.log( this.confTecnica)
+      
       }
       else{this.confTecnica=[]}
      // console.log(this.procesos);
@@ -78,6 +83,29 @@ export class Serrneg002mwComponent implements OnInit {
         this.toastr.error(error);
       }
     }); 
+  }
+
+  onChangeConfiguracionActiva(e,confTecnica){
+    if(e.target.checked){
+      confTecnica.estatus=false
+//console.log(confTecnica)
+      this.confTecnicaService.Modifica(confTecnica).then((response: ApiResult)=>{
+        this.toastr.success("Se activó la configuración de "+confTecnica.comentario+'de condición '+confTecnica.descripcionCondicion+'.');
+        }, error=> {
+          console.log(error);
+          this.toastr.error("Ocurrió un error al activar la tarea.");
+      });
+    }
+    else{   
+      confTecnica.estatus=true
+  //    console.log(confTecnica)
+      this.confTecnicaService.Modifica(confTecnica).then((response: ApiResult)=>{
+        this.toastr.success("Se desactivó la configuración de "+confTecnica.comentario+'de condición '+confTecnica.descripcionCondicion+'.');
+        }, error=> {
+          console.log(error);
+          this.toastr.error("Ocurrió un error al desactivar la tarea.");
+      });
+    }   
   }
 
   

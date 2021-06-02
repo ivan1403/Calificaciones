@@ -21,7 +21,18 @@
                 <input type="number" min="1" oninput="validity.valid||(value='');" name="InputOpcion" [(ngModel)]="InputOpcion" class="form-control">
             </div>
         </div>
-            <label class="text-left h6">SP que se considerara para la ejecucion automatica de procesos</label>
+        <div class="form-group row mt-3" >            
+            <div *ngIf="StoredProcedureRequerido" class="col-sm-6 alert alert-danger">
+                Stored Procedure es requerido.
+            </div>
+            <div *ngIf="OpcionRequerido && !StoredProcedureRequerido" class="col-sm-6">
+            </div>
+            <div *ngIf="OpcionRequerido" class="col-sm-6 alert alert-danger float-right">
+                Opción es requerido
+            </div>
+        </div>
+        
+        <label class="text-left h6">SP que se considerara para la ejecucion automatica de procesos</label>
         <div class="form-group row mt-4" >            
             <div class="col-sm-2 text-left">
                 <label class="text-right h5 ">Comentarios</label>
@@ -31,9 +42,15 @@
                 <input type="text" name="InputComentario" [(ngModel)]="InputComentario" class="form-control">
             </div>              
         </div>
+        <div *ngIf="ComentarioRequerido" class="col-sm-12 alert alert-danger">
+            Comentario es requerido
+        </div>
+        <div *ngIf="ComentariosSobrepasa" class="col-sm-12 alert alert-danger">
+            Comentario sobrepasa el limite por {{comentarioLimite}} caracteres.
+        </div>
     </div>
     <div class="modal-footer">
         <button type="submit" (click)="AbrirModalConfAdiCont()" class="btn btn-primary">Configuración para repetitivos contables</button>
-        <button type="submit"  class="btn btn-success">Guardar</button>
+        <button type="submit" (click)="ConfTecnicaGuardar()"  class="btn btn-success">Guardar</button>
     </div>
 </form>

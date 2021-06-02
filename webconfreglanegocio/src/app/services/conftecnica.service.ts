@@ -18,5 +18,18 @@ export class ConftecnicaService {
   {
     return this.httpClient.get<ApiResult>(`${this.url}cargar?rpp=${rpp}&pagina=${pagina}`);
   }
+
+  CargarConfTecnica(Id:number):Observable<ApiResult>
+  {
+    return this.httpClient.get<ApiResult>(this.url+'cargarconftecnica?IdConfTecnica=' + Id);
+  }
+
+  Modifica(confTecnica){
+    return this.httpClient.post<ApiResult>(this.url+'modifica',confTecnica).toPromise();
+  }
   
+  Guardar(ConfTecnica){
+    return this.httpClient.post<ApiResult>(this.url+'guardar',ConfTecnica).toPromise();
+  }
+
 }
