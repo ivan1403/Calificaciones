@@ -13,7 +13,7 @@
                 <label class="text-left h5 ">Store Procedure</label>
             </div>        
             <div class="col-sm-3">
-                <input type="text" name="InputStoredProcedure" [(ngModel)]="InputStoredProcedure" class="form-control">
+                <input type="text" name="InputStoreProcedure" [(ngModel)]="InputStoreProcedure" class="form-control">
             </div>        
             <div class="col-sm text-left">
                 <label class="text-right h5 mt-2">Opción</label>
@@ -32,6 +32,26 @@
             </div>
            
         </div>
+        <div class="row" >    
+            <div *ngIf="StoreProcedureRequerido" class="col-sm-5 alert alert-danger">
+                Store Procedure es requerido.
+            </div>
+            <div *ngIf="StoreProcedureSobrepasa" class="col-sm-5 alert alert-danger">
+                Store Procedure sobrepasa el limite de caracteres.
+            </div>
+            <div *ngIf="OpcionRequerido && !StoreProcedureRequerido && !StoreProcedureSobrepasa" class="col-sm-5">
+            </div>
+            <div *ngIf="OpcionRequerido" class="col-sm-3 alert alert-danger">
+                Opción es requerida.
+            </div>
+            <div *ngIf="IdPlantillaRequerido && !OpcionRequerido" class="col-sm-3">
+            </div>
+            <div *ngIf="IdPlantillaRequerido && !StoreProcedureRequerido && !StoreProcedureSobrepasa" class="col-sm-5">
+            </div>
+            <div *ngIf="IdPlantillaRequerido" class="col-sm alert alert-danger float-right">
+                IdPlantilla es requerido.
+            </div>
+        </div>  
             
         <div class="form-group text-left row" >            
             <div class="col-sm-3 text-left">
@@ -47,8 +67,18 @@
                 <input type="number" min="1" oninput="validity.valid||(value='');" name="InputIdPrueba" [(ngModel)]="InputIdPrueba" class="form-control">
             </div>
         </div>
+        <div class="row" >       
+            <div *ngIf="IntentoPolizaRequerido" class="col-sm alert alert-danger">
+                Número de intentos para generar póliza es requerido.
+            </div>
+            <div *ngIf="IdPrueba && !IntentoPolizaRequerido" class="col-sm">
+            </div>
+            <div *ngIf="IdPrueba" class="col-sm alert alert-danger">
+                IdPrueba es requerido.
+            </div>
+        </div>
     </div>
     <div class="modal-footer">
-        <button type="submit"  class="btn btn-success">Agregar</button>
+        <button type="submit" (click)="GuardarConfTecRepetitivo()" class="btn btn-success">Guardar</button>
     </div>
 </form>

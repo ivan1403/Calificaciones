@@ -135,7 +135,7 @@ procesosFiltrados:boolean;
   onChangeEliminarProgramacion(e,procesoselect) {
     if(e.target.checked){
       this.procesoService.EstatusProgramacion(procesoselect).then((response: ApiResult)=>{
-        this.toastr.success("Se activó la programación de "+procesoselect.comentario+'de condición '+procesoselect.descripcionCondicion+'.');
+        this.toastr.success("Se activó la programación de "+procesoselect.comentario+' de condición '+procesoselect.descripcionCondicion+'.');
         }, error=> {
           console.log(error);
           this.toastr.error("Ocurrió un error al activar la tarea.");
@@ -143,7 +143,7 @@ procesosFiltrados:boolean;
     }
     else{   
       this.procesoService.EstatusProgramacion(procesoselect).then((response: ApiResult)=>{
-        this.toastr.success("Se desactivó la programación de "+procesoselect.comentario+'de condición '+procesoselect.descripcionCondicion+'.');
+        this.toastr.success("Se desactivó la programación de "+procesoselect.comentario+' de condición '+procesoselect.descripcionCondicion+'.');
         }, error=> {
           console.log(error);
           this.toastr.error("Ocurrió un error al desactivar la tarea.");

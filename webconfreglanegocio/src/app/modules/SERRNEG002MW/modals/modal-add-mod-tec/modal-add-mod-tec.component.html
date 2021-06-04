@@ -50,7 +50,7 @@
         </div>
     </div>
     <div class="modal-footer">
-        <button type="submit" (click)="AbrirModalConfAdiCont()" class="btn btn-primary">Configuración para repetitivos contables</button>
+        <button type="submit" [disabled]="!registroAgregado" (click)="AbrirModalConfAdiCont()" class="btn btn-primary">Configuración para repetitivos contables</button>
         <button type="submit" (click)="ConfTecnicaGuardar()"  class="btn btn-success">Guardar</button>
     </div>
 </form>
