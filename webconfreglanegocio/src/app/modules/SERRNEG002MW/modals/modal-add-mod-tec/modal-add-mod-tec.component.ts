@@ -31,6 +31,10 @@ export class ModalAddModTecComponent implements OnInit {
     ComentariosSobrepasa:boolean=false;
     comentarioLimite:number
 
+    btnGuardar:boolean=false;
+
+   // estatusConfTecnica:boolean;
+
     FormValido=true;
 
     registroAgregado=false;
@@ -40,18 +44,19 @@ export class ModalAddModTecComponent implements OnInit {
 
   AbrirModalConfAdiCont(){
  
-    const modalConfAdiCont = this.modalService.open(ModalConfAdiContComponent, {ariaLabelledBy: 'modal-basic-title',size: 'lg' , backdrop: 'static'});
+    const modalConfAdiCont = this.modalService.open(ModalConfAdiContComponent, {ariaLabelledBy: 'modal-basic-title',windowClass : "modalSize" , backdrop: 'static'});
     modalConfAdiCont.result.then((result) => {
       console.log(result);
     }, (reason) => {
     });    
     const ConfTecClone = JSON.parse(JSON.stringify(this.confTecnica));
     modalConfAdiCont.componentInstance.CargarConfRepetitivo(ConfTecClone);
+  
   }
 
   CargarConfTecModificar(confTecnicaMod){
     this.confTecnicaService.CargarConfTecnica(confTecnicaMod.idConfTecnica).subscribe((confTecnica:ApiResult)=>{
-   //   console.log( confTecnica.result);      
+    console.log( confTecnica.result);      
       if(confTecnica.result!=null){
       this.RegistroNuevo=false;
       this.confTecnica = confTecnica.result;    
@@ -59,11 +64,13 @@ export class ModalAddModTecComponent implements OnInit {
       this.InputComentario=this.confTecnica.comentario;
       this.InputStoredProcedure=this.confTecnica.storeProcedure;
       this.registroAgregado=true;
+     // this.estatusConfTecnica=false;
       }
       if(confTecnica.result==null){
         this.RegistroNuevo=true;
         this.registroAgregado=false;
         this.confTecnica = confTecnicaMod;
+        //this.estatusConfTecnica=true;
       }
     }, error=> {
      console.log(error);
@@ -110,6 +117,7 @@ export class ModalAddModTecComponent implements OnInit {
      // console.log(this.RegistroNuevo)
       this.ValidarForm()
       if(this.FormValido){
+        this.btnGuardar=true;
         this.confTecnica.comentario=this.InputComentario;
         this.confTecnica.opcion=this.InputOpcion;
         this.confTecnica.storeProcedure=this.InputStoredProcedure;
@@ -120,10 +128,13 @@ export class ModalAddModTecComponent implements OnInit {
 
             this.RegistroNuevo=false;
             this.registroAgregado=true;
+         //   this.estatusConfTecnica=false;
             this.toastr.success("Se agregó la configuración técnica exitosamente.");
+            this.btnGuardar=false;
             }, error=> {
               console.log(error);
               this.toastr.error("Ocurrió un error al modificar la configuración técnica.");
+              this.btnGuardar=false;
             });
         }
         if(!this.RegistroNuevo){

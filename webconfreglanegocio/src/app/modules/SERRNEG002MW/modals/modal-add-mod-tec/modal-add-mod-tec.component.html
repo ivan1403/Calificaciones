@@ -11,13 +11,13 @@
             <div class="col-sm text-left">
                 <label class="text-left h5 ">Store Procedure</label>
             </div>        
-            <div class="col-sm-4">
+            <div class="col-sm">
                 <input type="text" name="InputStoredProcedure" [(ngModel)]="InputStoredProcedure" class="form-control">
             </div>        
-            <div class="col-sm text-left">
+            <div class="col-sm-1 text-left">
                 <label class="text-right h5 mt-2">Opción</label>
             </div>        
-            <div class="col-sm-4">
+            <div class="col-sm">
                 <input type="number" min="1" oninput="validity.valid||(value='');" name="InputOpcion" [(ngModel)]="InputOpcion" class="form-control">
             </div>
         </div>
@@ -51,6 +51,6 @@
     </div>
     <div class="modal-footer">
         <button type="submit" [disabled]="!registroAgregado" (click)="AbrirModalConfAdiCont()" class="btn btn-primary">Configuración para repetitivos contables</button>
-        <button type="submit" (click)="ConfTecnicaGuardar()"  class="btn btn-success">Guardar</button>
+        <button type="submit" [disabled]="" (click)="ConfTecnicaGuardar()"  class="btn btn-success">Guardar</button>
     </div>
 </form>

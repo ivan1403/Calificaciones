@@ -18,6 +18,7 @@ import { RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbModal, NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { PaginadorComponent } from './components/paginador/paginador.component';
+import { ModalVerLogComponent } from './modals/modal-ver-log/modal-ver-log.component';
 
 
 @NgModule({
@@ -30,6 +31,7 @@ import { PaginadorComponent } from './components/paginador/paginador.component';
     PanelComponent,
     FloatSubMenuComponent,
     PaginadorComponent,
+    ModalVerLogComponent,
   ],
   imports: [
     CommonModule,

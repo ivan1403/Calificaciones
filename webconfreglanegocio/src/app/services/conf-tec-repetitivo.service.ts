@@ -12,6 +12,7 @@ export class ConfTecRepetitivoService {
   constructor(private httpClient:HttpClient) { }
 
   url = `${environment.urlApiConfReglasNegocio}conftecnicarepetitivo/`;
+  urlValidacion=`${environment.urlApiConfReglasNegocio}conftecnicavalidacion/`;
 
   Cargar(Id:number):Observable<ApiResult>
   {
@@ -24,5 +25,10 @@ export class ConfTecRepetitivoService {
   Modificar(ConfTecnica){
     return this.httpClient.post<ApiResult>(this.url+'modifica',ConfTecnica).toPromise();
   }
+
+  CargarValidacion(IdConfTecnica:number,IdDoctoOrigen:number){
+    return this.httpClient.get<ApiResult>(`${this.urlValidacion}validar?IdConfTecnica=${IdConfTecnica}&IdDoctoOrigen=${IdDoctoOrigen}`);
+  }
+
 
 }

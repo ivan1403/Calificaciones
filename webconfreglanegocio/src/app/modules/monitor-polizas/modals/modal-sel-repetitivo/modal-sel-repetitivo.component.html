@@ -1,0 +1,40 @@
+<div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Busqueda asiento repetitivo</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modalActive.dismiss()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<form>
+
+    <div class="modal-body">
+
+        <div class="row">
+
+            <div class="col-12 mt-2">
+                <label class="h5 mt-2">Descripción</label>
+                <div class="input-group">
+                    <input type="text" name="InputBuscarRepetitivo" [(ngModel)]="InputBuscarRepetitivo" class="form-control" placeholder="Descripción" >
+                    <div class="input-group-append">
+                        <button class="btn btn-primary"   type="submit"><i class="fa fa-search" aria-hidden="true"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 mt-4">
+                <table class="table table-hover table-striped">
+                    <thead class="thead-dark">
+                        <tr class="text-center">
+                            <th>Repetitivo</th>
+                            <th>Seleccionar</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    
+
+                    </tbody>
+                </table>
+                
+            </div>
+        </div>
+    </div>
+</form>

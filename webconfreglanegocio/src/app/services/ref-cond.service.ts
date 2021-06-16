@@ -25,6 +25,10 @@ export class RefCondService {
   CargarRefCondxId(id:number){
     return this.httpClient.get<ApiResult>(this.url+'cargarXId?Id=' + id);
   }
+
+  CargarXFiltro(descripcion:string,rpp:number, pagina:number){
+    return this.httpClient.get<ApiResult>(`${this.urlRef}cargarporreglacondicion?ReglaCondicion=${descripcion}&rpp=${rpp}&pagina=${pagina}`);
+  }
   
   CargarRedXCond(descripcion:string,rpp:number, pagina:number){
     return this.httpClient.get<ApiResult>(`${this.urlRef}CargarPorReferencia?ReferenciaCondicion=${descripcion}&rpp=${rpp}&pagina=${pagina}`);

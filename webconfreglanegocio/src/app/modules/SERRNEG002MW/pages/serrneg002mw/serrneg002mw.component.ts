@@ -5,6 +5,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import {ModalSelRefCondComponent} from '../../../../shared/modals/modal-sel-ref-cond/modal-sel-ref-cond.component';
 import { Paginador } from '../../../../models/common/paginador';
 import { ConftecnicaService } from '../../../../services/conftecnica.service';
+import { ConfTecRepetitivoService } from '../../../../services/conf-tec-repetitivo.service';
 import { ApiResult } from '../../../../models/common/apiResult';
 import { ToastrService } from 'ngx-toastr';
 import {ConfTecnica} from '../../../../models/confTecnica'
@@ -16,7 +17,8 @@ import {ConfTecnica} from '../../../../models/confTecnica'
 })
 export class Serrneg002mwComponent implements OnInit {
 
-  constructor(private modalService: NgbModal,private confTecnicaService:ConftecnicaService, private toastr: ToastrService) { }
+  constructor(private modalService: NgbModal,private confTecnicaService:ConftecnicaService,
+     private toastr: ToastrService, private confTecnicaRepetitivo:ConfTecRepetitivoService) { }
 
   paginador = new Paginador()
   paginadorFiltrado = new Paginador()
@@ -52,8 +54,9 @@ export class Serrneg002mwComponent implements OnInit {
   
   AbrirModalSelRegCond() {
      const modalSelRegCondComponent = this.modalService.open(ModalSelRefCondComponent, {ariaLabelledBy: 'modal-basic-title',size: 'md' , backdrop: 'static'});
-     modalSelRegCondComponent.componentInstance.modaltitulo="Busqueda Regla / Condición"
-     modalSelRegCondComponent.componentInstance.labelInputDescripcion="Regla / Condición"
+     modalSelRegCondComponent.componentInstance.modaltitulo="Busqueda Regla / Condición";
+     modalSelRegCondComponent.componentInstance.labelInputDescripcion="Regla / Condición";
+     modalSelRegCondComponent.componentInstance.tituloColRefReg="Regla";
      modalSelRegCondComponent.componentInstance.evt.subscribe(arg=>{
       this.CargarRegCondSelected(arg)
     })
@@ -78,12 +81,12 @@ export class Serrneg002mwComponent implements OnInit {
 
     CargarConfTecnica(pagina:number){
       this.busquedaFiltrada=false;
-      console.log(this.regCondSelected)
+     // console.log(this.regCondSelected)
       if(this.regCondSelected!=undefined || this.reRefSelected!=undefined){
         this.BuscarConfTecnicas(pagina)
       }
       
-      if(this.regCondSelected==undefined || this.reRefSelected==undefined){ 
+      if(this.regCondSelected==undefined && this.reRefSelected==undefined){ 
         this.confTecnicaService.Cargar(this.rpp, pagina).subscribe((confTecnica:ApiResult)=>{
           if(confTecnica.result!=null){
           this.confTecnica = confTecnica.result;
@@ -104,19 +107,68 @@ export class Serrneg002mwComponent implements OnInit {
 
   onChangeConfiguracionActiva(e,confTecnica){
     if(e.target.checked){
+      //modificar estatus conf tecnica
       confTecnica.estatus=false
       this.confTecnicaService.Modifica(confTecnica).then((response: ApiResult)=>{
-        this.toastr.success("Se activó la configuración de "+confTecnica.comentario+'de condición '+confTecnica.descripcionCondicion+'.');
+        
+              //modificar estatus conf tecniva repetitivo
+              this.confTecnicaRepetitivo.Cargar(confTecnica.idConfTecnica).subscribe((confTecnica:ApiResult)=>{
+                confTecnica.result.estatus=false;
+                //console.log(confTecnica.result)
+                if(confTecnica.result!=null){
+                  this.confTecnicaRepetitivo.Modificar(confTecnica.result).then((response: ApiResult)=>{
+                    }, error=> {
+                      console.log(error);
+                    }); 
+                }
+                if(confTecnica.result==null){     
+                }  
+              }, error=> {
+              console.log(error);
+                if(typeof error==="object"){
+                  this.toastr.error("Ocurrio un error al conectarse al servidor.");
+                } else {
+                  this.toastr.error(error);
+                }
+              });
+              console.log(confTecnica)
+        this.toastr.success("Se activó la configuración de "+confTecnica.comentario+' de condición '+confTecnica.nombreCondicion+'.');
         }, error=> {
           console.log(error);
           this.toastr.error("Ocurrió un error al activar la tarea.");
       });
+
+
+
+
     }
     else{   
       confTecnica.estatus=true
   //    console.log(confTecnica)
       this.confTecnicaService.Modifica(confTecnica).then((response: ApiResult)=>{
-        this.toastr.success("Se desactivó la configuración de "+confTecnica.comentario+'de condición '+confTecnica.descripcionCondicion+'.');
+
+            //modificar estatus conf tecniva repetitivo
+            this.confTecnicaRepetitivo.Cargar(confTecnica.idConfTecnica).subscribe((confTecnica:ApiResult)=>{
+              confTecnica.result.estatus=true;
+              //console.log(confTecnica.result)
+              if(confTecnica.result!=null){
+                this.confTecnicaRepetitivo.Modificar(confTecnica.result).then((response: ApiResult)=>{
+                  }, error=> {
+                    console.log(error);
+                  }); 
+              }
+              if(confTecnica.result==null){     
+              }  
+            }, error=> {
+            console.log(error);
+              if(typeof error==="object"){
+                this.toastr.error("Ocurrio un error al conectarse al servidor.");
+              } else {
+                this.toastr.error(error);
+              }
+            });
+
+        this.toastr.success("Se desactivó la configuración de "+confTecnica.comentario+' de condición '+confTecnica.nombreCondicion+'.');
         }, error=> {
           console.log(error);
           this.toastr.error("Ocurrió un error al desactivar la tarea.");
@@ -132,7 +184,7 @@ export class Serrneg002mwComponent implements OnInit {
     this.regCondSelected=relgaRefCond
   //  console.log(relgaRefCond)
       if(this.regCondSelected.nombreCondicion!=undefined){
-        this.InputSelRegCond=this.regCondSelected.nombreCondicion+ ' / ' +this.regCondSelected.referenciaCondicion
+        this.InputSelRegCond=this.regCondSelected.nombreRegla+ ' / ' +this.regCondSelected.referencia
         this.InputSelReferencia=null;
         this.reRefSelected=undefined;
       }            
@@ -151,7 +203,7 @@ export class Serrneg002mwComponent implements OnInit {
     this.busquedaFiltrada=true;
     this.confTecnica=[]
     if(this.regCondSelected!=undefined){
-      //console.log(this.regCondSelected.idCondicion)
+      console.log(this.regCondSelected.idCondicion)
       this.confTecnicaService.CargarXCondicion(this.regCondSelected.idCondicion,this.rpp, pagina).subscribe((confTecnica:ApiResult)=>{
         if(confTecnica.result!=null){
         this.confTecnica = confTecnica.result;
@@ -168,7 +220,7 @@ export class Serrneg002mwComponent implements OnInit {
 
     }
     if(this.reRefSelected!=undefined){
-    //  console.log(this.reRefSelected.idCondicion)
+      console.log(this.reRefSelected.idCondicion)
         this.confTecnicaService.CargarXCondicion(this.reRefSelected.idCondicion,this.rpp, pagina).subscribe((confTecnica:ApiResult)=>{
           if(confTecnica.result!=null){
           this.confTecnica = confTecnica.result;

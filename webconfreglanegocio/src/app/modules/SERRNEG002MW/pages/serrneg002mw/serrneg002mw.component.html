@@ -68,7 +68,7 @@
                     </td>
                     <td>
                         <div class="switcher switcher-success">
-                            <input type="checkbox" [checked]="!conf.estatus" (change)="onChangeConfiguracionActiva($event,conf)" id="{{conf.idConfTecnica}}" >
+                            <input type="checkbox" [checked]="!conf.estatus && conf.idConfTecnica!=0" [disabled]="conf.idConfTecnica==0" (change)="onChangeConfiguracionActiva($event,conf)" id="{{conf.idConfTecnica}}" >
                             <label for="{{conf.idConfTecnica}}"></label>
                         </div>
                     </td>

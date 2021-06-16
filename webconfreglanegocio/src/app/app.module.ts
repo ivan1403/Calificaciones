@@ -26,7 +26,6 @@ import { AuthComponent } from './shared/components/auth/auth.component';
 import { TreeModule } from '@circlon/angular-tree-component';
 import { ModalSelRefCondComponent } from './shared/modals/modal-sel-ref-cond/modal-sel-ref-cond.component';
 import { ModalTareasComponent } from './modules/SERRNEG001MW/modals/modal-tareas/modal-tareas.component';
-import { ModalVerLogComponent } from './modules/SERRNEG001MW/modals/modal-ver-log/modal-ver-log.component';
 
 
 
@@ -37,7 +36,7 @@ import { ModalVerLogComponent } from './modules/SERRNEG001MW/modals/modal-ver-lo
     AuthComponent,
     ModalSelRefCondComponent,
     ModalTareasComponent,
-    ModalVerLogComponent,
+
   ],
   imports: [
     AppRoutingModule,
