@@ -12,7 +12,8 @@ const routes: Routes = [
   //{ path: '', redirectTo: '/home', pathMatch: 'full' },
   { path: 'auth', component: AuthComponent },
   { path: 'SERRNEG001MW',  loadChildren:  () => import('./modules/SERRNEG001MW/procesos.module').then(m => m.ProcesosModule), data:{title: 'SERRNEG001MW'}},
-  { path: 'SERRNEG002MW',  loadChildren:  () => import('./modules/SERRNEG002MW/serrneg002mw.module').then(m => m.SERRNEG002MWModule), data:{title: 'SERRNEG002MW'}}
+  { path: 'SERRNEG002MW',  loadChildren:  () => import('./modules/SERRNEG002MW/serrneg002mw.module').then(m => m.SERRNEG002MWModule), data:{title: 'SERRNEG002MW'}},
+  { path: 'monitorpolizas',  loadChildren:  () => import('./modules/monitor-polizas/monitor-polizas.module').then(m => m.MonitorPolizasModule), data:{title: 'Monitor-Polizas'}}
 ];
 
 @NgModule({

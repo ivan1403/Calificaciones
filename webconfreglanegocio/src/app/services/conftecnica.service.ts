@@ -18,6 +18,10 @@ export class ConftecnicaService {
   {
     return this.httpClient.get<ApiResult>(`${this.url}cargar?rpp=${rpp}&pagina=${pagina}`);
   }
+  CargarXCondicion(IdCondicion:number, rpp:number, pagina:number):Observable<ApiResult>
+  {
+    return this.httpClient.get<ApiResult>(`${this.url}cargar?IdCondicion=${IdCondicion}&rpp=${rpp}&pagina=${pagina}`);
+  }
 
   CargarConfTecnica(Id:number):Observable<ApiResult>
   {

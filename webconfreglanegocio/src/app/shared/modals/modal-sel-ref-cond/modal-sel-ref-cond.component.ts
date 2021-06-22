@@ -31,6 +31,8 @@ export class ModalSelRefCondComponent implements OnInit {
 
   SinBusqueda:boolean=true;
 
+  tituloColRefReg='';
+
   @Output() evt = new EventEmitter<any>(); 
 
   ngOnInit(): void {
@@ -38,15 +40,32 @@ export class ModalSelRefCondComponent implements OnInit {
   }
 
   CargarListaRefCond(pagina:number){
+    console.log("aaa")
     if(this.InputBuscarRefCond==undefined||this.InputBuscarRefCond==null){
       this.InputBuscarRefCond='';
     }
-    this.refCondService.CargarXDescripcion(this.InputBuscarRefCond,this.rpp, pagina).subscribe((refCond:ApiResult)=>{
+    // this.refCondService.CargarXDescripcion(this.InputBuscarRefCond,this.rpp, pagina).subscribe((refCond:ApiResult)=>{
+    //   if(refCond.result!=null){
+    //   this.SinBusqueda=false;  
+    //   this.reglasRefCond = refCond.result;
+    //   this.paginador.inicializar(refCond.existeOtraPagina, pagina);
+    //   console.log(this.reglasRefCond)
+    //   }
+    //   else{this.reglasRefCond=[]}
+
+    // }, error=> {
+    //   if(typeof error==="object"){
+    //     this.toastr.error("Ocurrio un error al conectarse al servidor.");
+    //   } else {
+    //     this.toastr.error(error);
+    //   }
+    // });
+    this.refCondService.CargarXFiltro(this.InputBuscarRefCond,this.rpp, pagina).subscribe((refCond:ApiResult)=>{
       if(refCond.result!=null){
       this.SinBusqueda=false;  
       this.reglasRefCond = refCond.result;
       this.paginador.inicializar(refCond.existeOtraPagina, pagina);
-
+      console.log(this.reglasRefCond)
       }
       else{this.reglasRefCond=[]}
 

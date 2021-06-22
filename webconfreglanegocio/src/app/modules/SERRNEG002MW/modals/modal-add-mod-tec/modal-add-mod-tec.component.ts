@@ -20,9 +20,12 @@ export class ModalAddModTecComponent implements OnInit {
     RegistroNuevo:boolean=false;
     confTecnicaNueva:any= new ConfTecnica;
     confTecnica:any= new ConfTecnica;
+
     InputStoredProcedure:string;
     InputOpcion:number;
     InputComentario:string;
+    SelectFuncionalidad;
+
 
     ComentarioRequerido:boolean=false;
     OpcionRequerido:boolean=false;
@@ -30,37 +33,46 @@ export class ModalAddModTecComponent implements OnInit {
     ComentariosSobrepasa:boolean=false;
     comentarioLimite:number
 
+    btnGuardar:boolean=false;
+
+   // estatusConfTecnica:boolean;
+
     FormValido=true;
+
+    registroAgregado=false;
 
   ngOnInit(): void {
   }
 
   AbrirModalConfAdiCont(){
  
-    const ModalConfAdiCont = this.modalService.open(ModalConfAdiContComponent, {ariaLabelledBy: 'modal-basic-title',size: 'lg' , backdrop: 'static'});
-    ModalConfAdiCont.result.then((result) => {
+    const modalConfAdiCont = this.modalService.open(ModalConfAdiContComponent, {ariaLabelledBy: 'modal-basic-title',windowClass : "modalSize" , backdrop: 'static'});
+    modalConfAdiCont.result.then((result) => {
       console.log(result);
     }, (reason) => {
-
-    });
-    
+    });    
+    const ConfTecClone = JSON.parse(JSON.stringify(this.confTecnica));
+    modalConfAdiCont.componentInstance.CargarConfRepetitivo(ConfTecClone);
+  
   }
 
   CargarConfTecModificar(confTecnicaMod){
     this.confTecnicaService.CargarConfTecnica(confTecnicaMod.idConfTecnica).subscribe((confTecnica:ApiResult)=>{
-      console.log( confTecnica.result);      
+    console.log( confTecnica.result);      
       if(confTecnica.result!=null){
       this.RegistroNuevo=false;
-
-      this.confTecnica = confTecnica.result;
-     //console.log( this.confTecnica);      
+      this.confTecnica = confTecnica.result;    
       this.InputOpcion=this.confTecnica.opcion;
       this.InputComentario=this.confTecnica.comentario;
       this.InputStoredProcedure=this.confTecnica.storeProcedure;
+      this.registroAgregado=true;
+     // this.estatusConfTecnica=false;
       }
       if(confTecnica.result==null){
         this.RegistroNuevo=true;
+        this.registroAgregado=false;
         this.confTecnica = confTecnicaMod;
+        //this.estatusConfTecnica=true;
       }
     }, error=> {
      console.log(error);
@@ -69,7 +81,8 @@ export class ModalAddModTecComponent implements OnInit {
       } else {
         this.toastr.error(error);
       }
-    });   }
+    });   
+  }
 
     ValidarForm(){
       this.FormValido=true;
@@ -94,7 +107,7 @@ export class ModalAddModTecComponent implements OnInit {
         this.FormValido=false;
         this.OpcionRequerido=true;
       }
-      if(this.InputStoredProcedure==undefined ||this.InputStoredProcedure==null){
+      if(this.InputStoredProcedure==undefined ||this.InputStoredProcedure==null || this.InputStoredProcedure.trim()==''){
         this.FormValido=false;
         this.StoredProcedureRequerido=true;
       }
@@ -103,37 +116,37 @@ export class ModalAddModTecComponent implements OnInit {
     }
 
     ConfTecnicaGuardar(){
-      console.log(this.RegistroNuevo)
+     // console.log(this.RegistroNuevo)
       this.ValidarForm()
-
-
-
       if(this.FormValido){
-
+        this.btnGuardar=true;
         this.confTecnica.comentario=this.InputComentario;
         this.confTecnica.opcion=this.InputOpcion;
         this.confTecnica.storeProcedure=this.InputStoredProcedure;
-
         if(this.RegistroNuevo){
-          console.log(this.confTecnica)
+          //console.log(this.confTecnica)
           this.confTecnicaService.Guardar(this.confTecnica).then((response: ApiResult)=>{
-            this.modalActive.dismiss()
+            //this.modalActive.dismiss()
+
+            this.RegistroNuevo=false;
+            this.registroAgregado=true;
+         //   this.estatusConfTecnica=false;
             this.toastr.success("Se agregó la configuración técnica exitosamente.");
+            this.btnGuardar=false;
             }, error=> {
               console.log(error);
-              this.toastr.error("Ocurrió un error al actualizar la configuración técnica.");
+              this.toastr.error("Ocurrió un error al modificar la configuración técnica.");
+              this.btnGuardar=false;
             });
         }
-
-
         if(!this.RegistroNuevo){
-          console.log(this.confTecnica)
+         // console.log(this.confTecnica)
           this.confTecnicaService.Modifica(this.confTecnica).then((response: ApiResult)=>{
             this.modalActive.dismiss()
             this.toastr.success("Se modificó la configuración técnica exitosamente.");
             }, error=> {
               console.log(error);
-              this.toastr.error("Ocurrió un error al actualizar la configuración técnica.");
+              this.toastr.error("Ocurrió un error al modificar la configuración técnica.");
             });
         }
       }

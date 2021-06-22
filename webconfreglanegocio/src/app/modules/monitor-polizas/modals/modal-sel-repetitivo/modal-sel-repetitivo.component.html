@@ -1,11 +1,9 @@
 <div class="modal-header">
-    <h4 class="modal-title" id="modal-basic-title">{{modaltitulo}}</h4>
+    <h4 class="modal-title" id="modal-basic-title">Búsqueda asiento repetitivo</h4>
     <button type="button" class="close" aria-label="Close" (click)="modalActive.dismiss()">
       <span aria-hidden="true">&times;</span>
     </button>
 </div>
-
-
 <form>
 
     <div class="modal-body">
@@ -13,11 +11,11 @@
         <div class="row">
 
             <div class="col-12 mt-2">
-                <label class="h5 mt-2">{{labelInputDescripcion}}</label>
+                <label class="h5 mt-2">Descripción</label>
                 <div class="input-group">
-                    <input type="text" name="InputBuscarRefCond" [(ngModel)]="InputBuscarRefCond" class="form-control" placeholder="Descripción" >
+                    <input type="text" name="InputBuscarRepetitivo" [(ngModel)]="InputBuscarRepetitivo" class="form-control" placeholder="Descripción" >
                     <div class="input-group-append">
-                        <button class="btn btn-primary"  (click)="CargarListaRefCond(1)" type="submit"><i class="fa fa-search" aria-hidden="true"></i></button>
+                        <button class="btn btn-primary" (click)="CargarListaAsientos(1)"  type="submit"><i class="fa fa-search" aria-hidden="true"></i></button>
                     </div>
                 </div>
             </div>
@@ -26,26 +24,22 @@
                 <table class="table table-hover table-striped">
                     <thead class="thead-dark">
                         <tr class="text-center">
-                            <th>{{tituloColRefReg}}</th>
-                            <th>Condición</th>
+                            <th>Repetitivo</th>
                             <th>Seleccionar</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr *ngIf="(!reglasRefCond || reglasRefCond?.length==0) && !SinBusqueda ">
+                        <tr *ngIf="(!AsientoRepe || AsientoRepe?.length==0) && !SinBusqueda ">
                             <td colspan="9">No hay registros con la descripción ingresada</td>
                         </tr>
                         <tr *ngIf="SinBusqueda">
                             <td colspan="9">Realice una búsqueda para cargar datos</td>
                         </tr>
-                        <tr *ngFor="let regla of reglasRefCond">
-                            <!-- <td>Rep. refacciones</td>
-                            <td>Generacion de poliza repetitivo de refacciones</td> -->
-                            <td *ngIf="tituloColRefReg=='Regla'" >{{regla.nombreRegla}}</td>  
-                            <td *ngIf="tituloColRefReg=='Referencia'" >{{regla.referencia}}</td>  
-                            <td>{{regla.nombreCondicion}}</td>
-                            <td class="text-center"><button class="btn btn-primary" (click)="onSelectRefCond(regla)" type="button"><i class="fa fa-share"></i></button></td>
+                        <tr *ngFor="let item of AsientoRepe">
+                            <td>{{item.comentario}}</td>
+                            <td class="text-center"><button class="btn btn-success"  (click)="onSelectAsiento(item)"  type="button"><i class="fa fa-share"></i></button></td>
                         </tr>
+
                     </tbody>
                 </table>
                 <app-paginador  [paginador] = "paginador" (evtPaginaSeleccionada)="evtPaginaSeleccionada($event)" ></app-paginador>

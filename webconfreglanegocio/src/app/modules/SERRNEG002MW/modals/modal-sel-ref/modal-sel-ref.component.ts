@@ -57,6 +57,7 @@ export class ModalSelRefComponent implements OnInit {
   }
 
   onSelectRef(Regla:any){
+
     this.evt.emit(Regla)
     this.modalActive.dismiss();
   }
@@ -65,23 +66,6 @@ export class ModalSelRefComponent implements OnInit {
     this.CargarListaRef(pagina);
   }
 
-  onChangeEliminarProgramacion(e,procesoselect) {
-    if(e.target.checked){
-      // this.procesoService.EstatusProgramacion(procesoselect).then((response: ApiResult)=>{
-      //   this.toastr.success("Se activó la programación de "+procesoselect.comentario+'de condición '+procesoselect.descripcionCondicion+'.');
-      //   }, error=> {
-      //     console.log(error);
-      //     this.toastr.error("Ocurrió un error al agregar la tarea.");
-      // });
-    }
-    else{   
-      // this.procesoService.EstatusProgramacion(procesoselect).then((response: ApiResult)=>{
-      //   this.toastr.success("Se desactivó la programación de "+procesoselect.comentario+'de condición '+procesoselect.descripcionCondicion+'.');
-      //   }, error=> {
-      //     console.log(error);
-      //     this.toastr.error("Ocurrió un error al agregar la tarea.");
-      // });
-    }    
-  }
+
 
 }

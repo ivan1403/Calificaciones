@@ -1,7 +1,7 @@
 import { Component, OnInit,Input } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import {ModalSelRefCondComponent} from '../../../../shared/modals/modal-sel-ref-cond/modal-sel-ref-cond.component';
-import {ModalVerLogComponent} from '../../modals/modal-ver-log/modal-ver-log.component';
+import {ModalVerLogComponent} from '../../../../shared/modals/modal-ver-log/modal-ver-log.component';
 import {ModalTareasComponent} from '../../modals/modal-tareas/modal-tareas.component';
 import { ProcesoService } from '../../../../services/proceso.service';
 import { ApiResult } from '../../../../models/common/apiResult';
@@ -72,6 +72,7 @@ procesosFiltrados:boolean;
     const modalSelRefCondComponent = this.modalService.open(ModalSelRefCondComponent, {ariaLabelledBy: 'modal-basic-title',size: 'md' , backdrop: 'static'});
     modalSelRefCondComponent.componentInstance.modaltitulo="Búsqueda Referencia / Condición"
     modalSelRefCondComponent.componentInstance.labelInputDescripcion="Referencia / Condición"
+    modalSelRefCondComponent.componentInstance.tituloColRefReg="Referencia";
     modalSelRefCondComponent.componentInstance.evt.subscribe(arg=>{
       //console.log(arg)
       this.CargarRefCondSelected(arg)
@@ -135,7 +136,7 @@ procesosFiltrados:boolean;
   onChangeEliminarProgramacion(e,procesoselect) {
     if(e.target.checked){
       this.procesoService.EstatusProgramacion(procesoselect).then((response: ApiResult)=>{
-        this.toastr.success("Se activó la programación de "+procesoselect.comentario+'de condición '+procesoselect.descripcionCondicion+'.');
+        this.toastr.success("Se activó la programación de "+procesoselect.comentario+' de condición '+procesoselect.descripcionCondicion+'.');
         }, error=> {
           console.log(error);
           this.toastr.error("Ocurrió un error al activar la tarea.");
@@ -143,7 +144,7 @@ procesosFiltrados:boolean;
     }
     else{   
       this.procesoService.EstatusProgramacion(procesoselect).then((response: ApiResult)=>{
-        this.toastr.success("Se desactivó la programación de "+procesoselect.comentario+'de condición '+procesoselect.descripcionCondicion+'.');
+        this.toastr.success("Se desactivó la programación de "+procesoselect.comentario+' de condición '+procesoselect.descripcionCondicion+'.');
         }, error=> {
           console.log(error);
           this.toastr.error("Ocurrió un error al desactivar la tarea.");
@@ -154,7 +155,7 @@ procesosFiltrados:boolean;
   CargarRefCondSelected(relgaRefCond:any){  
   this.reglarefCondSelected=relgaRefCond
     if(this.reglarefCondSelected.nombreCondicion!=undefined)
-    this.InputSelRefCond=this.reglarefCondSelected.nombreCondicion+ ' / ' +this.reglarefCondSelected.referenciaCondicion
+    this.InputSelRefCond=this.reglarefCondSelected.nombreCondicion+ ' / ' +this.reglarefCondSelected.referencia
 
   }
 

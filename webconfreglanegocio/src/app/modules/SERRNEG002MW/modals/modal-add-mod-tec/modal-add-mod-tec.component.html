@@ -7,18 +7,44 @@
 <form>
     <div class="modal-body">
         <h4 class="text-left h5 mt-2" >Referencia: Generación de pólizas de bancos</h4>
-        <div class="form-group row mt-3" >            
-            <div class="col-sm text-left">
-                <label class="text-left h5 ">Store Procedure</label>
+        <div class="form-group row mt-3" >       
+            <div class="col-sm-3 text-left">
+                <!-- <input  type="checkbox"  id="estatusSP" style="margin-right: 10px;" > -->
+
+                <!-- <div class="switcher switcher-success" >
+                    <input type="checkbox"  id="estatusSP" >
+                    <label for="estatusSP"></label>
+                </div>    -->
+
+             
+                
+                <div class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input " id="customCheck1">
+                    <!-- <label class="custom-control-label" for="customCheck1"></label> -->
+                    <label class="text-left h5 custom-control-label" for="customCheck1">Store Procedure</label>
+                </div>
+              
             </div>        
-            <div class="col-sm-4">
+            <div class="col-sm">
                 <input type="text" name="InputStoredProcedure" [(ngModel)]="InputStoredProcedure" class="form-control">
             </div>        
-            <div class="col-sm text-left">
+            <div class="col-sm-1 text-left">
                 <label class="text-right h5 mt-2">Opción</label>
             </div>        
-            <div class="col-sm-4">
+            <div class="col-sm">
                 <input type="number" min="1" oninput="validity.valid||(value='');" name="InputOpcion" [(ngModel)]="InputOpcion" class="form-control">
+            </div>
+        </div>
+        <div class="form-group row mt-3"> 
+            <div class="col-sm-3 text-left">
+                <label class="text-right h5 ">Funcionalidad SP</label>
+            </div>
+            <div class="col-sm-4 " >
+                <select class="form-control form-select" placeholder="Seleccione la funcionalidad" name="SelectFuncionalidad" [(ngModel)]="SelectFuncionalidad">
+                    <option [ngValue]="undefined" hidden selected></option>
+                    <option value="Cargar información origen">Cargar información origen</option>
+                    <option value="Cambiar estatus en espera">Cambiar estatus en espera</option>
+                </select>
             </div>
         </div>
         <div class="form-group row mt-3" >            
@@ -50,7 +76,7 @@
         </div>
     </div>
     <div class="modal-footer">
-        <button type="submit" (click)="AbrirModalConfAdiCont()" class="btn btn-primary">Configuración para repetitivos contables</button>
-        <button type="submit" (click)="ConfTecnicaGuardar()"  class="btn btn-success">Guardar</button>
+        <button type="submit" [disabled]="!registroAgregado" (click)="AbrirModalConfAdiCont()" class="btn btn-primary">Configuración para repetitivos contables</button>
+        <button type="submit" [disabled]="btnGuardar" (click)="ConfTecnicaGuardar()"  class="btn btn-success">Guardar</button>
     </div>
 </form>

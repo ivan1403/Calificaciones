@@ -1,0 +1,179 @@
+<div class="row top-title" >
+    <div class="col-xs-12">
+        <h1 class="text-white-lighter">Monitor de pólizas</h1>
+    </div>
+</div>
+
+<div class="form-group row mt-4" style="margin-top: 50px;" >
+
+    <div class="col-sm-2 ">
+        <label class="text-left h4 mt-2">A. Repetitivo</label>
+    </div>
+
+    <div class="col-sm-4 pull-left">
+        <div class="input-group">
+            <input readonly type="text" name="InputAsientoRepetitivo" [(ngModel)]="InputAsientoRepetitivo" class="form-control">
+            <div class="input-group-append">
+                <button (click)="abrirModalSelAsientoRepetitivo()" class="btn btn-primary" type="button"><i class="fas fa-search fa-lg"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-2 ">
+        <label class="text-right h4 mt-2">Estatus</label>
+    </div>
+
+    <div class="col-sm-4">
+        <select [(ngModel)]="SelectEstatus" class="form-control form-select">
+            <option [ngValue]="undefined" hidden selected></option>
+            <option value="0">Listo para procesar</option>
+            <option value="1">Procesado con exito</option>
+            <option value="2">En proceso</option>
+            <option value="3">Error al procesar</option>
+            <option value="4">En espera</option>
+        </select>
+    </div>
+</div>
+
+<div class="form-group row mt-4" >
+    <div class="col-sm-2 ">
+        <label class="text-left h4 mt-2">Documento</label>
+    </div>    
+    <div class="col-sm-4 pull-left">
+        <input  type="text" name="InputDocumento" [(ngModel)]="InputDocumento" class="form-control">
+    </div>    
+    <div class="col-sm ">
+        <label class="text-left h4 mt-2">Fecha Documento</label>
+    </div>    
+    <div class="col-sm-4 row" >
+        <div class="col-sm-5">
+            <div ngbDropdown>
+                <div class="input-group">
+                    <input class="form-control" 
+                            name="FechaDocumentoInicio" [(ngModel)]="FechaDocumentoInicio" autocomplete="off" 
+                            onkeypress="return false"  (click)="di.toggle()" ngbDatepicker #di="ngbDatepicker">
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary calendar" (click)="di.toggle()" type="button"><i class="fas fa-calendar-alt"></i></button>
+                    </div>
+                    
+    
+
+                </div>
+            </div>
+        </div>
+        <span class="input-group-text" style="height: calc(1.5em + 0.875rem + 2px);">al</span>
+        <div class="col-sm-5">
+            <div ngbDropdown>
+                <div class="input-group">
+                    <input class="form-control" 
+                            name="FechaDocumentoFinal" [(ngModel)]="FechaDocumentoFinal" autocomplete="off" 
+                            onkeypress="return false"  (click)="df.toggle()" ngbDatepicker #df="ngbDatepicker">
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary calendar" (click)="df.toggle()" type="button"><i class="fas fa-calendar-alt"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="form-group row mt-4" >
+    <div class="col-sm-2 ">
+        <label class="text-left h4 mt-2">Póliza</label>
+    </div>    
+    <div class="col-sm-4 pull-left">
+        <input type="text" name="InputPoliza" [(ngModel)]="InputPoliza" class="form-control">
+    </div>    
+    <div class="col-sm ">
+        <label class="text-right h4 mt-2">Fecha póliza</label>
+    </div>
+    <div class="col-sm-4 row" >
+        <div class="col-sm-5">
+            <div ngbDropdown>
+                <div class="input-group">
+                    <input class="form-control" 
+                            name="FechaPolizaInicio" [(ngModel)]="FechaPolizaInicio" autocomplete="off" 
+                            onkeypress="return false"  (click)="dpi.toggle()" ngbDatepicker #dpi="ngbDatepicker">
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary calendar" (click)="dpi.toggle()" type="button"><i class="fas fa-calendar-alt"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <span class="input-group-text" style="height: calc(1.5em + 0.875rem + 2px);">al</span>
+        <div class="col-sm-5">
+            <div ngbDropdown>
+                <div class="input-group">
+                    <input class="form-control" 
+                            name="FechaPolizaFinal" [(ngModel)]="FechaPolizaFinal" autocomplete="off" 
+                            onkeypress="return false"  (click)="dpf.toggle()" ngbDatepicker #dpf="ngbDatepicker">
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary calendar" (click)="dpf.toggle()" type="button"><i class="fas fa-calendar-alt"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="row mt-2 derecha ">
+    <div class="col-sm-4">
+
+    </div>
+    <div class="row col-sm-8 pull-right derecha">
+        <a  class="btn btn btn-success col-sm-4 ml-1 mt-1 pull-right centrar" > Ejecutar proceso automático para repetitivo seleccionado </a>
+        <a  class="btn btn btn-success col-sm-3 ml-1 mt-1 pull-right centrar" >Generar póliza seleccionada </a>     
+        <a  (click)="abrirModalHistorialEjecucion()" class="btn btn btn-primary col-sm-3 ml-1 mt-1 pull-right centrar">Mostrar historial de ejecución </a>
+        <a  (click)="BuscarPoliza()" class="btn btn btn-primary  ml-1 mt-1 pull-right centrar">Buscar </a>     
+    </div>
+</div>
+
+<input class="checkbox mt-2" type="checkbox" style="margin-right: 5px;margin-left: 15px;">
+<label class="text-right h5 mt-2" >  Marcar todos</label>
+
+<div class="row mt-3">
+    <div class="col-xs-12">
+        <table class="table table-responsive-md table-hover table-bordered table-striped">
+            <thead class="thead-dark">
+                <tr class="text-center">
+                    <th style="vertical-align: middle;">Sel.</th>
+                    <th style="vertical-align: middle;">Folio Documento</th>
+                    <th style="vertical-align: middle;">Folio póliza</th>
+                    <th style="vertical-align: middle;">Fecha</th>
+                    <th style="vertical-align: middle;">Total</th>
+                    <th style="vertical-align: middle;">Cliente</th>
+                    <th style="vertical-align: middle;">Póliza manual</th>
+                    <th style="vertical-align: middle;">Inf. Origen</th>
+                    <th style="vertical-align: middle;">Detalles</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of monitorPoliza">
+                    <td class="text-center"><input class="mt-2" type="checkbox"></td>
+                    <td>{{item.folioDoctoOrigen}}</td>
+                    <td>{{item.folioPoliza}}</td>
+                    <td>{{item.fechaPoliza |date:"dd-MM-yyyy" }}</td>
+                    <td>{{item.totalDoctoOrigen}}</td>
+                    <td>{{item.nombreDoctoOrigen}}</td>
+                    <td>
+                        <a class="btn btn-success">
+                            <i class="fas fa-external-link-alt fa-lg"></i>
+                        </a>
+                    </td>
+                    <td>
+                        <a (click)="abrirModalInfoOrigen()" class="btn btn-success">
+                            Ver
+                        </a>
+                    </td>
+                    <td>
+                        <a  class="btn btn-success">
+                            Ver detalles
+                        </a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
