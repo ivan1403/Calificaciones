@@ -24,6 +24,8 @@ export class ModalAddModTecComponent implements OnInit {
     InputStoredProcedure:string;
     InputOpcion:number;
     InputComentario:string;
+    SelectFuncionalidad;
+
 
     ComentarioRequerido:boolean=false;
     OpcionRequerido:boolean=false;

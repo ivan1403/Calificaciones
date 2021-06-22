@@ -47,6 +47,8 @@ export class ModalConfAdiContComponent implements OnInit {
   ValidacionConf:any;
   cargaDeValidacion:boolean=false;
 
+  DoPrepoliza:any;
+
   ModEncDOPolizaAdicional:any;
   ModDetDOPoliza:any;
   ModDetDOPolizaAdicional:any;
@@ -68,6 +70,8 @@ export class ModalConfAdiContComponent implements OnInit {
   InputTipoCambio;
   InputComentario;
 
+  MensajeErrorCargarValidacion:string=null;
+  ErrorCargarValidacion:boolean=false;
 
   ngOnInit(): void {
   }
@@ -226,14 +230,16 @@ export class ModalConfAdiContComponent implements OnInit {
 
   CargarValidacionConf(){
      //console.log(this.idConfTecnica)
+     this.cargaDeValidacion=false;
+     this.ValidacionConf=null;
      let idConfTecnica:number=this.idConfTecnica;
     
-    this.confTecRepetitivoService.CargarValidacion(idConfTecnica,1).subscribe((validacionCofiguracion:ApiResult)=>{
+    this.confTecRepetitivoService.CargarValidacion(idConfTecnica,this.InputIdPrueba,this.InputStoreProcedure).subscribe((validacionCofiguracion:ApiResult)=>{
       
       if(validacionCofiguracion.result!=null){
         this.cargaDeValidacion=true;
         this.ValidacionConf=validacionCofiguracion.result;
-
+        this.MensajeErrorCargarValidacion=null;
         this.LlenarCamposValidacion(this.ValidacionConf); 
       }
       if(validacionCofiguracion.result==null){
@@ -242,9 +248,17 @@ export class ModalConfAdiContComponent implements OnInit {
 
 
     }, error=> {
-     console.log(error);
+     console.log(error.error);
       if(typeof error==="object"){
-        this.toastr.error("Ocurrio un error al conectarse al servidor.");
+        if(error.error=='Object reference not set to an instance of an object.'){
+          this.toastr.error(error.error);
+          this.MensajeErrorCargarValidacion=error.error
+        }
+        else{
+          this.toastr.error("Ocurrió un error al conectarse al servidor.");
+        }
+        
+  
       } else {
         this.toastr.error(error);
       }
@@ -257,40 +271,54 @@ export class ModalConfAdiContComponent implements OnInit {
     //  this.EncabezadoUUID=ValidacionConf.prePoliza.lstModRelPolizaCFDi[0].uuid;
     //console.log(ValidacionConf);
 
-    this.InputidEncRepetitivoParam=this.InputComentario=ValidacionConf.doPrePoliza.idEncRepetitivoParam;
-    const datepipe: DatePipe = new DatePipe('en-US')
-    this.InputFechaDocto=    datepipe.transform(this.InputComentario=ValidacionConf.doPrePoliza.fechaDocto, 'dd-MM-yyyy');;
-    this.InputIdMoneda=ValidacionConf.doPrePoliza.idMoneda;
-    this.InputTipoCambio=ValidacionConf.doPrePoliza.tipoDeCambio;
-    this.InputComentario=ValidacionConf.doPrePoliza.polizaComentarios;
+    // this.InputidEncRepetitivoParam=this.InputComentario=ValidacionConf.doPrePoliza.idEncRepetitivoParam;
+    // const datepipe: DatePipe = new DatePipe('en-US')
+    // this.InputFechaDocto=    datepipe.transform(this.InputComentario=ValidacionConf.doPrePoliza.fechaDocto, 'dd-MM-yyyy');;
+    // this.InputIdMoneda=ValidacionConf.doPrePoliza.idMoneda;
+    // this.InputTipoCambio=ValidacionConf.doPrePoliza.tipoDeCambio;
+    // this.InputComentario=ValidacionConf.doPrePoliza.polizaComentarios;
+    this.DoPrepoliza=new Array;
+    this.DoPrepoliza.push(ValidacionConf.doPrePoliza)
+   // console.log(ValidacionConf)
+    
 
     //this.ConfPolizaRepetitivo= new Array;
     //this.ConfPolizaRepetitivo.push(ValidacionConf.prePoliza.objConfPolizaRepetitivo)
-    console.log(ValidacionConf.prePoliza.objConfPolizaRepetitivo)
-    this.InputIdEncabezadoRepetitivo=ValidacionConf.prePoliza.objConfPolizaRepetitivo.idEncRepetitivo;
+    //console.log(ValidacionConf.prePoliza.objConfPolizaRepetitivo)
+
+    if(ValidacionConf.prePoliza!=null){
+      
+      this.InputIdEncabezadoRepetitivo=ValidacionConf.prePoliza.objConfPolizaRepetitivo.idEncRepetitivo;
     if(ValidacionConf.prePoliza.objConfPolizaRepetitivo.aplicarPoliza==1){this.InputAplicarPoliza='Si';}
     if(ValidacionConf.prePoliza.objConfPolizaRepetitivo.aplicarPoliza==0){this.InputAplicarPoliza='No';}
     if(ValidacionConf.prePoliza.objConfPolizaRepetitivo.requiereCFDi==1){this.InputRequiereCFDi='Si'}
     if(ValidacionConf.prePoliza.objConfPolizaRepetitivo.requiereCFDi==0){this.InputRequiereCFDi='No'}
     this.InputAsientoRepetitivo=ValidacionConf.prePoliza.objConfPolizaRepetitivo.asientoRepetitivo;
  
+    this.ModDetPoliza=ValidacionConf.prePoliza.lstModDetPoliza;
+    this.ModDetPolizaAdicionales=ValidacionConf.prePoliza.lstModDetPolizaAdicionales;
+    this.ModDetPolizaCentroCosto=ValidacionConf.prePoliza.lstModDetPolizaCentroCosto
+    this.ModDetPolizaTipoContabilidad=ValidacionConf.prePoliza.lstModDetPolizaTipoContabilidad;
+    this.ModRelPolizaCFDi=ValidacionConf.prePoliza.lstModRelPolizaCFDi;
+    this.ModEncPolizaAdicional=ValidacionConf.prePoliza.lstModEncPolizaAdicional;
+    
+    this.ModEncPoliza= new Array;
+    this.ModEncPoliza.push(ValidacionConf.prePoliza.objModEncPoliza)
+    if(this.ModEncPoliza[0]==null){this.ModEncPoliza=[]}
+    
+   // console.log(this.ModEncPoliza)
+
+    this.Msgs=ValidacionConf.prePoliza.lstMsg;
+
+    }
+    
 
     this.ModDetDOPoliza=ValidacionConf.doPrePoliza.lstModDetDOPoliza;
     this.ModDetDOPolizaAdicional=ValidacionConf.doPrePoliza.lstModDetDOPolizaAdicional;
     this.ModDetDOPolizaCFDi=ValidacionConf.doPrePoliza.lstModDetDOPolizaCFDi;
     this.ModEncDOPolizaAdicional=ValidacionConf.doPrePoliza.lstModEncDOPolizaAdicional;
 
-    this.ModDetPoliza=ValidacionConf.prePoliza.objModDetPoliza;
-    this.ModDetPolizaAdicionales=ValidacionConf.prePoliza.objModDetPolizaAdicionales;
-    this.ModDetPolizaCentroCosto=ValidacionConf.prePoliza.objModDetPolizaCentroCosto
-    this.ModDetPolizaTipoContabilidad=ValidacionConf.prePoliza.objModDetPolizaTipoContabilidad;
-    this.ModRelPolizaCFDi=ValidacionConf.prePoliza.objModRelPolizaCFDi;
-    this.ModEncPolizaAdicional=ValidacionConf.prePoliza.objModEncPolizaAdicional;
-    this.ModEncPoliza= new Array;
-    this.ModEncPoliza.push(ValidacionConf.prePoliza.objModEncPoliza)
-
-
-    this.Msgs=ValidacionConf.prePoliza.lstMsg;
+    
   }
 
 }

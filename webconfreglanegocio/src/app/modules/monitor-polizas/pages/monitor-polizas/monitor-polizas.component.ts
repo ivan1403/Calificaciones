@@ -7,6 +7,7 @@ import { ToastrService } from 'ngx-toastr';
 import { ModalSelRepetitivoComponent } from '../../modals/modal-sel-repetitivo/modal-sel-repetitivo.component'
 import { ModalSelInfoOrigenComponent } from '../../modals/modal-sel-info-origen/modal-sel-info-origen.component'
 import { ModalVerLogComponent } from '../../../../shared/modals/modal-ver-log/modal-ver-log.component'
+import { MonitorPolizaService } from '../../../../services/monitor-poliza.service'
 
 @Injectable()
 export class CustomDateParserFormatter extends NgbDateParserFormatter {
@@ -41,7 +42,13 @@ export class CustomDateParserFormatter extends NgbDateParserFormatter {
 export class MonitorPolizasComponent implements OnInit {
 
   constructor(private modalService: NgbModal,
-    private toastr: ToastrService,) { }
+    private toastr: ToastrService,private MonitorPolizaService:MonitorPolizaService) { }
+
+    rpp=10;
+    pagina:number;
+
+    monitorPoliza:any;
+
     InputAsientoRepetitivo;
     SelectEstatus;
     InputDocumento;
@@ -51,13 +58,19 @@ export class MonitorPolizasComponent implements OnInit {
     FechaPolizaInicio;
     FechaPolizaFinal
 
+    idConfTecnica:number;
+
   ngOnInit(): void {
+    this.CargarMonitorPoliza(1)
   }
 
   abrirModalSelAsientoRepetitivo() {  
 
     const modalSelAsientoRepetitivoComponent = this.modalService.open(ModalSelRepetitivoComponent, {ariaLabelledBy: 'modal-basic-title',size: 'md' , backdrop: 'static'});
-    
+    modalSelAsientoRepetitivoComponent.componentInstance.evt.subscribe(arg=>{
+      //console.log(arg)
+      this.CargarAsientoSelected(arg)
+    })
     modalSelAsientoRepetitivoComponent.result.then((result) => {
       console.log(result);
     }, (reason) => {
@@ -83,5 +96,41 @@ export class MonitorPolizasComponent implements OnInit {
     }, (reason) => {
     });
   }
+
+  CargarMonitorPoliza(pagina:number){
+    this.MonitorPolizaService.Cargar(this.rpp, pagina).subscribe((monitorPoliza:ApiResult)=>{
+      if(monitorPoliza.result!=null){
+      this.monitorPoliza = monitorPoliza.result; 
+      console.log(this.monitorPoliza);
+      }
+      else{
+        this.monitorPoliza=[]
+      }
+    }, error=> {
+      if(typeof error==="object"){
+        this.toastr.error("Ocurrió un error al conectarse al servidor.");
+      } else {
+        this.toastr.error(error);
+      }
+    });
+  }
+
+  CargarAsientoSelected(asiento:any){  
+    
+      if(asiento.comentario!=undefined){
+        this.InputAsientoRepetitivo=asiento.comentario
+        this.idConfTecnica=asiento.idConfTecnica
+      }
+    }
+
+  BuscarPoliza(){
+      // this.InputDocumento;
+      // this.InputPoliza;
+      // this.FechaDocumentoInicio;
+      // this.FechaDocumentoFinal;
+      // this.FechaPolizaInicio;
+      // this.FechaPolizaFinal;
+    console.log(this.SelectEstatus)
+    }
 
 }

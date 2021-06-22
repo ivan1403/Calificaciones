@@ -26,8 +26,8 @@ export class ConfTecRepetitivoService {
     return this.httpClient.post<ApiResult>(this.url+'modifica',ConfTecnica).toPromise();
   }
 
-  CargarValidacion(IdConfTecnica:number,IdDoctoOrigen:number){
-    return this.httpClient.get<ApiResult>(`${this.urlValidacion}validar?IdConfTecnica=${IdConfTecnica}&IdDoctoOrigen=${IdDoctoOrigen}`);
+  CargarValidacion(IdConfTecnica:number,IdDoctoOrigen:number,storeProcedure:string){
+    return this.httpClient.get<ApiResult>(`${this.urlValidacion}validar?IdConfTecnica=${IdConfTecnica}&IdDoctoOrigen=${IdDoctoOrigen}&storeProcedure=${storeProcedure}`);
   }
 
 
