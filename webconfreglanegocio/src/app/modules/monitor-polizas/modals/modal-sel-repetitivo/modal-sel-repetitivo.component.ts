@@ -46,7 +46,7 @@ export class ModalSelRepetitivoComponent implements OnInit {
 
     }, error=> {
       if(typeof error==="object"){
-        this.toastr.error("Ocurrio un error al conectarse al servidor.");
+        this.toastr.error("Ocurrió un error al conectarse al servidor.");
       } else {
         this.toastr.error(error);
       }

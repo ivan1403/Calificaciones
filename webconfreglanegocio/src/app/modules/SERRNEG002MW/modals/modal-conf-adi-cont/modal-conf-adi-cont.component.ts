@@ -16,6 +16,8 @@ export class ModalConfAdiContComponent implements OnInit {
   constructor(private modalService: NgbModal, public modalActive: NgbActiveModal,
     private confTecRepetitivoService:ConfTecRepetitivoService, private toastr: ToastrService) { }
 
+  btnGuardar:boolean=false;
+
   InputStoreProcedure:string;
   InputOpcion:number;
   InputIdPlantilla:number;
@@ -141,7 +143,7 @@ export class ModalConfAdiContComponent implements OnInit {
     }, error=> {
      console.log(error);
       if(typeof error==="object"){
-        this.toastr.error("Ocurrio un error al conectarse al servidor.");
+        this.toastr.error("Ocurrió un error al conectarse al servidor.");
       } else {
         this.toastr.error(error);
       }
@@ -153,6 +155,7 @@ export class ModalConfAdiContComponent implements OnInit {
 
     if(this.formValido)
     {
+      this.btnGuardar=true;
       this.confRepetitivo.storeProcedure=this.InputStoreProcedure.trim();
       this.confRepetitivo.opcion=this.InputOpcion;
       this.confRepetitivo.idEncConfPlantilla=this.InputIdPlantilla;
@@ -164,19 +167,45 @@ export class ModalConfAdiContComponent implements OnInit {
          this.confRepetitivo.idConfTecnica=this.idConfTecnica
          this.confTecRepetitivoService.Guardar(this.confRepetitivo).then((response: ApiResult)=>{
           // this.modalActive.dismiss()
-           this.toastr.success("Se agregó la configuración técnica de repetitivos exitosamente.");
+          console.log(response)
+          if(response.objModResultado.error){
+            this.toastr.error("Ocurrió un error al guardar la configuración técnica de repetitivos.");
+            this.registroNuevo=true;
+            this.btnGuardar=false;
+          }
+          if(!response.objModResultado.error){
+            this.toastr.success("Se agregó la configuración técnica de repetitivos exitosamente.");
+            this.registroNuevo=false;
+            this.btnGuardar=false;
+          }
            }, error=> {
              console.log(error);
              this.toastr.error("Ocurrió un error al agregar la configuración técnica de repetitivos.");
+              this.registroNuevo=true;
+              this.btnGuardar=false;
            });   
        }
        else{
         this.confTecRepetitivoService.Modificar(this.confRepetitivo).then((response: ApiResult)=>{
       //  this.modalActive.dismiss()
-        this.toastr.success("Se modificó la configuración técnica de repetitivos exitosamente.");
+      if(response.objModResultado!=null){
+        if(response.objModResultado.error){
+          this.toastr.error("Ocurrió un error al modificar la configuración técnica de repetitivos."); 
+          this.btnGuardar=false;
+        }
+        if(!response.objModResultado.error){
+          this.toastr.success("Se actualizó la configuración técnica de repetitivos exitosamente.");
+          this.btnGuardar=false;
+        }
+      }
+      if(response.objModResultado==null){
+        this.toastr.success("Se actualizó la configuración técnica de repetitivos exitosamente.");
+        this.btnGuardar=false;
+      }
         }, error=> {
           console.log(error);
           this.toastr.error("Ocurrió un error al modificar la configuración técnica de repetitivos.");
+          this.btnGuardar=false;
         });   
       }
     }
@@ -251,8 +280,8 @@ export class ModalConfAdiContComponent implements OnInit {
      console.log(error.error);
       if(typeof error==="object"){
         if(error.error=='Object reference not set to an instance of an object.'){
-          this.toastr.error(error.error);
-          this.MensajeErrorCargarValidacion=error.error
+          this.toastr.error('No se encontró la SP');
+          this.MensajeErrorCargarValidacion='No se encontró la SP'
         }
         else{
           this.toastr.error("Ocurrió un error al conectarse al servidor.");

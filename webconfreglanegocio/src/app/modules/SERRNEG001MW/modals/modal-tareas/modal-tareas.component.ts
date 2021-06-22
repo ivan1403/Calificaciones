@@ -54,6 +54,8 @@ export class ModalTareasComponent implements OnInit {
 
   Modificando:boolean = false;
 
+  btnGuardar:boolean=false;
+
   DiasSemana: Array<any> = [
     { name: 'Lunes', value: 'Lunes',checked:false },
     { name: 'Martes', value: 'Martes' ,checked:false },
@@ -119,8 +121,9 @@ export class ModalTareasComponent implements OnInit {
   abrirModalSelRefCond() {
    // this.refcondData.SelectTipo("Nueva");
     const modalSelRefCondComponent = this.modalService.open(ModalSelRefCondComponent, {ariaLabelledBy: 'modal-basic-title',size: 'md' , backdrop: 'static'});
-    modalSelRefCondComponent.componentInstance.modaltitulo="Búsqueda Referencia / Condición";
-    modalSelRefCondComponent.componentInstance.labelInputDescripcion="Referencia / Condición";
+    modalSelRefCondComponent.componentInstance.modaltitulo="Búsqueda Referencia / Condición"
+    modalSelRefCondComponent.componentInstance.labelInputDescripcion="Referencia / Condición"
+    modalSelRefCondComponent.componentInstance.tituloColRefReg="Referencia";
     modalSelRefCondComponent.componentInstance.evt.subscribe(arg=>{
      // console.log(arg)
       this.CargarRefCondSelected(arg)
@@ -270,7 +273,7 @@ export class ModalTareasComponent implements OnInit {
   CargarRefCondSelected(reglaRefCond:any){
     this.reglarefCondSelectedLocal=reglaRefCond
     if(this.reglarefCondSelectedLocal.nombreCondicion!=undefined)
-    this.InputselRefCond=this.reglarefCondSelectedLocal.nombreCondicion+ ' / ' +this.reglarefCondSelectedLocal.referenciaCondicion
+    this.InputselRefCond=this.reglarefCondSelectedLocal.referencia+ ' / ' + this.reglarefCondSelectedLocal.nombreCondicion
   }
 
   LimpiarForm(){
@@ -310,6 +313,8 @@ export class ModalTareasComponent implements OnInit {
     //console.log(this.reglarefCondSelectedLocal)
     //Preparar datos
     if(this.FormValido){
+      this.btnGuardar=true;
+
       let DiasSemana:any=undefined;
       if(this.RepetirDiasSemana.length!=0){
         DiasSemana=this.RepetirDiasSemana.replace(/\s/g, '')
@@ -381,12 +386,30 @@ export class ModalTareasComponent implements OnInit {
       this.procesoNuevo.diasSemana=DiasSemana
 
       this.procesoService.agregarproceso(this.procesoNuevo).then((response: ApiResult)=>{
-        this.LimpiarForm()
-        this.toastr.success("Se agregó tarea exitosamente.");
-
+       // console.log(response)
+        
+        // this.toastr.success("Se agregó tarea exitosamente.");
+      
+        if(response.objModResultado!=null){
+          if(response.objModResultado.error){
+            this.toastr.error("Ocurrió un error al agregar la tarea."); 
+            this.btnGuardar=false;
+          }
+          if(!response.objModResultado.error){
+            this.toastr.success("Se agregó tarea exitosamente.");
+            this.LimpiarForm()
+            this.btnGuardar=false;
+          }
+        }
+        if(response.objModResultado==null){
+          this.toastr.success("Se agregó tarea exitosamente.");
+          this.LimpiarForm()
+          this.btnGuardar=false;
+        }
         }, error=> {
           console.log(error);
           this.toastr.error("Ocurrió un error al agregar la tarea.");
+          this.btnGuardar=false;
       });
     }
     else{
@@ -408,10 +431,28 @@ export class ModalTareasComponent implements OnInit {
 
         this.LimpiarForm()
         this.modalActive.dismiss()
-        this.toastr.success("Se actualizó tarea exitosamente.");
+        // this.toastr.success("Se actualizó tarea exitosamente.");
+        if(response.objModResultado!=null){
+          if(response.objModResultado.error){
+            this.toastr.error("Ocurrió un error al actualizar la tarea."); 
+            this.btnGuardar=false;
+          }
+          if(!response.objModResultado.error){
+            this.toastr.success("Se actualizó tarea exitosamente.");
+            this.LimpiarForm()
+            this.btnGuardar=false;
+          }
+        }
+        if(response.objModResultado==null){
+          this.toastr.success("Se actualizó tarea exitosamente.");
+          this.LimpiarForm()
+          this.btnGuardar=false;
+        }
+
         }, error=> {
           console.log(error);
           this.toastr.error("Ocurrió un error al actualizar la tarea.");
+          this.btnGuardar=false;
         });
 
       }

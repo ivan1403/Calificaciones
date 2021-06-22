@@ -48,9 +48,16 @@ procesosFiltrados:boolean;
   CargarProcesos(pagina:number){
     this.procesosFiltrados=false;
     this.procesoService.Cargar(this.rpp, pagina).subscribe((proceso:ApiResult)=>{
+     // console.log(proceso)
+      if(proceso.objModResultado!=null){
+        if(proceso.objModResultado.error)
+        {
+          this.toastr.error("Ocurrió un error al conectarse al servidor.");
+        }
+      }
       if(proceso.result!=null){
       this.procesos = proceso.result;
-      console.log(this.procesos)
+ //   console.log(this.procesos)
       this.paginador.inicializar(proceso.existeOtraPagina, pagina);
       }
       else{this.procesos=[]}
@@ -78,7 +85,7 @@ procesosFiltrados:boolean;
       this.CargarRefCondSelected(arg)
     })
     modalSelRefCondComponent.result.then((result) => {
-      console.log(result);
+   //   console.log(result);
     }, (reason) => {
 
     
@@ -92,7 +99,7 @@ procesosFiltrados:boolean;
     const modalVerLogCondComponent = this.modalService.open(ModalVerLogComponent, {ariaLabelledBy: 'modal-basic-title',size: 'md' , backdrop: 'static'});
     
     modalVerLogCondComponent.result.then((result) => {
-      console.log(result);
+     // console.log(result);
     }, (reason) => {
     });
   }
@@ -104,7 +111,7 @@ procesosFiltrados:boolean;
      modalTareasComponent.componentInstance.btnAbrirModalSelRefCond=false;
 
     modalTareasComponent.result.then((result) => {
-      console.log(result);
+     // console.log(result);
     }, (reason) => {
       this.CargarProcesos(1);
     });
@@ -155,7 +162,7 @@ procesosFiltrados:boolean;
   CargarRefCondSelected(relgaRefCond:any){  
   this.reglarefCondSelected=relgaRefCond
     if(this.reglarefCondSelected.nombreCondicion!=undefined)
-    this.InputSelRefCond=this.reglarefCondSelected.nombreCondicion+ ' / ' +this.reglarefCondSelected.referencia
+    this.InputSelRefCond=this.reglarefCondSelected.referencia+ ' / ' +this.reglarefCondSelected.nombreCondicion
 
   }
 
@@ -165,6 +172,12 @@ procesosFiltrados:boolean;
     if(this.reglarefCondSelected!=undefined){
       this.procesosFiltrados=true;
       this.procesoService.CargarXId(this.reglarefCondSelected.idCondicion,this.rpp, pagina).subscribe((proceso:ApiResult)=>{
+        if(proceso.objModResultado!=null){
+          if(proceso.objModResultado.error)
+          {
+            this.toastr.error("Ocurrió un error al conectarse al servidor.");
+          }
+        }
         if(proceso.result!=null){
         this.procesos = proceso.result;
         this.paginadorFiltrado.inicializar(proceso.existeOtraPagina, pagina);
@@ -172,7 +185,11 @@ procesosFiltrados:boolean;
         }
         else{this.procesos=[]}
       }, error=> {
-        console.log(error);
+        if(typeof error==="object"){
+          this.toastr.error("Ocurrió un error al conectarse al servidor.");
+        } else {
+          this.toastr.error(error);
+        }
       });
 
     }

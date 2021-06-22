@@ -88,6 +88,12 @@ export class Serrneg002mwComponent implements OnInit {
       
       if(this.regCondSelected==undefined && this.reRefSelected==undefined){ 
         this.confTecnicaService.Cargar(this.rpp, pagina).subscribe((confTecnica:ApiResult)=>{
+          if(confTecnica.objModResultado!=null){
+            if(confTecnica.objModResultado.error)
+            {
+              this.toastr.error("Ocurrió un error al conectarse al servidor.");
+            }
+          }
           if(confTecnica.result!=null){
           this.confTecnica = confTecnica.result;
           this.paginador.inicializar(confTecnica.existeOtraPagina, pagina);      
@@ -97,7 +103,7 @@ export class Serrneg002mwComponent implements OnInit {
           }
         }, error=> {
           if(typeof error==="object"){
-            this.toastr.error("Ocurrio un error al conectarse al servidor.");
+            this.toastr.error("Ocurrió un error al conectarse al servidor.");
           } else {
             this.toastr.error(error);
           }
@@ -126,7 +132,7 @@ export class Serrneg002mwComponent implements OnInit {
               }, error=> {
               console.log(error);
                 if(typeof error==="object"){
-                  this.toastr.error("Ocurrio un error al conectarse al servidor.");
+                  this.toastr.error("Ocurrió un error al conectarse al servidor.");
                 } else {
                   this.toastr.error(error);
                 }
@@ -162,7 +168,7 @@ export class Serrneg002mwComponent implements OnInit {
             }, error=> {
             console.log(error);
               if(typeof error==="object"){
-                this.toastr.error("Ocurrio un error al conectarse al servidor.");
+                this.toastr.error("Ocurrió un error al conectarse al servidor.");
               } else {
                 this.toastr.error(error);
               }
@@ -212,7 +218,7 @@ export class Serrneg002mwComponent implements OnInit {
         else{this.confTecnica=[]}
       }, error=> {
         if(typeof error==="object"){
-          this.toastr.error("Ocurrio un error al conectarse al servidor.");
+          this.toastr.error("Ocurrió un error al conectarse al servidor.");
         } else {
           this.toastr.error(error);
         }
@@ -229,7 +235,7 @@ export class Serrneg002mwComponent implements OnInit {
           else{this.confTecnica=[]}
         }, error=> {
           if(typeof error==="object"){
-            this.toastr.error("Ocurrio un error al conectarse al servidor.");
+            this.toastr.error("Ocurrió un error al conectarse al servidor.");
           } else {
             this.toastr.error(error);
           }

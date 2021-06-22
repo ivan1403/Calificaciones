@@ -55,12 +55,13 @@ export class ModalSelRefCondComponent implements OnInit {
 
     // }, error=> {
     //   if(typeof error==="object"){
-    //     this.toastr.error("Ocurrio un error al conectarse al servidor.");
+    //     this.toastr.error("Ocurrió un error al conectarse al servidor.");
     //   } else {
     //     this.toastr.error(error);
     //   }
     // });
     this.refCondService.CargarXFiltro(this.InputBuscarRefCond,this.rpp, pagina).subscribe((refCond:ApiResult)=>{
+      console.log(refCond)
       if(refCond.result!=null){
       this.SinBusqueda=false;  
       this.reglasRefCond = refCond.result;
@@ -71,7 +72,7 @@ export class ModalSelRefCondComponent implements OnInit {
 
     }, error=> {
       if(typeof error==="object"){
-        this.toastr.error("Ocurrio un error al conectarse al servidor.");
+        this.toastr.error("Ocurrió un error al conectarse al servidor.");
       } else {
         this.toastr.error(error);
       }
