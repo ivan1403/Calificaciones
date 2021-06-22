@@ -6,6 +6,7 @@ import { ConftecnicaService } from '../../../../services/conftecnica.service';
 import { ToastrService } from 'ngx-toastr';
 import {ConfTecnica} from '../../../../models/confTecnica'
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { nullSafeIsEquivalent } from '@angular/compiler/src/output/output_ast';
 
 @Component({
   selector: 'app-modal-add-mod-tec',
@@ -58,7 +59,7 @@ export class ModalAddModTecComponent implements OnInit {
 
   CargarConfTecModificar(confTecnicaMod){
     this.confTecnicaService.CargarConfTecnica(confTecnicaMod.idConfTecnica).subscribe((confTecnica:ApiResult)=>{
-    console.log( confTecnica.result);      
+    //console.log( confTecnica.result);      
       if(confTecnica.result!=null){
       this.RegistroNuevo=false;
       this.confTecnica = confTecnica.result;    
@@ -77,7 +78,7 @@ export class ModalAddModTecComponent implements OnInit {
     }, error=> {
      console.log(error);
       if(typeof error==="object"){
-        this.toastr.error("Ocurrio un error al conectarse al servidor.");
+        this.toastr.error("Ocurrió un error al conectarse al servidor.");
       } else {
         this.toastr.error(error);
       }
@@ -131,22 +132,49 @@ export class ModalAddModTecComponent implements OnInit {
             this.RegistroNuevo=false;
             this.registroAgregado=true;
          //   this.estatusConfTecnica=false;
-            this.toastr.success("Se agregó la configuración técnica exitosamente.");
-            this.btnGuardar=false;
+         console.log(response)
+            if(response.objModResultado.error){
+              this.toastr.error("Ocurrió un error al guardar la configuración técnica.");
+              this.btnGuardar=false;
+              this.RegistroNuevo=true;
+            }
+            if(!response.objModResultado.error){
+              this.toastr.success("Se agregó la configuración técnica exitosamente.");
+              this.btnGuardar=false;
+              this.RegistroNuevo=false;
+            }
+
             }, error=> {
               console.log(error);
-              this.toastr.error("Ocurrió un error al modificar la configuración técnica.");
+              this.toastr.error("Ocurrió un error al guardar la configuración técnica.");
               this.btnGuardar=false;
+              this.RegistroNuevo=true;
             });
         }
         if(!this.RegistroNuevo){
          // console.log(this.confTecnica)
           this.confTecnicaService.Modifica(this.confTecnica).then((response: ApiResult)=>{
             this.modalActive.dismiss()
-            this.toastr.success("Se modificó la configuración técnica exitosamente.");
+            console.log(response)
+            if(response.objModResultado!=null){
+              if(response.objModResultado.error){
+                this.toastr.error("Ocurrió un error al guardar la configuración técnica.");
+                this.btnGuardar=false;
+              }
+              if(!response.objModResultado.error){
+                this.toastr.success("Se actualizó la configuración técnica exitosamente.");
+                this.btnGuardar=false;
+              }
+            }
+            if(response.objModResultado==null){
+              this.toastr.success("Se actualizó la configuración técnica exitosamente.");
+                this.btnGuardar=false;
+            }
+
+
             }, error=> {
               console.log(error);
-              this.toastr.error("Ocurrió un error al modificar la configuración técnica.");
+              this.toastr.error("Ocurrió un error al guardar la configuración técnica.");
             });
         }
       }

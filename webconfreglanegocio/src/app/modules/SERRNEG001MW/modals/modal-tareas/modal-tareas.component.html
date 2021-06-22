@@ -162,7 +162,7 @@
         </div>
     </div>
     <div class="modal-footer">
-        <button type="submit" (click)="AgregarNuevoProceso()" class="btn btn-primary">Guardar</button>
+        <button type="submit" [disabled]="btnGuardar" (click)="AgregarNuevoProceso()" class="btn btn-primary">Guardar</button>
         <button type="submit" (click)="modalActive.dismiss()" class="btn btn-outline-dark">Cancelar</button>
     </div>
 </form>
