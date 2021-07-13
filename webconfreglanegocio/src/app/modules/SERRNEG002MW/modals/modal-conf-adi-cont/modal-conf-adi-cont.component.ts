@@ -5,6 +5,7 @@ import { ConfTecRepetitivoService } from '../../../../services/conf-tec-repetiti
 import { ToastrService } from 'ngx-toastr';
 import {confRepetitivo} from '../../../../models/confRepetitivo'
 import { DatePipe } from '@angular/common';
+import  Swal  from 'sweetalert2'
 
 @Component({
   selector: 'app-modal-conf-adi-cont',
@@ -25,6 +26,10 @@ export class ModalConfAdiContComponent implements OnInit {
   InputIdPrueba:number;
   confiactiva:boolean;
 
+  InputIdRepetitivo;
+  InputAliasRepeteitivo;
+  InputCondicion;
+
   InputAsientoRepetitivo:string;
   InputRequiereCFDi:string;
   InputAplicarPoliza:string;
@@ -33,6 +38,7 @@ export class ModalConfAdiContComponent implements OnInit {
   confRepetitivo:any= new confRepetitivo;
   idConfTecnica:number;
   registroNuevo:boolean=false;
+  confTecnicaPrincipal:any;
 
   formValido:boolean=true;
 
@@ -72,8 +78,19 @@ export class ModalConfAdiContComponent implements OnInit {
   InputTipoCambio;
   InputComentario;
 
+
   MensajeErrorCargarValidacion:string=null;
+  MensajeErrorObjetosVacios:string=null;
   ErrorCargarValidacion:boolean=false;
+  MensajePestanaErrores:string;
+
+  active = 1;
+
+  guardarDeshabilitado:boolean;
+  permitirActivarEstatus:boolean;
+
+  hayCambios:boolean;
+
 
   ngOnInit(): void {
   }
@@ -116,9 +133,29 @@ export class ModalConfAdiContComponent implements OnInit {
   }
 
   CargarConfRepetitivo(confRepetitivoMod){
+    this.confTecnicaPrincipal=confRepetitivoMod
     this.confiactiva=true;
-   /// console.log(confRepetitivoMod)
-    
+    this.guardarDeshabilitado=true;
+    console.log(this.confTecnicaPrincipal)
+   this.confTecRepetitivoService.CargarEncRepetitivo(confRepetitivoMod.idEncRepetitivo).subscribe((EncRepetitivo:ApiResult)=>{
+    console.log(EncRepetitivo.result)
+    if(EncRepetitivo.result!=null){
+      this.InputAliasRepeteitivo=EncRepetitivo.result.asientoRepetitivo
+      this.InputIdRepetitivo=confRepetitivoMod.idEncRepetitivo; 
+      this.InputCondicion=confRepetitivoMod.nombreCondicion; 
+    }
+
+  }, error=> {
+    console.log(error);
+    this.guardarDeshabilitado=true;
+    if(typeof error==="object"){
+      this.toastr.error("Ocurrió un error al conectarse al servidor.");
+      
+    } else {
+      this.toastr.error(error);
+    }
+  });  
+
     this.confTecRepetitivoService.Cargar(confRepetitivoMod.idConfTecnica).subscribe((confTecnica:ApiResult)=>{
      // console.log(confTecnica.result)
       if(confTecnica.result!=null){
@@ -129,21 +166,34 @@ export class ModalConfAdiContComponent implements OnInit {
       this.InputIntentoPoliza=this.confRepetitivo.numeroIntentos;
       this.InputIdPlantilla=this.confRepetitivo.idEncConfPlantilla;
       this.InputIdPrueba=this.confRepetitivo.spIdPrueba;
-      this.confiactiva=this.confRepetitivo.estatus;      
+      if(this.confRepetitivo.estatus==undefined || this.confRepetitivo.estatus==true){
+        this.permitirActivarEstatus=true; 
+      }
+      if(this.confRepetitivo.estatus==false){
+        this.confiactiva=this.confRepetitivo.estatus; 
+      }
+      console.log(this.confRepetitivo.estatus)
+       
       this.confActivaprincipal=confRepetitivoMod.estatus;
+
+
+
       }
       if(confTecnica.result==null){
-      // this.confRepetitivo=confTecnica.result;
-      this.registroNuevo=true;
-    //  this.confActivaprincipal=false;
+        // this.confRepetitivo=confTecnica.result;
+        this.registroNuevo=true;
+        // this.confActivaprincipal=false;
+        this.permitirActivarEstatus=true;    
       }
-      this.idConfTecnica=confRepetitivoMod.idConfTecnica;
-   
+
+      this.idConfTecnica=confRepetitivoMod.idConfTecnica;  
 
     }, error=> {
      console.log(error);
+     this.guardarDeshabilitado=true;
       if(typeof error==="object"){
         this.toastr.error("Ocurrió un error al conectarse al servidor.");
+        this.guardarDeshabilitado=true;
       } else {
         this.toastr.error(error);
       }
@@ -156,6 +206,7 @@ export class ModalConfAdiContComponent implements OnInit {
     if(this.formValido)
     {
       this.btnGuardar=true;
+      this.CompararOriginalConCambio();
       this.confRepetitivo.storeProcedure=this.InputStoreProcedure.trim();
       this.confRepetitivo.opcion=this.InputOpcion;
       this.confRepetitivo.idEncConfPlantilla=this.InputIdPlantilla;
@@ -163,6 +214,7 @@ export class ModalConfAdiContComponent implements OnInit {
       this.confRepetitivo.spIdPrueba=this.InputIdPrueba;
       this.confRepetitivo.estatus=this.confiactiva
      // console.log('guardar '+this.confRepetitivo.estatus)
+
       if(this.registroNuevo){
          this.confRepetitivo.idConfTecnica=this.idConfTecnica
          this.confTecRepetitivoService.Guardar(this.confRepetitivo).then((response: ApiResult)=>{
@@ -177,6 +229,7 @@ export class ModalConfAdiContComponent implements OnInit {
             this.toastr.success("Se agregó la configuración técnica de repetitivos exitosamente.");
             this.registroNuevo=false;
             this.btnGuardar=false;
+            this.CargarConfRepetitivo(this.confTecnicaPrincipal)
           }
            }, error=> {
              console.log(error);
@@ -188,6 +241,7 @@ export class ModalConfAdiContComponent implements OnInit {
        else{
         this.confTecRepetitivoService.Modificar(this.confRepetitivo).then((response: ApiResult)=>{
       //  this.modalActive.dismiss()
+      this.cargaDeValidacion=false
       if(response.objModResultado!=null){
         if(response.objModResultado.error){
           this.toastr.error("Ocurrió un error al modificar la configuración técnica de repetitivos."); 
@@ -196,11 +250,20 @@ export class ModalConfAdiContComponent implements OnInit {
         if(!response.objModResultado.error){
           this.toastr.success("Se actualizó la configuración técnica de repetitivos exitosamente.");
           this.btnGuardar=false;
+       
+          console.log("hay cambios"+this.hayCambios)
+          if(this.hayCambios){this.DesactivarConfTecnica()}          
+          this.CargarConfRepetitivo(this.confTecnicaPrincipal)
+          
         }
       }
       if(response.objModResultado==null){
         this.toastr.success("Se actualizó la configuración técnica de repetitivos exitosamente.");
         this.btnGuardar=false;
+
+        console.log("hay cambios"+this.hayCambios)
+        if(this.hayCambios){this.DesactivarConfTecnica()}    
+        this.CargarConfRepetitivo(this.confTecnicaPrincipal)
       }
         }, error=> {
           console.log(error);
@@ -216,37 +279,8 @@ export class ModalConfAdiContComponent implements OnInit {
   }
 
   onChangeConfiguracionActiva(e){
-
    // console.log(e.target.checked)
     this.confiactiva=!e.target.checked;
-    // if(!this.registroNuevo)
-    // {
-    //   if(!e.target.checked){
-    //     this.confiactiva=!e.target.checked;
-    //     this.confRepetitivo.estatus=!e.target.checked;
-    //     this.confTecRepetitivoService.Modificar(this.confRepetitivo).then((response: ApiResult)=>{
-    //       this.toastr.success("Se activó la configuración técnica del repetitivo.");
-    //     }, error=> {
-    //       console.log(error);
-    //       this.toastr.error("Ocurrió un error al modificar la configuración técnica de repetitivos.");
-    //     }); 
-    //   }
-    //   else{
-    //     this.confRepetitivo.estatus=!e.target.checked;
-    //     this.confiactiva=!e.target.checked;
-    //     this.confTecRepetitivoService.Modificar(this.confRepetitivo).then((response: ApiResult)=>{
-    //       this.toastr.success("Se desactivó la configuración técnica del repetitivo.");
-    //     }, error=> {
-    //       console.log(error);
-    //       this.toastr.error("Ocurrió un error al modificar la configuración técnica de repetitivos.");
-    //     });
-    //   }
-
-    // }
-    // else{
-
-    // }
-
   }
   
   ClickOnDisabled(){
@@ -255,6 +289,10 @@ export class ModalConfAdiContComponent implements OnInit {
     {
       this.toastr.error("No se puede activar si la configuración técnica esta desactivada");
     }
+    if(this.permitirActivarEstatus)
+    {
+      this.toastr.error("No se puede activar el estatus sin haber cargado una configuracion sin errores");
+    }
   }
 
   CargarValidacionConf(){
@@ -262,92 +300,230 @@ export class ModalConfAdiContComponent implements OnInit {
      this.cargaDeValidacion=false;
      this.ValidacionConf=null;
      let idConfTecnica:number=this.idConfTecnica;
+     this.MensajeErrorObjetosVacios=null
+
+     
+    this.CompararOriginalConCambio();
+    if(this.hayCambios){
+     // alert("Guarde cambios antes de cargar validacion")
+      Swal.fire('Guarde cambios antes de cargar validación')
+    }
+    else{
+      this.confTecRepetitivoService.CargarValidacion(idConfTecnica,this.InputIdPrueba).subscribe((validacionCofiguracion:ApiResult)=>{
+        // debugger
+         console.log(validacionCofiguracion.objModResultado)
+         if(validacionCofiguracion.result!=null && validacionCofiguracion.objModResultado.error==false){
+           this.cargaDeValidacion=true;
+           this.ValidacionConf=validacionCofiguracion.result;
+           this.MensajeErrorCargarValidacion=null;
+           this.LlenarCamposValidacion(this.ValidacionConf); 
+         }
+         if(validacionCofiguracion.objModResultado.error==true){
+          // this.toastr.error(validacionCofiguracion.objModResultado.mensajeError);
+           this.MensajeErrorCargarValidacion=validacionCofiguracion.objModResultado.mensajeError
+   
+   
+           if(validacionCofiguracion.result.prePoliza!=null ){
+             this.cargaDeValidacion=true;
+             this.ValidacionConf=validacionCofiguracion.result;          
+             this.LlenarCamposValidacion(this.ValidacionConf); 
+             if(validacionCofiguracion.result.doPrePoliza==null){
+   
+               this.MensajeErrorObjetosVacios="Pre-Poliza esta vacío"
+               this.guardarDeshabilitado=true;
+             }
+           }
+           if(validacionCofiguracion.result.doPrePoliza!=null){
+             this.cargaDeValidacion=true;
+             this.ValidacionConf=validacionCofiguracion.result;
+             this.LlenarCamposValidacion(this.ValidacionConf); 
+             if(validacionCofiguracion.result.PrePoliza==null){
+               this.MensajeErrorObjetosVacios="Datos de origen Pre-Poliza esta vacío"
+               this.guardarDeshabilitado=true;
+             }
+           }
+         }
+       }, error=> {
+        console.log(error);
+         if(typeof error==="object"){
+           this.guardarDeshabilitado=true;
+
+             this.toastr.error(error.error);
+           
+         } else {
+           this.toastr.error(error);
+         }
+       }); 
+    }
     
-    this.confTecRepetitivoService.CargarValidacion(idConfTecnica,this.InputIdPrueba,this.InputStoreProcedure).subscribe((validacionCofiguracion:ApiResult)=>{
-      
-      if(validacionCofiguracion.result!=null){
-        this.cargaDeValidacion=true;
-        this.ValidacionConf=validacionCofiguracion.result;
-        this.MensajeErrorCargarValidacion=null;
-        this.LlenarCamposValidacion(this.ValidacionConf); 
-      }
-      if(validacionCofiguracion.result==null){
   
-      }
-
-
-    }, error=> {
-     console.log(error.error);
-      if(typeof error==="object"){
-        if(error.error=='Object reference not set to an instance of an object.'){
-          this.toastr.error('No se encontró la SP');
-          this.MensajeErrorCargarValidacion='No se encontró la SP'
-        }
-        else{
-          this.toastr.error("Ocurrió un error al conectarse al servidor.");
-        }
-        
-  
-      } else {
-        this.toastr.error(error);
-      }
-    });   
-
   }
 
   LlenarCamposValidacion(ValidacionConf:any){
-    //  this.InputComentario=ValidacionConf.doPrePoliza.polizaComentarios;
-    //  this.EncabezadoUUID=ValidacionConf.prePoliza.lstModRelPolizaCFDi[0].uuid;
-    //console.log(ValidacionConf);
 
-    // this.InputidEncRepetitivoParam=this.InputComentario=ValidacionConf.doPrePoliza.idEncRepetitivoParam;
-    // const datepipe: DatePipe = new DatePipe('en-US')
-    // this.InputFechaDocto=    datepipe.transform(this.InputComentario=ValidacionConf.doPrePoliza.fechaDocto, 'dd-MM-yyyy');;
-    // this.InputIdMoneda=ValidacionConf.doPrePoliza.idMoneda;
-    // this.InputTipoCambio=ValidacionConf.doPrePoliza.tipoDeCambio;
-    // this.InputComentario=ValidacionConf.doPrePoliza.polizaComentarios;
-    this.DoPrepoliza=new Array;
-    this.DoPrepoliza.push(ValidacionConf.doPrePoliza)
-   // console.log(ValidacionConf)
-    
-
-    //this.ConfPolizaRepetitivo= new Array;
-    //this.ConfPolizaRepetitivo.push(ValidacionConf.prePoliza.objConfPolizaRepetitivo)
-    //console.log(ValidacionConf.prePoliza.objConfPolizaRepetitivo)
+    console.log(ValidacionConf)
 
     if(ValidacionConf.prePoliza!=null){
-      
-      this.InputIdEncabezadoRepetitivo=ValidacionConf.prePoliza.objConfPolizaRepetitivo.idEncRepetitivo;
-    if(ValidacionConf.prePoliza.objConfPolizaRepetitivo.aplicarPoliza==1){this.InputAplicarPoliza='Si';}
-    if(ValidacionConf.prePoliza.objConfPolizaRepetitivo.aplicarPoliza==0){this.InputAplicarPoliza='No';}
-    if(ValidacionConf.prePoliza.objConfPolizaRepetitivo.requiereCFDi==1){this.InputRequiereCFDi='Si'}
-    if(ValidacionConf.prePoliza.objConfPolizaRepetitivo.requiereCFDi==0){this.InputRequiereCFDi='No'}
-    this.InputAsientoRepetitivo=ValidacionConf.prePoliza.objConfPolizaRepetitivo.asientoRepetitivo;
+      this.ConfPolizaRepetitivo= new Array;
+      this.ConfPolizaRepetitivo.push(ValidacionConf.prePoliza.objConfPolizaRepetitivo)
+      console.log(this.ConfPolizaRepetitivo.aplicarPoliza)
+      if(this.ConfPolizaRepetitivo[0].aplicarPoliza==true){this.ConfPolizaRepetitivo[0].aplicarPoliza='Si';}
+      if(this.ConfPolizaRepetitivo[0].aplicarPoliza==false){this.ConfPolizaRepetitivo[0].aplicarPoliza='No';}
+      if(this.ConfPolizaRepetitivo[0].requiereCFDi==true){this.ConfPolizaRepetitivo[0].requiereCFDi='Si'}
+      if(this.ConfPolizaRepetitivo[0].requiereCFDi==false){this.ConfPolizaRepetitivo[0].requiereCFDi='No'}
+      //   this.InputIdEncabezadoRepetitivo=ValidacionConf.prePoliza.objConfPolizaRepetitivo.idEncRepetitivo;
+    // if(ValidacionConf.prePoliza.objConfPolizaRepetitivo.aplicarPoliza==1){this.InputAplicarPoliza='Si';}
+    // if(ValidacionConf.prePoliza.objConfPolizaRepetitivo.aplicarPoliza==0){this.InputAplicarPoliza='No';}
+    // if(ValidacionConf.prePoliza.objConfPolizaRepetitivo.requiereCFDi==1){this.InputRequiereCFDi='Si'}
+    // if(ValidacionConf.prePoliza.objConfPolizaRepetitivo.requiereCFDi==0){this.InputRequiereCFDi='No'}
+    // this.InputAsientoRepetitivo=ValidacionConf.prePoliza.objConfPolizaRepetitivo.asientoRepetitivo;
  
-    this.ModDetPoliza=ValidacionConf.prePoliza.lstModDetPoliza;
-    this.ModDetPolizaAdicionales=ValidacionConf.prePoliza.lstModDetPolizaAdicionales;
-    this.ModDetPolizaCentroCosto=ValidacionConf.prePoliza.lstModDetPolizaCentroCosto
-    this.ModDetPolizaTipoContabilidad=ValidacionConf.prePoliza.lstModDetPolizaTipoContabilidad;
-    this.ModRelPolizaCFDi=ValidacionConf.prePoliza.lstModRelPolizaCFDi;
-    this.ModEncPolizaAdicional=ValidacionConf.prePoliza.lstModEncPolizaAdicional;
-    
-    this.ModEncPoliza= new Array;
-    this.ModEncPoliza.push(ValidacionConf.prePoliza.objModEncPoliza)
-    if(this.ModEncPoliza[0]==null){this.ModEncPoliza=[]}
-    
-   // console.log(this.ModEncPoliza)
-
-    this.Msgs=ValidacionConf.prePoliza.lstMsg;
+      this.ModDetPoliza=ValidacionConf.prePoliza.lstModDetPoliza;
+      this.ModDetPolizaAdicionales=ValidacionConf.prePoliza.lstModDetPolizaAdicionales;
+      this.ModDetPolizaCentroCosto=ValidacionConf.prePoliza.lstModDetPolizaCentroCosto
+      this.ModDetPolizaTipoContabilidad=ValidacionConf.prePoliza.lstModDetPolizaTipoContabilidad;
+      this.ModRelPolizaCFDi=ValidacionConf.prePoliza.lstModRelPolizaCFDi;
+      this.ModEncPolizaAdicional=ValidacionConf.prePoliza.lstModEncPolizaAdicional;
+      
+      this.ModEncPoliza= new Array;
+      this.ModEncPoliza.push(ValidacionConf.prePoliza.objModEncPoliza)
+      if(this.ModEncPoliza[0]==null){this.ModEncPoliza=[]}
+      this.Msgs=ValidacionConf.prePoliza.lstMsg;
+      if(this.Msgs.length!=0){
+        this.toastr.error("Verifique los errores encontrados.");
+        this.guardarDeshabilitado=true;
+        this.MensajePestanaErrores='Errores'
+      }
+      if(this.Msgs.length==0){
+        this.guardarDeshabilitado=false;
+        this.MensajePestanaErrores='No hay Errores'
+        this.ActivarConfTecnicaCorrecta();
+      }
 
     }
-    
+    if(ValidacionConf.doPrePoliza!=null){
+      this.DoPrepoliza=new Array;
+      this.DoPrepoliza.push(ValidacionConf.doPrePoliza)
 
-    this.ModDetDOPoliza=ValidacionConf.doPrePoliza.lstModDetDOPoliza;
-    this.ModDetDOPolizaAdicional=ValidacionConf.doPrePoliza.lstModDetDOPolizaAdicional;
-    this.ModDetDOPolizaCFDi=ValidacionConf.doPrePoliza.lstModDetDOPolizaCFDi;
-    this.ModEncDOPolizaAdicional=ValidacionConf.doPrePoliza.lstModEncDOPolizaAdicional;
+      this.ModDetDOPoliza=ValidacionConf.doPrePoliza.lstModDetDOPoliza;
+      this.ModDetDOPolizaAdicional=ValidacionConf.doPrePoliza.lstModDetDOPolizaAdicional;
+      this.ModDetDOPolizaCFDi=ValidacionConf.doPrePoliza.lstModDetDOPolizaCFDi;
+      this.ModEncDOPolizaAdicional=ValidacionConf.doPrePoliza.lstModEncDOPolizaAdicional;
+    }
+
 
     
+  }
+
+  CerrarModal(){
+
+    this.CompararOriginalConCambio();
+    if(this.hayCambios){
+      Swal.fire({
+        title: "Los cambios no se han guardado ¿Desea continuar?",
+        icon: 'warning',
+        showCancelButton: true,
+        cancelButtonText: 'Cancelar',
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Sí',
+        allowEscapeKey: false,
+        allowOutsideClick: false
+
+      }).then((result) => {
+          if (result.isConfirmed) {
+            this.modalActive.dismiss()
+          }else{
+
+
+          }
+      });
+    }
+    else{
+      this.modalActive.dismiss()
+    }
+
+  }
+
+  CompararOriginalConCambio(){
+    this.hayCambios=false;
+    console.log(this.InputStoreProcedure + '   '+this.confRepetitivo.storeProcedure)
+    if( this.InputStoreProcedure!=this.confRepetitivo.storeProcedure){
+      this.hayCambios=true;
+    }
+    if( this.InputOpcion!=this.confRepetitivo.opcion){
+      this.hayCambios=true;
+    }
+    if( this.InputIntentoPoliza!=this.confRepetitivo.numeroIntentos){
+      this.hayCambios=true;
+    }
+    if( this.InputIdPlantilla!=this.confRepetitivo.idEncConfPlantilla){
+      this.hayCambios=true;
+    }
+    if( this.InputIdPrueba!=this.confRepetitivo.spIdPrueba){
+      this.hayCambios=true;
+    }
+   // console.log(this.confiactiva)
+    if( this.confiactiva!=this.confRepetitivo.estatus){
+      this.hayCambios=true;
+    }
+
+  }
+
+  ActivarConfTecnicaCorrecta(){
+    this.confiactiva=false
+    this.confRepetitivo.estatus=false;
+    this.permitirActivarEstatus=false;
+    this.confTecRepetitivoService.Modificar(this.confRepetitivo).then((response: ApiResult)=>{
+      //  this.modalActive.dismiss()
+      if(response.objModResultado!=null){
+        if(response.objModResultado.error){
+          this.toastr.error("Ocurrió un error al activar la configuración técnica de repetitivos."); 
+          this.btnGuardar=false;
+        }
+        if(!response.objModResultado.error){
+          this.toastr.success("Se activó la configuración técnica de repetitivos exitosamente.");
+          this.btnGuardar=false;
+          this.CargarConfRepetitivo(this.confTecnicaPrincipal)
+        }
+      }
+      if(response.objModResultado==null){
+        this.toastr.success("Se activó la configuración técnica de repetitivos exitosamente.");
+        this.btnGuardar=false;
+      }
+        }, error=> {
+          console.log(error);
+          this.toastr.error("Ocurrió un error al activar la configuración técnica de repetitivos.");
+          this.btnGuardar=false;
+        });   
+  }
+
+  DesactivarConfTecnica(){
+    this.confiactiva=false
+    this.confRepetitivo.estatus=true;
+    this.permitirActivarEstatus=true;
+    this.confTecRepetitivoService.Modificar(this.confRepetitivo).then((response: ApiResult)=>{
+      //  this.modalActive.dismiss()
+      if(response.objModResultado!=null){
+        if(response.objModResultado.error){
+          this.toastr.error("Ocurrió un error al desactivar la configuración técnica de repetitivos."); 
+          this.btnGuardar=false;
+        }
+        if(!response.objModResultado.error){
+          // this.toastr.success("Se activó la configuración técnica de repetitivos exitosamente.");
+          this.btnGuardar=false;
+          this.CargarConfRepetitivo(this.confTecnicaPrincipal)
+        }
+      }
+      if(response.objModResultado==null){
+        // this.toastr.success("Se activó la configuración técnica de repetitivos exitosamente.");
+        this.btnGuardar=false;
+      }
+        }, error=> {
+          console.log(error);
+          this.toastr.error("Ocurrió un error al desactivar la configuración técnica de repetitivos.");
+          this.btnGuardar=false;
+        });   
   }
 
 }

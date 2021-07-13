@@ -1,6 +1,6 @@
 <div class="modal-header">
     <h4 class="modal-title" id="modal-basic-title">Configuración adicional repetitivos contables</h4>
-    <button type="button" class="close" aria-label="Close" (click)="modalActive.dismiss()">
+    <button type="button" class="close" aria-label="Close" (click)="CerrarModal()">
       <span aria-hidden="true">&times;</span>
     </button>
 </div>
@@ -22,7 +22,7 @@
                 <input type="number" min="1" oninput="validity.valid||(value='');" name="InputOpcion" [(ngModel)]="InputOpcion" class="form-control">
             </div>
             <div class="col-sm text-left">
-                <label class="text-right h5 mt-2">IdPlantilla</label>
+                <label class="text-right h5 mt-2">Id Plantilla</label>
             </div>        
             <div class="col-sm">
                 <input type="number" min="1" oninput="validity.valid||(value='');" name="InputIdPlantilla" [(ngModel)]="InputIdPlantilla" class="form-control">
@@ -65,7 +65,7 @@
             </div>    
             <div class="col-sm-1" (click)="ClickOnDisabled()">
                 <div class="switcher switcher-success ">
-                    <input type="checkbox" [checked]="!confiactiva" [disabled]="confActivaprincipal" (change)="onChangeConfiguracionActiva($event)" id="idEliminarConf" >
+                    <input type="checkbox" [checked]="!confiactiva"  [disabled]="confActivaprincipal || permitirActivarEstatus" (change)="onChangeConfiguracionActiva($event)" id="idEliminarConf" >
                     <label for="idEliminarConf"></label>
                 </div>   
             </div>  
@@ -86,241 +86,244 @@
                 IdPrueba es requerido.
             </div>
         </div>
+
+
+        <div class="form-group text-left row" >            
+            <div class="col-sm text-left">
+                <label class="text-left h5 mt-2">Id Repetitivo</label>
+            </div>        
+            <div class="col-sm-1 text-left">
+                <input type="text" readonly  name="InputIdRepetitivo" [(ngModel)]="InputIdRepetitivo" class="form-control">
+            </div>       
+            <div class="col-sm text-left">
+                <label class="text-left h5 mt-2">Alias Repetitivo</label>
+            </div>    
+            <div class="col-sm-3 text-left">
+                <input type="text" readonly name="InputAliasRepeteitivo" [(ngModel)]="InputAliasRepeteitivo" class="form-control">
+            </div>   
+            <div class="col-sm">
+                <label class="text-left h5 mt-2"> Nombre Condicion</label>
+            </div>        
+            <div class="col-sm-3 ">
+                <input type="text" readonly  name="InputCondicion" [(ngModel)]="InputCondicion" class="form-control pull-left ">
+            </div>
+        </div>
         <div *ngIf="MensajeErrorCargarValidacion!=null" class="col-sm-12 alert alert-danger">
             {{MensajeErrorCargarValidacion}}
         </div>
+        <div *ngIf="MensajeErrorObjetosVacios!=null" class="col-sm-12 alert alert-danger">
+            {{MensajeErrorObjetosVacios}}
+        </div>
 
-        <div *ngIf="cargaDeValidacion" >
+    </div>
+    <div class="modal-footer">
+         <button type="submit" (click)="GuardarConfTecRepetitivo()" class="btn btn-success">Guardar</button>
+         <!-- <button type="submit" [disabled]="guardarDeshabilitado" (click)="GuardarConfTecRepetitivo()" class="btn btn-success">Activar Configuración</button> -->
+      
+    </div>
+</form>
 
-            <!-- <label class="text-right h5">Encabezado</label>
-            <div class="encabezado">
-                <div class="form-group text-left row">
-                    <div class="col-sm-2 text-left">
-                        <label class="text-left h6">Id Repetitivo parametro</label>
-                    </div>        
-                    <div class="col-sm-2 text-left">
-                        <input readonly type="text" name="InputidEncRepetitivoParam" [(ngModel)]="InputidEncRepetitivoParam" class="form-control">
-                    </div>       
-                    <div class="col-sm text-left">
-                        <label class="text-left h6">Fecha Documento</label>
-                    </div>        
-                    <div class="col-sm-2 text-left">
-                        <input readonly type="text"  name="InputFechaDocto" [(ngModel)]="InputFechaDocto" class="form-control">
-                    </div> 
-                    <div class="col-sm text-left">
-                        <label class="text-left h6">Id Moneda</label>
-                    </div>        
-                    <div class="col-sm-2 text-left">
-                        <input readonly type="text"  name="InputIdMoneda" [(ngModel)]="InputIdMoneda" class="form-control">
-                    </div> 
-                    
-                </div>
-                <div class="form-group text-left row">
-                    <div class="col-sm-2 text-left">
-                        <label class="text-left h6">Tipo de cambio</label>
-                    </div>        
-                    <div class="col-sm-2 text-left">
-                        <input readonly type="text"  name="InputTipoCambio" [(ngModel)]="InputTipoCambio" class="form-control">
-                    </div> 
-                    <div class="col-sm-2 text-left">
-                        <label class="text-left h6">Comentarios</label>
-                    </div>        
-                    <div class="col-sm text-left">
-                        <input readonly type="text"  name="InputComentario" [(ngModel)]="InputComentario" class="form-control">
-                    </div> 
-        
-                </div>
-            </div> -->
-            <label class="text-right h5">Configuración póliza Repetitivo</label>
-            <div class="encabezado">
-                <div class="form-group text-left row">
-                    <div class="col-sm text-left">
-                        <label class="text-left h6">Id Encabezado Repetitivo</label>
-                    </div>        
-                    <div class="col-sm text-left">
-                        <input readonly type="text" name="InputIdEncabezadoRepetitivo" [(ngModel)]="InputIdEncabezadoRepetitivo" class="form-control">
-                    </div>       
-                    <div class="col-sm text-left">
-                        <label class="text-left h6">Aplicar Poliza</label>
-                    </div>        
-                    <div class="col-sm text-left">
-                        <input readonly type="text"  name="InputAplicarPoliza" [(ngModel)]="InputAplicarPoliza" class="form-control">
-                    </div> 
-                    <div class="col-sm text-left">
-                        <label class="text-left h6">Requiere CFDi</label>
-                    </div>        
-                    <div class="col-sm text-left">
-                        <input readonly type="text"  name="InputRequiereCFDi" [(ngModel)]="InputRequiereCFDi" class="form-control">
-                    </div> 
-                    <div class="col-sm text-left">
-                        <label class="text-left h6">Asiento Repetitivo</label>
-                    </div>        
-                    <div class="col-sm text-left">
-                        <input readonly type="text"  name="InputAsientoRepetitivo" [(ngModel)]="InputAsientoRepetitivo" class="form-control">
-                    </div> 
-                </div>
+<div *ngIf="cargaDeValidacion" >
+          
+    <ul ngbNav #nav="ngbNav" [(activeId)]="active" class="nav-tabs">
+        <li [ngbNavItem]="1">
+          <a ngbNavLink>Información sistema origen</a>
+          <ng-template ngbNavContent>            
 
-            </div>
-
-            <label class="text-left h5">Encabezado</label>
+                <label class="text-left h5">Configuración póliza Repetitivo</label>
             <div class="row">
                 <div class="col-xs-12">
                     <table class="table table-responsive-sm table-hover table-bordered table-striped">
                         <thead class="thead-dark">
                             <tr class="text-center">
-                                <th style="vertical-align: middle;">Id Repetitivo parametro</th>
-                                <th style="vertical-align: middle;">Fecha Documento</th>
-                                <th style="vertical-align: middle;">Id Moneda</th>
-                                <th style="vertical-align: middle;">Tipo de cambio</th>
-                                <th style="vertical-align: middle;">Comentarios</th>
+                                <th style="vertical-align: middle;">Id Encabezado Repetitivo</th>
+                                <th style="vertical-align: middle;">Aplicar Poliza</th>
+                                <th style="vertical-align: middle;">Requiere CFDi</th>
+                                <th style="vertical-align: middle;">Asiento Repetitivo</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr *ngIf="DoPrepoliza==undefined || DoPrepoliza?.length==0 " >
-                                <td colspan="5" class="text-center">No tiene registros</td>  
-                            </tr>
-                            <tr *ngFor="let validacion of DoPrepoliza">
-                                <td>{{validacion.idEncRepetitivoParam}}</td>  
-                                <td>{{validacion.fechaDocto|date:"dd-MM-yyyy"}}</td>
-                                <td>{{validacion.idMoneda}}</td>
-                                <td>{{validacion.tipoDeCambio  | currency}}</td>  
-                                <td>{{validacion.polizaComentarios}}</td>
-                            
-                            </tr>      
-                        </tbody>
-                    </table>                
-                </div>
-            </div>
-
-
-            <label class="text-left h5">Encabezado póliza adicionales</label>
-            <div class="row">
-                <div class="col-xs-12">
-                    <table class="table table-responsive-sm table-hover table-bordered table-striped">
-                        <thead class="thead-dark">
-                            <tr class="text-center">
-                                <th style="vertical-align: middle;">Id Adicional</th>
-                                <th style="vertical-align: middle;">Id Valor adicional</th>
-                                <th style="vertical-align: middle;">Valor Adicional</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr *ngIf="ModEncDOPolizaAdicional==undefined || ModEncDOPolizaAdicional?.length==0 || ModEncDOPolizaAdicional==null" >
-                                <td colspan="3" class="text-center">No tiene registros</td>  
-                            </tr>
-                            <tr *ngFor="let validacion of ModEncDOPolizaAdicional">
-                                <td>{{validacion.idAdicional}}</td>  
-                                <td>{{validacion.idValorAdicional}}</td>
-                                <td>{{validacion.valorAdicional}}</td>
-                            
-                            </tr>      
-                        </tbody>
-                    </table>                
-                </div>
-            </div>
-            <label class="text-left h5">Detalle de póliza</label>
-            <div class="row ">
-                <div class="col-xs-12">
-                    <table class="table table-responsive-md table-hover table-bordered table-striped">
-                        <thead class="thead-dark">
-                            <tr class="text-center">
-                                <th style="vertical-align: middle;">Orden</th>
-                                <th style="vertical-align: middle;">Id Cuenta<br>contable dinámica</th>
-                                <th style="vertical-align: middle;">Cuenta<br>contable</th>
-                                <th style="vertical-align: middle;">Id Centro<br>Costo</th>
-                                <th style="vertical-align: middle;">Id Area</th>
-                                <th style="vertical-align: middle;">Orden cuenta<br>contable y área</th>
-                                <th style="vertical-align: middle;">Monto</th>
-                                <th style="vertical-align: middle;">Concepto</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr *ngIf="ModDetDOPoliza==undefined || ModDetDOPoliza?.length==0 || ModDetDOPoliza==null" >
-                                <td colspan="8" class="text-center">No tiene registros</td>  
-                            </tr>
-                            <tr *ngFor="let validacion of ModDetDOPoliza">
-                                <td>{{validacion.orden}}</td>  
-                                <td>{{validacion.idCuentaContDinamica}}</td>
-                                <td>{{validacion.cuentaCont}}</td>
-                                <td>{{validacion.idCentroCosto}}</td>
-                                <td>{{validacion.idArea}}</td>  
-                                <td>{{validacion.ordenCCyArea}}</td>
-                                <td>{{validacion.monto | currency}}</td>
-                                <td>{{validacion.concepto}}</td>                        
-                            </tr>     
-                        </tbody>
-                    </table>                
-                </div>
-            </div>
-            <label class="text-left h5">Detalle póliza adicional</label>
-            <div class="row ">
-                <div class="col-xs-12">
-                    <table class="table table-responsive-sm table-hover table-bordered table-striped">
-                        <thead class="thead-dark">
-                            <tr class="text-center">
-                                <th style="vertical-align: middle;">Id Partida</th>
-                                <th style="vertical-align: middle;">Id Adicional</th>
-                                <th style="vertical-align: middle;">Id Valor Adicional</th>
-                                <th style="vertical-align: middle;">Valor Adicional</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr *ngIf="ModDetDOPolizaAdicional==undefined ||  ModDetDOPolizaAdicional?.length==0 || ModDetDOPolizaAdicional==null" >
+                            <tr *ngIf="ConfPolizaRepetitivo?.length==0 || ConfPolizaRepetitivo==null" >
                                 <td colspan="4" class="text-center">No tiene registros</td>  
                             </tr>
-                            <tr *ngFor="let validacion of ModDetDOPolizaAdicional">
-                                <td>{{validacion.idPartida}}</td>  
-                                <td>{{validacion.idAdicional}}</td>
-                                <td>{{validacion.idValorAdicional}}</td>
-                                <td>{{validacion.valorAdicional}}</td>
-                                 
-                            </tr>    
-                        </tbody>
-                    </table>                
-                </div>
-            </div>
-    
-            <label class="text-left h5">CFDi</label>
-            <div class="row ">
-                <div class="col-xs-12">
-                    <table class="table table-responsive-md table-hover table-bordered table-striped">
-                        <thead class="thead-dark">
-                            <tr class="text-center">
-                                <th style="vertical-align: middle;">Id Relacion póliza</th>
-                                <th style="vertical-align: middle;">Documento</th>
-                                <th style="vertical-align: middle;">UUID</th>
-                                <th style="vertical-align: middle;">Tipo de cambio</th>
-                                <th style="vertical-align: middle;">Moneda</th>
-                                <th style="vertical-align: middle;">RFC Emisor</th>
-                                <th style="vertical-align: middle;">RFC Receptor</th>
-                                <th style="vertical-align: middle;">Total</th>
-                                <th style="vertical-align: middle;min-width: 80px;">Fecha</th>
-                                <th style="vertical-align: middle;">Referencia 1</th>
-                                <th style="vertical-align: middle;">Referencia 2</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr *ngIf="ModDetDOPolizaCFDi==undefined || ModDetDOPolizaCFDi?.length==0 || ModDetDOPolizaCFDi==null" >
-                                <td colspan="11" class="text-center">No tiene registros</td>  
-                            </tr>
-                            <tr *ngFor="let validacion of ModDetDOPolizaCFDi">
-                                <td>{{validacion.idRelPolizaCFDi}}</td>  
-                                <td>{{validacion.documento}}</td>
-                                <td>{{validacion.uuid}}</td>
-                                <td>{{validacion.tipoCambio}}</td>
-                                <td>{{validacion.moneda}}</td>  
-                                <td>{{validacion.rfcEmisor}}</td>
-                                <td>{{validacion.rfcReceptor}}</td>
-                                <td>{{validacion.total | currency}}</td> 
-                                <td>{{validacion.fecha|date:"dd-MM-yyyy"}}</td>
-                                <td>{{validacion.referencia1}}</td>
-                                <td>{{validacion.referencia2}}</td>                                 
+                            <tr *ngFor="let validacion of ConfPolizaRepetitivo">
+                                <td>{{validacion.idEncRepetitivo}}</td>  
+                                <td>{{validacion.aplicarPoliza}}</td>
+                                <td>{{validacion.requiereCFDi}}</td>
+                                <td>{{validacion.asientoRepetitivo}}</td>
                             </tr>      
                         </tbody>
                     </table>                
                 </div>
             </div>
+                <label class="text-left h5">Encabezado</label>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <table class="table table-responsive-sm table-hover table-bordered table-striped">
+                            <thead class="thead-dark">
+                                <tr class="text-center">
+                                    <th style="vertical-align: middle;">Id Repetitivo parametro</th>
+                                    <th style="vertical-align: middle;">Fecha Documento</th>
+                                    <th style="vertical-align: middle;">Id Moneda</th>
+                                    <th style="vertical-align: middle;">Tipo de cambio</th>
+                                    <th style="vertical-align: middle;">Comentarios</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngIf="DoPrepoliza==undefined || DoPrepoliza?.length==0 " >
+                                    <td colspan="5" class="text-center">No tiene registros</td>  
+                                </tr>
+                                <tr *ngFor="let validacion of DoPrepoliza">
+                                    <td>{{validacion.idEncRepetitivoParam}}</td>  
+                                    <td>{{validacion.fechaDocto|date:"dd-MM-yyyy"}}</td>
+                                    <td>{{validacion.idMoneda}}</td>
+                                    <td>{{validacion.tipoDeCambio  | currency}}</td>  
+                                    <td>{{validacion.polizaComentarios}}</td>
+                                
+                                </tr>      
+                            </tbody>
+                        </table>                
+                    </div>
+                </div>
     
+    
+                <label class="text-left h5">Encabezado póliza adicionales</label>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <table class="table table-responsive-sm table-hover table-bordered table-striped">
+                            <thead class="thead-dark">
+                                <tr class="text-center">
+                                    <th style="vertical-align: middle;">Id Adicional</th>
+                                    <th style="vertical-align: middle;">Id Valor adicional</th>
+                                    <th style="vertical-align: middle;">Valor Adicional</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngIf="ModEncDOPolizaAdicional==undefined || ModEncDOPolizaAdicional?.length==0 || ModEncDOPolizaAdicional==null" >
+                                    <td colspan="3" class="text-center">No tiene registros</td>  
+                                </tr>
+                                <tr *ngFor="let validacion of ModEncDOPolizaAdicional">
+                                    <td>{{validacion.idAdicional}}</td>  
+                                    <td>{{validacion.idValorAdicional}}</td>
+                                    <td>{{validacion.valorAdicional}}</td>
+                                
+                                </tr>      
+                            </tbody>
+                        </table>                
+                    </div>
+                </div>
+                <label class="text-left h5">Detalle de póliza</label>
+                <div class="row ">
+                    <div class="col-xs-12">
+                        <table class="table table-responsive-md table-hover table-bordered table-striped">
+                            <thead class="thead-dark">
+                                <tr class="text-center">
+                                    <th style="vertical-align: middle;">Orden</th>
+                                    <th style="vertical-align: middle;">Id Cuenta<br>contable dinámica</th>
+                                    <th style="vertical-align: middle;">Cuenta<br>contable</th>
+                                    <th style="vertical-align: middle;">Id Centro<br>Costo</th>
+                                    <th style="vertical-align: middle;">Id Area</th>
+                                    <th style="vertical-align: middle;">Orden cuenta<br>contable y área</th>
+                                    <th style="vertical-align: middle;">Monto</th>
+                                    <th style="vertical-align: middle;">Concepto</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngIf="ModDetDOPoliza==undefined || ModDetDOPoliza?.length==0 || ModDetDOPoliza==null" >
+                                    <td colspan="8" class="text-center">No tiene registros</td>  
+                                </tr>
+                                <tr *ngFor="let validacion of ModDetDOPoliza">
+                                    <td>{{validacion.orden}}</td>  
+                                    <td>{{validacion.idCuentaContDinamica}}</td>
+                                    <td>{{validacion.cuentaCont}}</td>
+                                    <td>{{validacion.idCentroCosto}}</td>
+                                    <td>{{validacion.idArea}}</td>  
+                                    <td>{{validacion.ordenCCyArea}}</td>
+                                    <td>{{validacion.monto | currency}}</td>
+                                    <td>{{validacion.concepto}}</td>                        
+                                </tr>     
+                            </tbody>
+                        </table>                
+                    </div>
+                </div>
+                <label class="text-left h5">Detalle póliza adicional</label>
+                <div class="row ">
+                    <div class="col-xs-12">
+                        <table class="table table-responsive-sm table-hover table-bordered table-striped">
+                            <thead class="thead-dark">
+                                <tr class="text-center">
+                                    <th style="vertical-align: middle;">Id Partida</th>
+                                    <th style="vertical-align: middle;">Campo Origen</th>
+                                    <th style="vertical-align: middle;">Id Adicional</th>
+                                    <th style="vertical-align: middle;">Id Valor Adicional</th>
+                                    <th style="vertical-align: middle;">Valor Adicional</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngIf="ModDetDOPolizaAdicional==undefined ||  ModDetDOPolizaAdicional?.length==0 || ModDetDOPolizaAdicional==null" >
+                                    <td colspan="5" class="text-center">No tiene registros</td>  
+                                </tr>
+                                <tr *ngFor="let validacion of ModDetDOPolizaAdicional">
+                                    <td>{{validacion.idPartida}}</td>  
+                                    <td>{{validacion.campoOrigen}}</td>  
+                                    <td>{{validacion.idAdicional}}</td>
+                                    <td>{{validacion.idValorAdicional}}</td>
+                                    <td>{{validacion.valorAdicional}}</td>
+                                     
+                                </tr>    
+                            </tbody>
+                        </table>                
+                    </div>
+                </div>
+        
+                <label class="text-left h5">CFDi</label>
+                <div class="row ">
+                    <div class="col-xs-12">
+                        <table class="table table-responsive-lg table-hover table-bordered table-striped">
+                            <thead class="thead-dark">
+                                <tr class="text-center">
+                                    <th style="vertical-align: middle;">Id Relacion póliza</th>
+                                    <th style="vertical-align: middle;">Documento</th>
+                                    <th style="vertical-align: middle;">UUID</th>
+                                    <th style="vertical-align: middle;">Tipo de cambio</th>
+                                    <th style="vertical-align: middle;">Moneda</th>
+                                    <th style="vertical-align: middle;">RFC Emisor</th>
+                                    <th style="vertical-align: middle;">RFC Receptor</th>
+                                    <th style="vertical-align: middle;">Total</th>
+                                    <th style="vertical-align: middle;min-width: 80px;">Fecha</th>
+                                    <th style="vertical-align: middle;">Referencia 1</th>
+                                    <th style="vertical-align: middle;">Referencia 2</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngIf="ModDetDOPolizaCFDi==undefined || ModDetDOPolizaCFDi?.length==0 || ModDetDOPolizaCFDi==null" >
+                                    <td colspan="11" class="text-center">No tiene registros</td>  
+                                </tr>
+                                <tr *ngFor="let validacion of ModDetDOPolizaCFDi">
+                                    <td>{{validacion.idRelPolizaCFDi}}</td>  
+                                    <td>{{validacion.documento}}</td>
+                                    <td>{{validacion.uuid}}</td>
+                                    <td>{{validacion.tipoCambio}}</td>
+                                    <td>{{validacion.moneda}}</td>  
+                                    <td>{{validacion.rfcEmisor}}</td>
+                                    <td>{{validacion.rfcReceptor}}</td>
+                                    <td>{{validacion.total | currency}}</td> 
+                                    <td>{{validacion.fecha|date:"dd-MM-yyyy"}}</td>
+                                    <td>{{validacion.referencia1}}</td>
+                                    <td>{{validacion.referencia2}}</td>                                 
+                                </tr>      
+                            </tbody>
+                        </table>                
+                    </div>
+                </div>
+        
+    
+          </ng-template>
+        </li>
+        <li [ngbNavItem]="2">
+          <a ngbNavLink>Información sistema origen y repetitivo (Pre-Póliza)</a>
+          <ng-template ngbNavContent>
+            
             <label class="text-left h5">Encabezado de póliza</label>
             <div class="row">
                 <div class="col-xs-12">
@@ -412,32 +415,7 @@
                     </table>                
                 </div>
             </div>
-            <!-- <label class="text-left h5">Configuración póliza Repetitivo</label>
-            <div class="row">
-                <div class="col-xs-12">
-                    <table class="table table-responsive-sm table-hover table-bordered table-striped">
-                        <thead class="thead-dark">
-                            <tr class="text-center">
-                                <th style="vertical-align: middle;">Id Encabezado Repetitivo</th>
-                                <th style="vertical-align: middle;">Aplicar Poliza</th>
-                                <th style="vertical-align: middle;">Requiere CFDi</th>
-                                <th style="vertical-align: middle;">Asiento Repetitivo</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr *ngIf="ConfPolizaRepetitivo?.length==0 || ConfPolizaRepetitivo==null" >
-                                <td colspan="3" class="text-center">No tiene registros</td>  
-                            </tr>
-                            <tr *ngFor="let validacion of ConfPolizaRepetitivo">
-                                <td>{{validacion.idEncRepetitivo}}</td>  
-                                <td>{{validacion.aplicarPoliza}}</td>
-                                <td>{{validacion.requiereCFDi}}</td>
-                                <td>{{validacion.asientoRepetitivo}}</td>
-                            </tr>      
-                        </tbody>
-                    </table>                
-                </div>
-            </div> -->
+            
             <label class="text-left h5">Detalle de póliza</label>
             <div class="row">
                 <div class="col-xs-12">
@@ -574,14 +552,14 @@
             <label class="text-left h5">CFDi</label>
             <div class="row ">
                 <div class="col-xs-12">
-                    <table class="table table-responsive-lg table-hover table-bordered table-striped">
+                    <table class="table table-responsive table-hover table-bordered table-striped">
                         <thead class="thead-dark">
                             <tr class="text-center">
                                 <th style="vertical-align: middle;">Id Relacion póliza CFDi</th>
                                 <th style="vertical-align: middle;">Id Encabezado de poliza</th>
                                 <th style="vertical-align: middle;">Id Ejercicio</th>
                                 <th style="vertical-align: middle;">Documento</th>
-                                <th style="vertical-align: middle;min-width: 100px;">UUID</th>
+                                <th style="vertical-align: middle;">UUID</th>
                                 <th style="vertical-align: middle;">Tipo de cambio</th>
                                 <th style="vertical-align: middle;">Moneda</th>
                                 <th style="vertical-align: middle;">RFC Emisor</th>
@@ -616,17 +594,43 @@
                     </table>                
                 </div>
             </div>
-            <div class="text-left h6">
-                <li *ngFor="let msg of Msgs" >
-                    <label class=" alert-danger" >{{ msg.mensajeError }}</label>
-                </li>
-            </div>
-        </div>
+    
+          </ng-template>
+        </li>
 
-    </div>
-    <div class="modal-footer">
-       
+        <li [ngbNavItem]="3">
+            <a ngbNavLink>{{MensajePestanaErrores}} &nbsp;  <i *ngIf="Msgs.length!=0" class="fas fa-exclamation-triangle" style="color:rgb(235, 81, 81)"  ></i> <i *ngIf="Msgs.length==0" class="fas fa-check-square" style="font-size:15px;color:rgb(29, 187, 29)"></i></a>
+            <ng-template ngbNavContent>
+              
+                <div class="row">
+                    <div class="col-xs-12">
+                        <table class="table table-responsive-sm table-hover table-bordered table-striped">
+                            <thead class="thead-dark">
+                                <tr class="text-center">
+                                    <th style="vertical-align: middle;">Lista de errores</th>
+                      
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngIf="Msgs==undefined || Msgs?.length==0 || ModDetPolizaTipoContabilidad==null" >
+                                    <td colspan="1" class="text-center">No hay errores</td>  
+                                </tr>
+                                <tr *ngFor="let msg of Msgs">
+                                    <td>{{msg.mensajeError }}</td>                                  
+                                </tr>     
+                            </tbody>
+                        </table>                
+                    </div>
+                </div>
 
-        <button type="submit" (click)="GuardarConfTecRepetitivo()" class="btn btn-success">Guardar</button>
-    </div>
-</form>
+            </ng-template>
+          </li>
+    
+      </ul>
+    <div [ngbNavOutlet]="nav" class=""></div>
+    
+            
+   
+</div>
+ 
+  

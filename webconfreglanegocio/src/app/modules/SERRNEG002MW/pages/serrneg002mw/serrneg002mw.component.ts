@@ -10,6 +10,7 @@ import { ApiResult } from '../../../../models/common/apiResult';
 import { ToastrService } from 'ngx-toastr';
 import {ConfTecnica} from '../../../../models/confTecnica'
 
+
 @Component({
   selector: 'app-serrneg002mw',
   templateUrl: './serrneg002mw.component.html',
@@ -69,7 +70,7 @@ export class Serrneg002mwComponent implements OnInit {
 
    AbrirModalAddModTec(confTecnica) {
     const modalAddModTecComponent = this.modalService.open(ModalAddModTecComponent, {ariaLabelledBy: 'modal-basic-title',size: 'lg' , backdrop: 'static'});
-
+console.log(confTecnica)
     modalAddModTecComponent.result.then((result) => {
       console.log(result);
     }, (reason) => {     
@@ -96,6 +97,7 @@ export class Serrneg002mwComponent implements OnInit {
           }
           if(confTecnica.result!=null){
           this.confTecnica = confTecnica.result;
+          console.log(this.confTecnica)
           this.paginador.inicializar(confTecnica.existeOtraPagina, pagina);      
           }
           else{
@@ -119,9 +121,11 @@ export class Serrneg002mwComponent implements OnInit {
         
               //modificar estatus conf tecniva repetitivo
               this.confTecnicaRepetitivo.Cargar(confTecnica.idConfTecnica).subscribe((confTecnica:ApiResult)=>{
-                confTecnica.result.estatus=false;
+
                 //console.log(confTecnica.result)
                 if(confTecnica.result!=null){
+                  confTecnica.result.estatus=false;
+                  //cambiar estatus confTecnica Repetitivo
                   this.confTecnicaRepetitivo.Modificar(confTecnica.result).then((response: ApiResult)=>{
                     }, error=> {
                       console.log(error);
@@ -155,9 +159,10 @@ export class Serrneg002mwComponent implements OnInit {
 
             //modificar estatus conf tecniva repetitivo
             this.confTecnicaRepetitivo.Cargar(confTecnica.idConfTecnica).subscribe((confTecnica:ApiResult)=>{
-              confTecnica.result.estatus=true;
+
               //console.log(confTecnica.result)
               if(confTecnica.result!=null){
+                confTecnica.result.estatus=true;
                 this.confTecnicaRepetitivo.Modificar(confTecnica.result).then((response: ApiResult)=>{
                   }, error=> {
                     console.log(error);

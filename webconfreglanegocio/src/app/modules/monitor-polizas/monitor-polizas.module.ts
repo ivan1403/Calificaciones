@@ -8,10 +8,13 @@ import { MonitorPolizasRoutingModule } from './monitor-polizas-routing.module';
 import { MonitorPolizasComponent } from './pages/monitor-polizas/monitor-polizas.component';
 import { ModalSelRepetitivoComponent } from './modals/modal-sel-repetitivo/modal-sel-repetitivo.component';
 import { ModalSelInfoOrigenComponent } from './modals/modal-sel-info-origen/modal-sel-info-origen.component';
+import { ModalHistorialEjecucionComponent } from './modals/modal-historial-ejecucion/modal-historial-ejecucion.component';
+import { ModalInfoOrigenComponent } from './modals/modal-info-origen/modal-info-origen.component';
+
 
 
 @NgModule({
-  declarations: [MonitorPolizasComponent, ModalSelRepetitivoComponent, ModalSelInfoOrigenComponent],
+  declarations: [MonitorPolizasComponent, ModalSelRepetitivoComponent, ModalSelInfoOrigenComponent, ModalHistorialEjecucionComponent, ModalInfoOrigenComponent],
   imports: [
     CommonModule,
     MonitorPolizasRoutingModule,

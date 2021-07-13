@@ -48,7 +48,7 @@ procesosFiltrados:boolean;
   CargarProcesos(pagina:number){
     this.procesosFiltrados=false;
     this.procesoService.Cargar(this.rpp, pagina).subscribe((proceso:ApiResult)=>{
-     // console.log(proceso)
+      console.log(proceso)
       if(proceso.objModResultado!=null){
         if(proceso.objModResultado.error)
         {
@@ -124,6 +124,7 @@ procesosFiltrados:boolean;
     modalTareasComponent.result.then((result) => {
       console.log(result);
     }, (reason) => {
+      this.CargarProcesos(1);
     });
     const procesoClone = JSON.parse(JSON.stringify(proceso));
     modalTareasComponent.componentInstance.ModificarDatos(procesoClone);

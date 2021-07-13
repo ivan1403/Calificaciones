@@ -1,6 +1,6 @@
 <div class="modal-header">
     <h4 class="modal-title" id="modal-basic-title">Tareas programadas</h4>
-    <button type="button" class="close" aria-label="Close" (click)="modalActive.dismiss()">
+    <button type="button" class="close" aria-label="Close" (click)="CerrarModalTareas()">
       <span aria-hidden="true">&times;</span>
     </button>
 </div>
@@ -163,6 +163,6 @@
     </div>
     <div class="modal-footer">
         <button type="submit" [disabled]="btnGuardar" (click)="AgregarNuevoProceso()" class="btn btn-primary">Guardar</button>
-        <button type="submit" (click)="modalActive.dismiss()" class="btn btn-outline-dark">Cancelar</button>
+        <button type="submit" (click)="CerrarModalTareas()" class="btn btn-outline-dark">Cancelar</button>
     </div>
 </form>

@@ -26,9 +26,17 @@ export class ConfTecRepetitivoService {
     return this.httpClient.post<ApiResult>(this.url+'modifica',ConfTecnica).toPromise();
   }
 
-  CargarValidacion(IdConfTecnica:number,IdDoctoOrigen:number,storeProcedure:string){
-    return this.httpClient.get<ApiResult>(`${this.urlValidacion}validar?IdConfTecnica=${IdConfTecnica}&IdDoctoOrigen=${IdDoctoOrigen}&storeProcedure=${storeProcedure}`);
+  CargarValidacion(IdConfTecnica:number,IdDoctoOrigen:number){
+    return this.httpClient.get<ApiResult>(`${this.urlValidacion}validar?IdConfTecnica=${IdConfTecnica}&IdDoctoOrigen=${IdDoctoOrigen}`);
   }
 
+  CargarEncRepetitivo(Id:number):Observable<ApiResult>
+  {
+    return this.httpClient.get<ApiResult>(this.url+'CargarEncRepetitivo?idEncRepetitivo=' + Id);
+  }
 
+  ValidarInformacionOrigen(IdConfTecnica:number,IdDoctoOrigen:number,IdTransaccionPrePoliza:number){
+    return this.httpClient.get<ApiResult>(`${this.urlValidacion}ValidarInformacionOrigen?IdConfTecnica=${IdConfTecnica}&IdDoctoOrigen=${IdDoctoOrigen}&IdTransaccion=${IdTransaccionPrePoliza}`);
+  }
+  
 }
