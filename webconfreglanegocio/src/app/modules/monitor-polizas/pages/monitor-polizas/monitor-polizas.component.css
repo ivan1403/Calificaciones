@@ -1,9 +1,9 @@
 tbody>tr>:nth-child(n+7){
     text-align:center;
    }
-tbody>tr>:nth-child(9){
+/* tbody>tr>:nth-child(9){
 text-align:left;
-}
+} */
    
 td{
     vertical-align: middle;
@@ -27,3 +27,10 @@ input.checkbox {
     display: flex;
     justify-content: flex-end;
 }
+
+
+
+   
+
+
+  

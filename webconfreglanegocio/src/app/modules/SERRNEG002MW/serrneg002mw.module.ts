@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule,ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from '../../shared/shared.module';
 
@@ -10,6 +11,7 @@ import { ModalAddModTecComponent } from './modals/modal-add-mod-tec/modal-add-mo
 import { ModalConfAdiContComponent } from './modals/modal-conf-adi-cont/modal-conf-adi-cont.component';
 
 
+
 @NgModule({
   declarations: [Serrneg002mwComponent, ModalSelRefComponent, ModalAddModTecComponent, ModalConfAdiContComponent],
   imports: [
@@ -17,7 +19,8 @@ import { ModalConfAdiContComponent } from './modals/modal-conf-adi-cont/modal-co
     SERRNEG002MWRoutingModule,
     FormsModule,
     ReactiveFormsModule,
-    SharedModule
+    SharedModule,
+    NgbModule 
   ]
 })
 export class SERRNEG002MWModule { }

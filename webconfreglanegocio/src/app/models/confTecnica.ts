@@ -4,9 +4,10 @@ export class ConfTecnica
     idCondicion:number;
     idConfTecnica:number;
     nombreCondicion:string;
+    referenciaCondicion:string;
     storeProcedure:string;
     opcion:number;
-    comentario:number;
+    comentario:string;
     usuarioInsert:string;
     usuarioModifica:string;
     usuarioBaja:string;
@@ -14,4 +15,5 @@ export class ConfTecnica
     fechaModifica:Date;
     fechaBaja:Date;
     estatus:boolean;
+    estatusTransaccion:boolean;
 }

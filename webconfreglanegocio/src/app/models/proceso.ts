@@ -2,6 +2,7 @@ export class Proceso
 {
     idTarea:number; 
     idCondicion:number;
+    IdEstatusEjecucion:number;
     descripcionCondicion:string;
     comentario:string;
     frecuencia:string;

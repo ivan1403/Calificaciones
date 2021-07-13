@@ -13,6 +13,8 @@ import {ProcesosComponent} from '../../pages/procesos/procesos.component'
 import { RefCondService } from '../../../../services/ref-cond.service';
 import { ToastrService } from 'ngx-toastr';
 import { EMPTY } from 'rxjs';
+import  Swal  from 'sweetalert2'
+
 @Injectable()
 export class CustomDateParserFormatter extends NgbDateParserFormatter {
 
@@ -81,7 +83,7 @@ export class ModalTareasComponent implements OnInit {
 
   FrecuenciaSelected:string;
   SelectFrecuencia:any
-  
+
   InputHoraInicio:boolean=false;
   InputFechaInicio:boolean=false;
   inputHoraFin:boolean=false;
@@ -98,7 +100,7 @@ export class ModalTareasComponent implements OnInit {
 
   FechaInicio: any;
   Comentarios:any;
-  
+
   FormValido=false;
 
   ReferenciaRequerido:boolean=false;
@@ -114,8 +116,12 @@ export class ModalTareasComponent implements OnInit {
   ComentariosSobrepasa:boolean=false;
   comentarioLimite:number
 
+  hayCambios:boolean
+  condicionOriginal:any;
+  RepetirSemanaOriginal:string;
+  
   ngOnInit(): void {
-   this.reglarefCondSelected=null;  
+   this.reglarefCondSelected=null;
   }
 
   abrirModalSelRefCond() {
@@ -137,16 +143,16 @@ export class ModalTareasComponent implements OnInit {
 
   onTimeChangeSelectHoraInicio(value:{hour:string,minute:string})
   {
-    let formattedDate=Date.parse('01-01-00'+value.hour+':'+value.minute+':00'); 
+    let formattedDate=Date.parse('01-01-00'+value.hour+':'+value.minute+':00');
     const datepipe: DatePipe = new DatePipe('en-US')
-    this.HoraInicio= datepipe.transform(formattedDate, 'HH:mm');   
+    this.HoraInicio= datepipe.transform(formattedDate, 'HH:mm');
   }
 
   onTimeChangeSelectHoraFin(value:{hour:string,minute:string})
   {
-    let formattedDate=Date.parse('01-01-00'+value.hour+':'+value.minute+':00'); 
+    let formattedDate=Date.parse('01-01-00'+value.hour+':'+value.minute+':00');
     const datepipe: DatePipe = new DatePipe('en-US')
-    this.HoraFin= datepipe.transform(formattedDate, 'HH:mm');   
+    this.HoraFin= datepipe.transform(formattedDate, 'HH:mm');
   }
 
   HoraFinDeshabilitado()
@@ -154,20 +160,20 @@ export class ModalTareasComponent implements OnInit {
      this.HoraFin=undefined
      this.SelHoraFin = {hour: 0, minute: 0};
   }
-  
+
   onChangeCheckboxDiaSemana(e) {
     let DiasSemanaSeleccionado = [];
     this.DiasSemana.forEach((d) => {
       if(d.name==e.target.value)
       {
-        d.checked=!(d.checked);   
+        d.checked=!(d.checked);
       }
     });
     this.DiasSemana.filter(d =>d.checked===true).forEach((d) => {
-      DiasSemanaSeleccionado.push(d.name); 
+      DiasSemanaSeleccionado.push(d.name);
     });
     this.RepetirDiasSemana=DiasSemanaSeleccionado.join(', ');
-  }  
+  }
 
   onChangeFrecuenciaSelect(e){
     this.FrecuenciaRequerido=false;
@@ -193,12 +199,12 @@ export class ModalTareasComponent implements OnInit {
 
         this.InputFechaInicio=true;
         this.InputHoraInicio=true;
-        this.InputCheckboxHoraFin=true;        
+        this.InputCheckboxHoraFin=true;
 
         this.RepetirDia='';
         this.RepetirDiasSemana='';
-        this.RepetirMes='';     
-        this.DiasSemana.forEach((d) => {{d.checked=false;}});        
+        this.RepetirMes='';
+        this.DiasSemana.forEach((d) => {{d.checked=false;}});
         break;
       case 'Diario':
         this.FrecuenciaDiario=true;
@@ -208,7 +214,12 @@ export class ModalTareasComponent implements OnInit {
 
         this.InputFechaInicio=true;
         this.InputHoraInicio=true;
-        this.InputCheckboxHoraFin=true;
+
+        this.InputCheckboxHoraFin=false;
+        this.inputHoraFin=false;
+        this.checkboxHoraFin=false;
+        this.HoraFin=undefined;
+        this.SelHoraFin = {hour: 0, minute: 0};
 
         this.RepetirHora='';
         this.RepetirDiasSemana='';
@@ -223,7 +234,12 @@ export class ModalTareasComponent implements OnInit {
 
         this.InputFechaInicio=true;
         this.InputHoraInicio=true;
-        this.InputCheckboxHoraFin=true;
+
+        this.InputCheckboxHoraFin=false;
+        this.inputHoraFin=false;
+        this.checkboxHoraFin=false;
+        this.HoraFin=undefined;
+        this.SelHoraFin = {hour: 0, minute: 0};
 
         this.RepetirHora='';
         this.RepetirDia='';
@@ -234,22 +250,27 @@ export class ModalTareasComponent implements OnInit {
         this.FrecuenciaHora =false;
         this.FrecuenciaDiario=false;
         this.FrecuenciaSemanal=false;
-        
+
         this.InputFechaInicio=true;
         this.InputHoraInicio=true;
-        this.InputCheckboxHoraFin=true;
+        
+        this.InputCheckboxHoraFin=false;
+        this.inputHoraFin=false;
+        this.checkboxHoraFin=false;
+        this.HoraFin=undefined;
+        this.SelHoraFin = {hour: 0, minute: 0};
 
         this.RepetirHora='';
         this.RepetirDia='';
         this.RepetirDiasSemana='';
         this.DiasSemana.forEach((d) => {{d.checked=false;}});
-        break;     
+        break;
         case 'Manual':
         this.FrecuenciaMensual=false;
         this.FrecuenciaHora =false;
         this.FrecuenciaDiario=false;
         this.FrecuenciaSemanal=false;
-        
+
         this.InputFechaInicio=false;
         this.InputHoraInicio=false;
         this.inputHoraFin=false;
@@ -260,7 +281,7 @@ export class ModalTareasComponent implements OnInit {
         this.FechaInicio='';
         this.SelHoraInicio = {hour: 0, minute: 0};
         this.SelHoraFin = {hour: 0, minute: 0};
-        
+
         this.RepetirHora='';
         this.RepetirDia='';
         this.RepetirDiasSemana='';
@@ -282,11 +303,11 @@ export class ModalTareasComponent implements OnInit {
     this.FrecuenciaHora =false;
     this.FrecuenciaDiario=false;
     this.FrecuenciaSemanal=false;
-    
+
     this.InputselRefCond=undefined;
     this.reglarefCondSelectedLocal=undefined;
    // this.refcondData.ClearReglaRefCond();
-    this.FrecuenciaSelected=undefined   
+    this.FrecuenciaSelected=undefined
     this.SelectFrecuencia=undefined
     this.InputFechaInicio=false;
     this.InputHoraInicio=false;
@@ -298,13 +319,26 @@ export class ModalTareasComponent implements OnInit {
     this.FechaInicio='';
     this.SelHoraInicio = {hour: 0, minute: 0};
     this.SelHoraFin = {hour: 0, minute: 0};
-    
+
     this.Comentarios=''
     this.RepetirHora='';
     this.RepetirDia='';
     this.RepetirDiasSemana='';
     this.RepetirMes='';
     this.DiasSemana.forEach((d) => {{d.checked=false;}});
+
+    this.procesoNuevo.idCondicion=''
+    this.procesoNuevo.comentario=''
+    this.procesoNuevo.frecuencia=undefined
+    this.procesoNuevo.fechaInicio=''
+    this.procesoNuevo.horaInicio=undefined
+    this.procesoNuevo.horaFin=undefined
+    this.procesoNuevo.repetirHora=''
+    this.procesoNuevo.repetirDia=''
+    this.procesoNuevo.repetirDiaMes=''
+    this.procesoNuevo.diasSemana=''
+
+
   }
 
   AgregarNuevoProceso(){
@@ -322,11 +356,11 @@ export class ModalTareasComponent implements OnInit {
           DiasSemana=DiasSemana+','
         }
         //DiasSemana=this.RepetirDiasSemana.replace(/\s/g, '').split(",");
-       
+
       }
-     
+
     let RefCond=this.reglarefCondSelectedLocal.idCondicion
- 
+
      let Comentarios=this.Comentarios
      if(this.Comentarios==undefined)
      {
@@ -334,18 +368,16 @@ export class ModalTareasComponent implements OnInit {
      }
     let Frecuencia= this.FrecuenciaSelected
 
-    const datepipe: DatePipe = new DatePipe('en-US')    
+    const datepipe: DatePipe = new DatePipe('en-US')
 
-    let FechaInicio:any; 
+    let FechaInicio:any;
     if(this.FechaInicio!=undefined)
     {
       if(this.FechaInicio!=''){
         let UnformatedFechaInicio=  this.FechaInicio.year+'-'+this.FechaInicio.month +'-'+this.FechaInicio.day
 
-        FechaInicio= datepipe.transform(UnformatedFechaInicio, 'yyyy-MM-dd'); 
+        FechaInicio= datepipe.transform(UnformatedFechaInicio, 'yyyy-MM-dd');
       }
-
-
     }else{FechaInicio=null}
 
     let HoraInicio:any
@@ -356,7 +388,7 @@ export class ModalTareasComponent implements OnInit {
     let HoraFin:any
     if(this.HoraFin!=undefined )
     {
-      HoraFin='2001-01-01T'+this.HoraFin 
+      HoraFin='2001-01-01T'+this.HoraFin
     }else{HoraFin=null}
 
     let RepetirDia:any;
@@ -387,22 +419,24 @@ export class ModalTareasComponent implements OnInit {
 
       this.procesoService.agregarproceso(this.procesoNuevo).then((response: ApiResult)=>{
        // console.log(response)
-        
+
         // this.toastr.success("Se agregó tarea exitosamente.");
-      
+
         if(response.objModResultado!=null){
           if(response.objModResultado.error){
-            this.toastr.error("Ocurrió un error al agregar la tarea."); 
+            this.toastr.error("Ocurrió un error al agregar la tarea.");
             this.btnGuardar=false;
           }
           if(!response.objModResultado.error){
             this.toastr.success("Se agregó tarea exitosamente.");
+     
             this.LimpiarForm()
             this.btnGuardar=false;
           }
         }
         if(response.objModResultado==null){
           this.toastr.success("Se agregó tarea exitosamente.");
+     
           this.LimpiarForm()
           this.btnGuardar=false;
         }
@@ -413,7 +447,7 @@ export class ModalTareasComponent implements OnInit {
       });
     }
     else{
-      
+
     //modificar
       this.procesoEditar.idCondicion=RefCond
       this.procesoEditar.comentario=Comentarios
@@ -426,7 +460,7 @@ export class ModalTareasComponent implements OnInit {
       this.procesoEditar.repetirDiaMes=RepetirMes
       this.procesoEditar.diasSemana=DiasSemana
    //  console.log(this.procesoEditar)
-     
+
       this.procesoService.ModificarProceso(this.procesoEditar).then((response: ApiResult)=>{
 
         this.LimpiarForm()
@@ -434,7 +468,7 @@ export class ModalTareasComponent implements OnInit {
         // this.toastr.success("Se actualizó tarea exitosamente.");
         if(response.objModResultado!=null){
           if(response.objModResultado.error){
-            this.toastr.error("Ocurrió un error al actualizar la tarea."); 
+            this.toastr.error("Ocurrió un error al actualizar la tarea.");
             this.btnGuardar=false;
           }
           if(!response.objModResultado.error){
@@ -460,7 +494,7 @@ export class ModalTareasComponent implements OnInit {
     else{
       this.toastr.error("Verifique los campos.");
     }
-    
+
   }
 
   ValidarForm(){
@@ -483,7 +517,7 @@ export class ModalTareasComponent implements OnInit {
          this.FormValido=false;
     }
     if(this.InputselRefCond== undefined){
-        this.FormValido=false;     
+        this.FormValido=false;
         this.ReferenciaRequerido=true;
     }
     if(this.FrecuenciaSelected==undefined){
@@ -491,17 +525,17 @@ export class ModalTareasComponent implements OnInit {
       this.FrecuenciaRequerido=true;
     }
     if(this.FrecuenciaSelected!='Manual' && this.FrecuenciaSelected!=undefined){
-     
-      if(this.FechaInicio=='' || this.FechaInicio==undefined){ 
+
+      if(this.FechaInicio=='' || this.FechaInicio==undefined){
         this.FormValido=false;
         this.FechaInicioRequerido=true;
       }
-      if(this.HoraInicio=='' || this.HoraInicio==undefined){ 
+      if(this.HoraInicio=='' || this.HoraInicio==undefined){
         this.FormValido=false;
         this.HoraInicioRequerido=true;
       }
-      if(this.checkboxHoraFin==true){ 
-        if(this.HoraFin=='' || this.HoraFin==undefined){ 
+      if(this.checkboxHoraFin==true){
+        if(this.HoraFin=='' || this.HoraFin==undefined){
           this.FormValido=false;
           this.HoraFinRequerido=true;
         }
@@ -549,7 +583,7 @@ export class ModalTareasComponent implements OnInit {
       }
     }
 
- 
+
   }
 
   ModificarDatos(procesoAbuscar:any){
@@ -557,21 +591,22 @@ export class ModalTareasComponent implements OnInit {
     this.Modificando=true;
 
     this.procesoService.CargarDatosEditar(procesoAbuscar.idTarea).then((response: ApiResult)=>{
+      console.log(response)
     if(response.objModResultado.error){
       this.toastr.error(response.objModResultado.mensajeError,'Error al cargar datos');
     }else{
       this.procesoEditar=response.result[0];
-      this.CargarRefCondxId(this.procesoEditar.idCondicion)           
+      this.CargarRefCondxId(this.procesoEditar.idCondicion)
      // this.InputselRefCond=this.reglarefCondSelectedLocal.nombreCondicion;
       this.Comentarios=this.procesoEditar.comentario;
       this.SelectFrecuencia=this.procesoEditar.frecuencia
       this.onChangeFrecuenciaSelect(this.procesoEditar.frecuencia);
-      if(this.procesoEditar.frecuencia!="Manual"){        
+      if(this.procesoEditar.frecuencia!="Manual"){
 
       const datepipeanio: DatePipe = new DatePipe('en-US')
       const datepipemes: DatePipe = new DatePipe('en-US')
       const datepipedia: DatePipe = new DatePipe('en-US')
-       
+
       this.FechaInicio={year:Number(datepipeanio.transform(new Date(this.procesoEditar.fechaInicio), 'yyyy')),
         month:Number(datepipemes.transform(new Date(this.procesoEditar.fechaInicio), 'MM')),
         day:Number(datepipedia.transform(new Date(this.procesoEditar.fechaInicio), 'dd'))};
@@ -579,9 +614,9 @@ export class ModalTareasComponent implements OnInit {
       const datepipeHora: DatePipe = new DatePipe('en-US')
       const datepipeMinuto: DatePipe = new DatePipe('en-US')
       const datepipeHoraCompleta: DatePipe = new DatePipe('en-US')
-      let Hora= datepipeHora.transform(this.procesoEditar.horaInicio, 'HH');   
-      let Minuto= datepipeMinuto.transform(this.procesoEditar.horaInicio, 'mm');  
-      this.HoraInicio= datepipeHoraCompleta.transform(this.procesoEditar.horaInicio, 'HH:mm');  
+      let Hora= datepipeHora.transform(this.procesoEditar.horaInicio, 'HH');
+      let Minuto= datepipeMinuto.transform(this.procesoEditar.horaInicio, 'mm');
+      this.HoraInicio= datepipeHoraCompleta.transform(this.procesoEditar.horaInicio, 'HH:mm');
       this.SelHoraInicio = {hour: Number(Hora), minute: Number(Minuto)};
 
       if(this.procesoEditar.horaFin!=null){
@@ -589,9 +624,9 @@ export class ModalTareasComponent implements OnInit {
         const datepipeHora: DatePipe = new DatePipe('en-US')
         const datepipeMinuto: DatePipe = new DatePipe('en-US')
         const datepipeHoraCompleta: DatePipe = new DatePipe('en-US')
-        let Hora= datepipeHora.transform(this.procesoEditar.horaFin, 'HH');   
-        let Minuto= datepipeMinuto.transform(this.procesoEditar.horaFin, 'mm');  
-        this.HoraFin= datepipeHoraCompleta.transform(this.procesoEditar.horaFin, 'HH:mm');  
+        let Hora= datepipeHora.transform(this.procesoEditar.horaFin, 'HH');
+        let Minuto= datepipeMinuto.transform(this.procesoEditar.horaFin, 'mm');
+        this.HoraFin= datepipeHoraCompleta.transform(this.procesoEditar.horaFin, 'HH:mm');
         this.SelHoraFin = {hour: Number(Hora), minute: Number(Minuto)};
       }
 
@@ -606,6 +641,7 @@ export class ModalTareasComponent implements OnInit {
       }
       if(this.procesoEditar.frecuencia=="Semanal"){
         this.procesoService.CargarDatosEditarSemanal(this.procesoEditar.idTarea).then((response: ApiResult)=>{
+   
           if(response.objModResultado.error){
             this.toastr.error(response.objModResultado.mensajeError,'Error al cargar datos');
           }else{
@@ -617,16 +653,18 @@ export class ModalTareasComponent implements OnInit {
                 if(D.name==d.dia){
                   D.checked=true;
                 }
-               });               
+               });
             })
             let DiasSemanaSeleccionado = [];
             this.DiasSemana.filter(d =>d.checked===true).forEach((d) => {
-              DiasSemanaSeleccionado.push(d.name); 
+              DiasSemanaSeleccionado.push(d.name);
             });
             this.RepetirDiasSemana=DiasSemanaSeleccionado.join(', ');
+            this.RepetirSemanaOriginal=this.RepetirDiasSemana
           }
          }, error=> {
            console.log(error);
+           this.toastr.error(response.objModResultado.mensajeError,'Error al cargar datos');
         });
       }
       }
@@ -641,9 +679,10 @@ export class ModalTareasComponent implements OnInit {
       if(refCond.result!=null){
       this.reglarefCondSelectedLocal = refCond.result[0];
       this.InputselRefCond=this.reglarefCondSelectedLocal.nombreCondicion+ ' / ' +this.reglarefCondSelectedLocal.referenciaCondicion
-      }
+      this.condicionOriginal=this.reglarefCondSelectedLocal
+    }
       else{this.reglarefCondSelectedLocal=[]}
-      
+
     }, error=> {
       if(typeof error==="object"){
         this.toastr.error("Ocurrió un error al conectarse al servidor.");
@@ -651,7 +690,149 @@ export class ModalTareasComponent implements OnInit {
         this.toastr.error(error);
       }
     });
+
+  }
+
+  CerrarModalTareas(){
+    if(this.Modificando){
+      this.CompararOriginalConCambioModifica();
+    }
+    else{
+      this.CompararOriginalConCambio();
+    }
+
+    if(this.hayCambios){
+      Swal.fire({
+        title: "Los cambios no se han guardado ¿Desea continuar?",
+        icon: 'warning',
+        showCancelButton: true,
+        cancelButtonText: 'Cancelar',
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Sí',
+        allowEscapeKey: false,
+        allowOutsideClick: false
+
+      }).then((result) => {
+          if (result.isConfirmed) {
+            this.modalActive.dismiss()
+          }else{
+
+
+          }
+      });
+    }
+    else{
+      this.modalActive.dismiss()
+    }
+
+  }
+
+  CompararOriginalConCambio(){
+    this.hayCambios=false;
+    console.log(this.reglarefCondSelectedLocal)
+    if(this.reglarefCondSelectedLocal!=undefined){
+      this.hayCambios=true;
+    }
+    console.log(this.Comentarios+','+this.procesoNuevo.comentario)
+    if( this.Comentarios!=this.procesoNuevo.comentario){
+      this.hayCambios=true;
+    }
+    console.log(this.SelectFrecuencia+','+this.procesoNuevo.frecuencia)
+    if( this.SelectFrecuencia!=this.procesoNuevo.frecuencia){
+      this.hayCambios=true;
+    }
+    console.log(this.FechaInicio+','+this.procesoNuevo.fechaInicio)
+    if( this.FechaInicio!=this.procesoNuevo.fechaInicio){
+      this.hayCambios=true;
+    }
+    console.log(this.HoraInicio+','+this.procesoNuevo.horaInicio)
+    if( this.HoraInicio!=this.procesoNuevo.horaInicio){
+      this.hayCambios=true;
+    }
+    console.log(this.HoraFin+','+this.procesoNuevo.horaFin)
+    if( this.HoraFin!=this.procesoNuevo.horaFin){
+      this.hayCambios=true;
+    }
+    console.log(this.RepetirHora+','+this.procesoNuevo.repetirHora)
+    if( this.RepetirHora!=this.procesoNuevo.repetirHora){
+      this.hayCambios=true;
+    }
+    console.log(this.RepetirDia+','+this.procesoNuevo.repetirDia)
+    if( this.RepetirDia!=this.procesoNuevo.repetirDia){
+      this.hayCambios=true;
+    }
+    console.log(this.RepetirMes+','+this.procesoNuevo.repetirDiaMes)
+    if( this.RepetirMes!=this.procesoNuevo.repetirDiaMes){
+      this.hayCambios=true;
+    }
+    console.log(this.RepetirDiasSemana+','+this.procesoNuevo.diasSemana)
+    if( this.RepetirDiasSemana!=this.procesoNuevo.diasSemana){
+      this.hayCambios=true;
+    }
+
+  }
+
+  CompararOriginalConCambioModifica(){
+    this.hayCambios=false;
+
+    if( this.Comentarios!=this.procesoEditar.comentario){
+      this.hayCambios=true;
+    }
+    if( this.SelectFrecuencia!=this.procesoEditar.frecuencia){
+      this.hayCambios=true;
+    }
+    let UnformatedFechaInicio;
+    let FechaInicioCambio;
+     let fechaInicioOriginal;
+    if(this.FechaInicio){
+      const datepipeFechaOriginal: DatePipe = new DatePipe('en-US')
+      const datepipeFecha: DatePipe = new DatePipe('en-US')
+       UnformatedFechaInicio=  this.FechaInicio.year+'-'+this.FechaInicio.month +'-'+this.FechaInicio.day
+       FechaInicioCambio= datepipeFecha.transform(UnformatedFechaInicio, 'yyyy-MM-dd');
+       fechaInicioOriginal= datepipeFechaOriginal.transform(this.procesoEditar.fechaInicio, 'yyyy-MM-dd');
+      if(FechaInicioCambio=='')this.FechaInicio=null;    
     
+    }
+
+    if( FechaInicioCambio!=fechaInicioOriginal){
+      this.hayCambios=true;
+    }
+
+    
+    let HoraInicioambio=this.HoraInicio
+    if(HoraInicioambio==undefined){HoraInicioambio=null}
+    // console.log('1900-01-01T'+HoraInicioambio+':00' + ','+this.procesoEditar.horaInicio)
+    if(HoraInicioambio!=this.procesoEditar.horaFin){
+      if( '1900-01-01T'+HoraInicioambio+':00'!=this.procesoEditar.horaInicio){
+        this.hayCambios=true;
+      }
+    }
+    let HorafinCambio=this.HoraFin
+    if(HorafinCambio==undefined){HorafinCambio=null}
+    // console.log(HorafinCambio+ ','+this.procesoEditar.horaFin)
+    if(HorafinCambio!=this.procesoEditar.horaFin){
+      if( '1900-01-01T'+HorafinCambio+':00'!=this.procesoEditar.horaFin){
+        this.hayCambios=true;
+      }
+    }
+
+    if( this.RepetirHora!=this.procesoEditar.repetirHora){
+      this.hayCambios=true;
+    }
+    if( this.RepetirDia!=this.procesoEditar.repetirDia){
+      this.hayCambios=true;
+    }
+    if( this.RepetirMes!=this.procesoEditar.repetirDiaMes){
+      this.hayCambios=true;
+    }
+
+
+    let semanasOriginal=this.RepetirSemanaOriginal
+    if(semanasOriginal==undefined){semanasOriginal=''}
+    if( this.RepetirDiasSemana!=semanasOriginal){
+      this.hayCambios=true;
+    }
   }
 
 

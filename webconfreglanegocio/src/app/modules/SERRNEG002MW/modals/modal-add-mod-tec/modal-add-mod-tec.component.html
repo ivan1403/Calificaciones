@@ -1,31 +1,36 @@
 <div class="modal-header">
     <h4 class="modal-title" id="modal-basic-title">Agregar/Modificar configuración técnica</h4>
-    <button type="button" class="close" aria-label="Close" (click)="modalActive.dismiss()">
+    <button type="button" class="close" aria-label="Close" (click)="CerrarModalAddMod()">
       <span aria-hidden="true">&times;</span>
     </button>
 </div>
 <form>
     <div class="modal-body">
         <h4 class="text-left h5 mt-2" >Referencia: Generación de pólizas de bancos</h4>
-        <div class="form-group row mt-3" >       
-            <div class="col-sm-3 text-left">
-                <!-- <input  type="checkbox"  id="estatusSP" style="margin-right: 10px;" > -->
-
-                <!-- <div class="switcher switcher-success" >
-                    <input type="checkbox"  id="estatusSP" >
-                    <label for="estatusSP"></label>
-                </div>    -->
-
-             
-                
-                <div class="custom-control custom-checkbox">
-                    <input type="checkbox" class="custom-control-input " id="customCheck1">
-                    <!-- <label class="custom-control-label" for="customCheck1"></label> -->
-                    <label class="text-left h5 custom-control-label" for="customCheck1">Store Procedure</label>
+        <div class="form-group row mt-3"> 
+            <div class="col-sm-6 text-left">
+                <div class="radio radio-css radio-inline">
+                    <input type="radio" name="radio_css_inline" [(ngModel)]="InputRadioEstatusTransaccion" id="inlineCssRadio1" value="0" />
+                    <label for="inlineCssRadio1">Ejecutar configuración actual de Store Procedure</label>
                 </div>
-              
+            </div>
+            <div class="col-sm-6 " >
+                <div class="radio radio-css radio-inline">
+                    <input type="radio" name="radio_css_inline" value="1" [(ngModel)]="InputRadioEstatusTransaccion" id="inlineCssRadio2" value="1" />
+                    <label for="inlineCssRadio2">Cambiar estatus de transacciones en espera (repetitivos)</label>
+                </div>
+            </div>
+        </div>
+        <div class="form-group row mt-3" >            
+            <div *ngIf="OpcionRadios" class="col-sm-12 alert alert-danger">
+                Seleccione una opción.
+            </div>
+        </div>
+        <div class="form-group row mt-3" >       
+            <div class="col-3 mt-2 text-left">
+                <label class="text-left h5" >Store Procedure</label>
             </div>        
-            <div class="col-sm">
+            <div class="col-sm-4">
                 <input type="text" name="InputStoredProcedure" [(ngModel)]="InputStoredProcedure" class="form-control">
             </div>        
             <div class="col-sm-1 text-left">
@@ -35,7 +40,7 @@
                 <input type="number" min="1" oninput="validity.valid||(value='');" name="InputOpcion" [(ngModel)]="InputOpcion" class="form-control">
             </div>
         </div>
-        <div class="form-group row mt-3"> 
+        <!-- <div class="form-group row mt-3"> 
             <div class="col-sm-3 text-left">
                 <label class="text-right h5 ">Funcionalidad SP</label>
             </div>
@@ -46,7 +51,7 @@
                     <option value="Cambiar estatus en espera">Cambiar estatus en espera</option>
                 </select>
             </div>
-        </div>
+        </div> -->
         <div class="form-group row mt-3" >            
             <div *ngIf="StoredProcedureRequerido" class="col-sm-6 alert alert-danger">
                 Stored Procedure es requerido.
