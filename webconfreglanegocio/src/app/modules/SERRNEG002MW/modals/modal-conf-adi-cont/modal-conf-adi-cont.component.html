@@ -175,7 +175,7 @@
                                 </tr>
                                 <tr *ngFor="let validacion of DoPrepoliza">
                                     <td>{{validacion.idEncRepetitivoParam}}</td>  
-                                    <td>{{validacion.fechaDocto|date:"dd-MM-yyyy"}}</td>
+                                    <td>{{validacion.fechaDocto|fechaEspanol}}</td>
                                     <td>{{validacion.idMoneda}}</td>
                                     <td>{{validacion.tipoDeCambio  | currency}}</td>  
                                     <td>{{validacion.polizaComentarios}}</td>
@@ -308,7 +308,7 @@
                                     <td>{{validacion.rfcEmisor}}</td>
                                     <td>{{validacion.rfcReceptor}}</td>
                                     <td>{{validacion.total | currency}}</td> 
-                                    <td>{{validacion.fecha|date:"dd-MM-yyyy"}}</td>
+                                    <td>{{validacion.fecha|fechaEspanol}}</td>
                                     <td>{{validacion.referencia1}}</td>
                                     <td>{{validacion.referencia2}}</td>                                 
                                 </tr>      
@@ -357,7 +357,7 @@
                             </tr>
                             <tr *ngFor="let validacion of (ModEncPoliza || [])">
                                 <td>{{validacion.idEncPoliza}}</td>  
-                                <td>{{validacion.fecha|date:"dd-MM-yyyy"}}</td>
+                                <td>{{validacion.fecha|fechaEspanol}}</td>
                                 <td>{{validacion.idPeriodo}}</td>
                                 <td>{{validacion.idEjercicio}}</td>
                                 <td>{{validacion.idSubTipoPoliza}}</td>  
@@ -585,7 +585,7 @@
                                 <td>{{validacion.rfcEmisor}}</td> 
                                 <td>{{validacion.rfcReceptor}}</td>
                                 <td>{{validacion.total | currency}}</td>
-                                <td>{{validacion.fecha|date:"dd-MM-yyyy"}}</td>         
+                                <td>{{validacion.fecha|fechaEspanol}}</td>         
                                 <td>{{validacion.referencia1}}</td> 
                                 <td>{{validacion.referencia1}}</td>
                                 

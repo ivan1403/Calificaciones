@@ -12,7 +12,7 @@
         <label class="text-right h4" >Referencia / Condición</label>
     </div>
 
-    <div class="col-sm-5">
+    <div class="col-sm">
         <div class="input-group">
             <input readonly type="text" name="selRefCond" [(ngModel)]="InputSelRefCond" class="form-control">
             <div class="input-group-append">
@@ -20,16 +20,16 @@
             </div>
         </div>
     </div>
-<!-- 
-    <div class="col-sm-2 text-center">
+
+    <!-- <div class="col-sm text-right ">
         <label class="text-right h4 mt-1"  >Estatus de programación</label>
     </div>
 
     <div class="col-sm-2">
         <select [(ngModel)]="SelectEstatusProgramacion" class="form-control form-select">
-            <option value="Todos">Todos</option>
-            <option value="Programado">Programado</option>
-            <option value="No Programado">No Programado</option>
+            <option value="2">Todos</option>
+            <option value="0">Programado</option>
+            <option value="1">No Programado</option>
 
         </select>
     </div> -->
@@ -38,10 +38,6 @@
         <button class="btn btn-primary pull-left ml-1" (click)="CargarTareasFiltrada(1)"><i class="fa fa-search" aria-hidden="true"></i> Buscar</button>
         <button class="btn btn-primary ml-1" (click)="LimpiarFiltro()"> Limpiar Filtro</button>
     </div>
-    <!-- <div class="col-sm-2">
-        <button class="btn btn-primary pull-right ml-1" (click)="LimpiarFiltro()"> Limpiar Filtro</button>
-    </div> -->
-
 </div>
 
 <div class="row mt-5">
@@ -49,7 +45,7 @@
         <table class="table table-responsive-md table-hover table-bordered table-striped">
             <thead class="thead-dark">
                 <tr class="text-center">
-                    <th style="vertical-align: middle;">Descripción</th>
+                    <th style="vertical-align: middle;">Referencia / Condición</th>
                     <th style="vertical-align: middle;">Calendarización</th>
                     <th>Fecha<br>configuración</th>
                     <th>Ultima<br>ejecución</th>
@@ -65,19 +61,19 @@
                     <td colspan="9">No hay tareas registradas o con los parámetros de busqueda aplicados</td>
                 </tr>
                 <tr *ngFor="let proceso of procesos">
-                    <td>{{proceso.descripcionCondicion}}</td>  
+                    <td>{{proceso.referenciacondicion+' / '+proceso.nombreCondicion}}</td>  
                     <td>{{proceso.frecuencia}}</td>
-                    <td>{{proceso.fechaInsert|date:"dd-MM-yyyy"}}</td>
-                    <td>{{ (proceso.ultimaEjecucion !== null) ? (proceso.ultimaEjecucion | date: "dd-MM-yyyy"):"No se ha ejecutado"}}</td>
+                    <td>{{proceso.fechaInsert|fechaEspanol}}</td>
+                    <td>{{ (proceso.ultimaEjecucion !== null) ? (proceso.ultimaEjecucion | fechaEspanol):"No se ha ejecutado"}}</td>
                     <td>
-                        <i class="fas fa-sync-alt fa-2x" style="cursor: pointer;"></i>
+                        <i (click)="EjecutarProcesoManual(proceso)" class="fas fa-sync-alt fa-2x" style="cursor: pointer;"></i>
                     </td>
                     <td>
-                        <i (click)="abrirModalVerLog()" class="fas fa-bars fa-2x" style="cursor: pointer;"></i>
+                        <i (click)="VerLog(proceso.idTarea)" class="fas fa-bars fa-2x" style="cursor: pointer;"></i>
                     </td>
                     <td>
                         <div class="switcher switcher-success">
-                            <input type="checkbox" (change)="onChangeProgramacionCalendarizada($event)"  id="switcherProgramacionCalendarizada,{{proceso.idTarea}}" >
+                            <input type="checkbox" [checked]="!proceso.estatusEjecucion" (change)="onChangeProgramacionCalendarizada($event,proceso)"  id="switcherProgramacionCalendarizada,{{proceso.idTarea}}" >
                             <label for="switcherProgramacionCalendarizada,{{proceso.idTarea}}"></label>
                         </div>
                     </td>

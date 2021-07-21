@@ -2,7 +2,7 @@ export class Proceso
 {
     idTarea:number; 
     idCondicion:number;
-    IdEstatusEjecucion:number;
+    estatusEjecucion:boolean;
     descripcionCondicion:string;
     comentario:string;
     frecuencia:string;
@@ -21,4 +21,5 @@ export class Proceso
     fechaBaja:Date
     estatus:boolean;
     diasSemana:string;
+    HrProxEjecucion:Date;
 }

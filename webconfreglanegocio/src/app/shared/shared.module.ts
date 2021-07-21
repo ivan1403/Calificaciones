@@ -19,6 +19,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbModal, NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { PaginadorComponent } from './components/paginador/paginador.component';
 import { ModalVerLogComponent } from './modals/modal-ver-log/modal-ver-log.component';
+import { FechaEspanolPipe } from './components/fechaEspanol/fecha-espanol.pipe';
+import { FechaHrEspanolPipe } from './components/fechaEspanol/fecha-hr-espanol.pipe';
 
 
 @NgModule({
@@ -32,6 +34,8 @@ import { ModalVerLogComponent } from './modals/modal-ver-log/modal-ver-log.compo
     FloatSubMenuComponent,
     PaginadorComponent,
     ModalVerLogComponent,
+    FechaEspanolPipe,
+    FechaHrEspanolPipe,
   ],
   imports: [
     CommonModule,
@@ -55,7 +59,9 @@ import { ModalVerLogComponent } from './modals/modal-ver-log/modal-ver-log.compo
     PanelComponent,
     FloatSubMenuComponent,
     PaginadorComponent,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    FechaEspanolPipe,
+    FechaHrEspanolPipe,
   ],
 
 })

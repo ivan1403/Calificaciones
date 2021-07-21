@@ -1,17 +1,14 @@
 import { Component, OnInit,Input } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import {ModalSelRefCondComponent} from '../../../../shared/modals/modal-sel-ref-cond/modal-sel-ref-cond.component';
+import {ModalSelFiltroRefComponent} from '../../modals/modal-sel-filtro-ref/modal-sel-filtro-ref.component';
 import {ModalVerLogComponent} from '../../../../shared/modals/modal-ver-log/modal-ver-log.component';
 import {ModalTareasComponent} from '../../modals/modal-tareas/modal-tareas.component';
 import { ProcesoService } from '../../../../services/proceso.service';
 import { ApiResult } from '../../../../models/common/apiResult';
 import { Proceso } from '../../../../models/proceso';
 import { ToastrService } from 'ngx-toastr';
-import { PaginadorComponent } from '../../../../shared/components/paginador/paginador.component';
 import { Paginador } from '../../../../models/common/paginador';
-import { ModalSelRefComponent } from '../../../SERRNEG002MW/modals/modal-sel-ref/modal-sel-ref.component';
-
-
+import { environment } from '../../../../../environments/environment';
 
 @Component({
   selector: 'app-procesos',
@@ -33,17 +30,21 @@ procesosFiltrados:boolean;
 
   reglarefCondSelected:any;
   checkboxpEliminarProgramacion:boolean=false;
+  SelectEstatusProgramacion:any;
 
   procesos:Array<Proceso> = [];
   
   InputSelRefCond:string;
-  //lol:string;
+
+  urlProcesoVerLog:string=environment.urlProcesoVerlog;
+
   ngOnInit(): void {
     this.CargarProcesos(1);  
     
     this.procesosFiltrados=false; 
-  }
 
+    this.SelectEstatusProgramacion=2
+  }
 
   CargarProcesos(pagina:number){
     this.procesosFiltrados=false;
@@ -74,24 +75,21 @@ procesosFiltrados:boolean;
   }
 
   abrirModalSelRefCond() {
-   // this.refcondData.SelectTipo("Buscar");
+    // this.refcondData.SelectTipo("Buscar");
+  
+     const modalSelRefCondComponent = this.modalService.open(ModalSelFiltroRefComponent, {ariaLabelledBy: 'modal-basic-title',size: 'md' , backdrop: 'static'});
+     modalSelRefCondComponent.componentInstance.evt.subscribe(arg=>{
+       //console.log(arg)
+       this.CargarRefCondSelected(arg)
+     })
+     modalSelRefCondComponent.result.then((result) => {
+    //   console.log(result);
+     }, (reason) => {
  
-    const modalSelRefCondComponent = this.modalService.open(ModalSelRefCondComponent, {ariaLabelledBy: 'modal-basic-title',size: 'md' , backdrop: 'static'});
-    modalSelRefCondComponent.componentInstance.modaltitulo="Búsqueda Referencia / Condición"
-    modalSelRefCondComponent.componentInstance.labelInputDescripcion="Referencia / Condición"
-    modalSelRefCondComponent.componentInstance.tituloColRefReg="Referencia";
-    modalSelRefCondComponent.componentInstance.evt.subscribe(arg=>{
-      //console.log(arg)
-      this.CargarRefCondSelected(arg)
-    })
-    modalSelRefCondComponent.result.then((result) => {
-   //   console.log(result);
-    }, (reason) => {
-
-    
-
-    });
-  }
+     
+ 
+     });
+   }
 
   abrirModalVerLog() {  
 
@@ -131,28 +129,83 @@ procesosFiltrados:boolean;
 
   }
 
-  onChangeProgramacionCalendarizada(e) {
+  onChangeProgramacionCalendarizada(e,procesoselect) {    
     if(e.target.checked){
-      console.log(e.target.id+' esta prendido')
-    }
-    else{
-      console.log(e.target.id+' esta apagado')
-    }    
-
+    procesoselect.estatusEjecucion=0;
+    this.procesoService.ProgramacionCalendarizada(procesoselect).then((response: ApiResult)=>{
+      console.log(response)
+      if(response.objModResultado!=null){
+        if(response.objModResultado.error){
+            this.toastr.error("Ocurrió un error al activar la tarea.");
+        }
+        if(!response.objModResultado.error){
+          this.toastr.success("Se activó la programación de "+procesoselect.comentario+' de referencia '+ procesoselect.referenciacondicion+' y de condición '+procesoselect.nombreCondicion+'.');
+        }
+       }   
+      if(response.objModResultado==null){
+        this.toastr.success("Se activó la programación de "+procesoselect.comentario+' de referencia '+ procesoselect.referenciacondicion+' y de condición '+procesoselect.nombreCondicion+'.');
+      }
+      }, error=> {
+        console.log(error);
+        this.toastr.error("Ocurrió un error al activar la tarea.");
+    });
+  }
+  else{   
+    procesoselect.estatusEjecucion=1;
+    this.procesoService.ProgramacionCalendarizada(procesoselect).then((response: ApiResult)=>{
+      console.log(response)
+      if(response.objModResultado!=null){
+        if(response.objModResultado.error){
+          this.toastr.error("Ocurrió un error al desactivar la programación de la tarea.");
+        }
+        if(!response.objModResultado.error){
+          this.toastr.success("Se desactivó la programación de "+procesoselect.comentario+' de referencia '+ procesoselect.referenciacondicion+' y de condición '+procesoselect.nombreCondicion+'.');
+        }
+       }   
+      if(response.objModResultado==null){
+        this.toastr.success("Se desactivó la programación de "+procesoselect.comentario+' de referencia '+ procesoselect.referenciacondicion+' y de condición '+procesoselect.nombreCondicion+'.');
+      }
+      }, error=> {
+        console.log(error);
+        this.toastr.error("Ocurrió un error al desactivar la programación de la tarea.");
+    });
+  }    
   }
 
   onChangeEliminarProgramacion(e,procesoselect) {
     if(e.target.checked){
+      procesoselect.estatus=false;
       this.procesoService.EstatusProgramacion(procesoselect).then((response: ApiResult)=>{
-        this.toastr.success("Se activó la programación de "+procesoselect.comentario+' de condición '+procesoselect.descripcionCondicion+'.');
+        if(response.objModResultado!=null){
+          if(response.objModResultado.error){
+              this.toastr.error("Ocurrió un error al activar la tarea.");
+          }
+          if(!response.objModResultado.error){
+            this.toastr.success("Se activó la programación de "+procesoselect.comentario+' de referencia '+ procesoselect.referenciacondicion+' y de condición '+procesoselect.nombreCondicion+'.');
+          }
+         }   
+        if(response.objModResultado==null){
+          this.toastr.success("Se activó la programación de "+procesoselect.comentario+' de referencia '+ procesoselect.referenciacondicion+' y de condición '+procesoselect.nombreCondicion+'.');
+        }
         }, error=> {
           console.log(error);
           this.toastr.error("Ocurrió un error al activar la tarea.");
       });
     }
     else{   
+      procesoselect.estatus=true;
       this.procesoService.EstatusProgramacion(procesoselect).then((response: ApiResult)=>{
-        this.toastr.success("Se desactivó la programación de "+procesoselect.comentario+' de condición '+procesoselect.descripcionCondicion+'.');
+        if(response.objModResultado!=null){
+          if(response.objModResultado.error){
+            this.toastr.error("Ocurrió un error al desactivar la tarea.");
+          }
+          if(!response.objModResultado.error){
+            this.toastr.success("Se desactivó la programación de "+procesoselect.comentario+' de referencia '+ procesoselect.referenciacondicion+' y de condición '+procesoselect.nombreCondicion+'.');
+          }
+         }   
+        if(response.objModResultado==null){
+          this.toastr.success("Se desactivó la programación de "+procesoselect.comentario+' de referencia '+ procesoselect.referenciacondicion+' y de condición '+procesoselect.nombreCondicion+'.');
+        }
         }, error=> {
           console.log(error);
           this.toastr.error("Ocurrió un error al desactivar la tarea.");
@@ -163,10 +216,9 @@ procesosFiltrados:boolean;
   CargarRefCondSelected(relgaRefCond:any){  
   this.reglarefCondSelected=relgaRefCond
     if(this.reglarefCondSelected.nombreCondicion!=undefined)
-    this.InputSelRefCond=this.reglarefCondSelected.referencia+ ' / ' +this.reglarefCondSelected.nombreCondicion
+    this.InputSelRefCond=this.reglarefCondSelected.referenciaCondicion+ ' / ' +this.reglarefCondSelected.nombreCondicion
 
   }
-
   
   CargarTareasFiltrada(pagina:number){
   //  console.log(this.reglarefCondSelected)
@@ -182,7 +234,7 @@ procesosFiltrados:boolean;
         if(proceso.result!=null){
         this.procesos = proceso.result;
         this.paginadorFiltrado.inicializar(proceso.existeOtraPagina, pagina);
-      //  console.log(this.procesos);
+       console.log(this.procesos);
         }
         else{this.procesos=[]}
       }, error=> {
@@ -209,8 +261,33 @@ procesosFiltrados:boolean;
   LimpiarFiltro(){
     this.reglarefCondSelected=undefined
     this.InputSelRefCond=''
+    this.SelectEstatusProgramacion=2
     this.CargarProcesos(1)
 
   }
   
+  EjecutarProcesoManual(proceso:any){
+         this.procesoService.Ejecutar(proceso).then((response: ApiResult)=>{
+           console.log(response)
+          if(response.objModResultado!=null){
+            if(response.objModResultado.error){
+              this.toastr.error("Ocurrió un error al ejecutar la tarea.");
+              this.toastr.error(response.objModResultado.mensajeError);
+            }
+            if(!response.objModResultado.error){
+              this.toastr.success("Se ejecutó tarea exitosamente.");
+              this.CargarProcesos(1);
+            }
+          }
+          }, error=> {
+            console.log(error);
+            this.toastr.error("Ocurrió un error al ejecutar la tarea.");
+        });  
+   }
+
+   VerLog(idTarea){
+     alert("Pendiente la liga")
+    //window.open(this.urlProcesoVerLog+idTarea);
+  }
+
 }

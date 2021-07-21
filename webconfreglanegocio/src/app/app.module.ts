@@ -30,6 +30,7 @@ import { ModalTareasComponent } from './modules/SERRNEG001MW/modals/modal-tareas
 
 
 
+
 @NgModule({
   declarations: [
     AppComponent,

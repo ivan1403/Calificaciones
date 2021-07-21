@@ -14,7 +14,20 @@ import { MonitorPoliza } from '../../../../models/monitorPoliza';
 import { environment } from '../../../../../environments/environment';
 
 
-
+enum meses {
+  Enero,
+  Febrero,
+  Marzo,
+  Abril,
+  Mayo,
+  Junio,
+  Julio,
+  Agosto,
+  Septiembre,
+  Octubre,
+  Noviembre,
+  Diciembre
+}
 
 @Injectable()
 export class CustomDateParserFormatter extends NgbDateParserFormatter {
@@ -34,7 +47,7 @@ export class CustomDateParserFormatter extends NgbDateParserFormatter {
   }
 
   format(date: NgbDateStruct | null): string {
-    return date ? date.day + this.DELIMITER + date.month + this.DELIMITER + date.year : '';
+    return date ? date.day + this.DELIMITER + meses[date.month-1] + this.DELIMITER + date.year : '';
   }
 }
 
@@ -366,29 +379,29 @@ export class MonitorPolizasComponent implements OnInit {
     if(cadenaIdSelected!=''){
       idsTransacciones.idsTransacciones=cadenaIdSelected
       console.log(idsTransacciones)
-      // this.MonitorPolizaService.GenerarPolizaSeleccionada(idsTransacciones).then((response: ApiResult)=>{
-      // console.log(response)
-      //   if(response.objModResultado!=null){
-      //     if(response.objModResultado.error){
-      //       console.log(response.objModResultado.mensajeError);
-      //       if(response.objModResultado.mensajeError=="0")
-      //       {
-      //         this.toastr.error("No se afectó ninguna póliza");
-      //       }             
-      //     }
-      //     if(!response.objModResultado.error){
+      this.MonitorPolizaService.GenerarPolizaSeleccionada(idsTransacciones).then((response: ApiResult)=>{
+      console.log(response)
+        if(response.objModResultado!=null){
+          if(response.objModResultado.error){
+            console.log(response.objModResultado.mensajeError);
+            if(response.objModResultado.mensajeError=="0")
+            {
+              this.toastr.error("No se afectó ninguna póliza");
+            }             
+          }
+          if(!response.objModResultado.error){
            
-      //     }
-      //   }
-      //   if(response.objModResultado==null){
-      //     this.toastr.success("Se agregó documento a la cola de generación de pólizas")
-      //   }
+          }
+        }
+        if(response.objModResultado==null){
+          this.toastr.success("Se agregó documento a la cola de generación de pólizas")
+        }
   
-      //   }, error=> {
-      //     console.log(error);
-      //     this.toastr.error("Ocurrió un error generar póliza(s) seleccionada(s).");
+        }, error=> {
+          console.log(error);
+          this.toastr.error("Ocurrió un error generar póliza(s) seleccionada(s).");
   
-      //   });
+        });
     }
     if(cadenaIdSelected==''){this.toastr.error("No se han seleccionado elementos")}
 
@@ -403,7 +416,7 @@ export class MonitorPolizasComponent implements OnInit {
       //   element.seleccionado=true;
       // }
       let index=this.lstIdSeleccionado.findIndex(i=>i.idTransaccionPrePoliza ==element.idTransaccionPrePoliza);
-console.log(index)
+      //console.log(index)
       if(index >-1)
       {
         element.seleccionado=true;        
