@@ -42,8 +42,16 @@ export class ProcesoService {
     return this.httpClient.post<ApiResult>(this.url+'modificarproceso',proceso).toPromise();
   }
 
-  EstatusProgramacion(id:number){
-    return this.httpClient.post<ApiResult>(this.url+'estatusprogramacion',id).toPromise();
+  EstatusProgramacion(proceso){
+    return this.httpClient.post<ApiResult>(this.url+'estatusprogramacion',proceso).toPromise();
+  }
+
+  Ejecutar(proceso:any){
+    return this.httpClient.post<ApiResult>(this.url+'EjecucionProcesoManual',proceso).toPromise();
+  }
+
+  ProgramacionCalendarizada(proceso){
+    return this.httpClient.post<ApiResult>(this.url+'calendarizacionprogramada',proceso).toPromise();
   }
 
 }

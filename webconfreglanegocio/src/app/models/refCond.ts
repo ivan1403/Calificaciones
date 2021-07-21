@@ -6,6 +6,7 @@ export class RefCond
     NombreCondicion:string;
     DescripcionCondicion:string;
     EstatusCondicion:boolean;
+    estatusEjecucion:number;
     DescripcionSoluciones:string;
     MensajeInformativo:string;
     ReferenciaCondicion:string;

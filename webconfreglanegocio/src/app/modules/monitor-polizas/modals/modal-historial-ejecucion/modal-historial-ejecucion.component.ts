@@ -41,7 +41,7 @@ export class ModalHistorialEjecucionComponent implements OnInit {
   }
 
   CargarHistorial(pagina){
-    console.log(this.TransaccionClone)
+    //console.log(this.TransaccionClone)
     this.busquedaFiltrada=false;
     this.ValidarBusqueda();
     let fechaInicio=this.FechaInicio;
@@ -59,9 +59,9 @@ export class ModalHistorialEjecucionComponent implements OnInit {
         fechaFinal= dpFechaFinal.transform(new Date(fechaFinal.year+'-'+fechaFinal.month+'-'+fechaFinal.day), 'yyyy-MM-dd');
       } 
  
-      console.log(fechaInicio+'  aaa')
+   //   console.log(fechaInicio+'  aaa')
       this.MonitorPolizaService.CargarHistorial(this.rpp, pagina, this.TransaccionClone,fechaInicio,fechaFinal).subscribe((monitorPoliza:ApiResult)=>{
-        console.log(monitorPoliza.result)
+      //  console.log(monitorPoliza.result)
         this.historial=monitorPoliza.result;
         this.paginador.inicializar(monitorPoliza.existeOtraPagina, pagina);
         }, error=> {

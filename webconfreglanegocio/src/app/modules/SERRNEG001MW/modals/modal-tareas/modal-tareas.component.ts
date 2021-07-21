@@ -1,20 +1,30 @@
 import { Component, Injectable, OnInit } from '@angular/core';
 import { NgbModal,NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { FormBuilder, FormGroup, FormArray, FormControl, Validators ,ReactiveFormsModule, NumberValueAccessor} from '@angular/forms';
 import {ModalSelRefCondComponent} from '../../../../shared/modals/modal-sel-ref-cond/modal-sel-ref-cond.component';
 import { DatePipe } from '@angular/common';
-import {NgbCalendar, NgbDateAdapter, NgbDateParserFormatter, NgbDateStruct} from '@ng-bootstrap/ng-bootstrap';
-import { templateJitUrl } from '@angular/compiler';
+import { NgbDateParserFormatter, NgbDateStruct} from '@ng-bootstrap/ng-bootstrap';
 import { ProcesoService } from '../../../../services/proceso.service';
 import {Proceso} from '../../../../models/proceso'
 import {ProcesoSemanal} from '../../../../models/procesoSemanal'
 import { ApiResult } from '../../../../models/common/apiResult';
-import {ProcesosComponent} from '../../pages/procesos/procesos.component'
 import { RefCondService } from '../../../../services/ref-cond.service';
 import { ToastrService } from 'ngx-toastr';
-import { EMPTY } from 'rxjs';
 import  Swal  from 'sweetalert2'
 
+enum meses {
+  Enero,
+  Febrero,
+  Marzo,
+  Abril,
+  Mayo,
+  Junio,
+  Julio,
+  Agosto,
+  Septiembre,
+  Octubre,
+  Noviembre,
+  Diciembre
+}
 @Injectable()
 export class CustomDateParserFormatter extends NgbDateParserFormatter {
 
@@ -33,7 +43,8 @@ export class CustomDateParserFormatter extends NgbDateParserFormatter {
   }
 
   format(date: NgbDateStruct | null): string {
-    return date ? date.day + this.DELIMITER + date.month + this.DELIMITER + date.year : '';
+    // console.log(meses[date.month-1])
+    return date ? date.day + this.DELIMITER + meses[date.month-1] + this.DELIMITER + date.year : '';
   }
 }
 
@@ -418,10 +429,6 @@ export class ModalTareasComponent implements OnInit {
       this.procesoNuevo.diasSemana=DiasSemana
 
       this.procesoService.agregarproceso(this.procesoNuevo).then((response: ApiResult)=>{
-       // console.log(response)
-
-        // this.toastr.success("Se agregó tarea exitosamente.");
-
         if(response.objModResultado!=null){
           if(response.objModResultado.error){
             this.toastr.error("Ocurrió un error al agregar la tarea.");
@@ -678,7 +685,7 @@ export class ModalTareasComponent implements OnInit {
        this.refCondService.CargarRefCondxId(id).subscribe((refCond:ApiResult)=>{
       if(refCond.result!=null){
       this.reglarefCondSelectedLocal = refCond.result[0];
-      this.InputselRefCond=this.reglarefCondSelectedLocal.nombreCondicion+ ' / ' +this.reglarefCondSelectedLocal.referenciaCondicion
+      this.InputselRefCond=this.reglarefCondSelectedLocal.referenciaCondicion+ ' / ' +this.reglarefCondSelectedLocal.nombreCondicion
       this.condicionOriginal=this.reglarefCondSelectedLocal
     }
       else{this.reglarefCondSelectedLocal=[]}

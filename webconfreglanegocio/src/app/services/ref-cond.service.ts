@@ -18,8 +18,8 @@ export class RefCondService {
     return this.httpClient.get<ApiResult>(`${this.url}cargar?rpp=${rpp}&pagina=${pagina}`);
   }
 
-  CargarXDescripcion(descripcion:string,rpp:number, pagina:number){
-    return this.httpClient.get<ApiResult>(`${this.url}cargarXDescripcion?descripcion=${descripcion}&rpp=${rpp}&pagina=${pagina}`);
+  CargarXDescripcionYEstatus(descripcion:string,estatusEjecucion:number,rpp:number, pagina:number){
+    return this.httpClient.get<ApiResult>(`${this.url}cargarXdescripcionyestatus?descripcion=${descripcion}&estatusEjecucion=${estatusEjecucion}&rpp=${rpp}&pagina=${pagina}`);
   }
 
   CargarRefCondxId(id:number){

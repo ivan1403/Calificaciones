@@ -195,7 +195,7 @@ console.log(confTecnica)
     this.regCondSelected=relgaRefCond
   //  console.log(relgaRefCond)
       if(this.regCondSelected.nombreCondicion!=undefined){
-        this.InputSelRegCond=this.regCondSelected.nombreRegla+ ' / ' +this.regCondSelected.referencia
+        this.InputSelRegCond=this.regCondSelected.nombreRegla+ ' / ' +this.regCondSelected.nombreCondicion
         this.InputSelReferencia=null;
         this.reRefSelected=undefined;
       }            

@@ -61,7 +61,7 @@
             </thead>
             <tbody>
                 <tr *ngIf="!confTecnica || confTecnica?.length==0">
-                    <td colspan="5">No hay configuraciones registradas o con los parámetros de busqueda aplicados</td>
+                    <td colspan="6">No hay configuraciones registradas o con los parámetros de busqueda aplicados</td>
                 </tr>
                 <tr *ngFor="let conf of confTecnica">
                     <td>{{conf.nombreCondicion}}</td>  

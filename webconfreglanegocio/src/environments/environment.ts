@@ -13,6 +13,6 @@ export const environment = {
   URL_INFORMATICA_INFERPAPI001: 'https://localhost:44304/api/',
   version: '21.03.29.1',
   urlWebContabilidad: 'http://localhost:4201/',
-  urlVerDetalles: 'http://25.78.92.29/ReportServer_SQLEXPRESS/Pages/ReportViewer.aspx?%2fContabilidad%2fADMCONT005RS&rs:Command=Render&DoctoOrigen='
-   
+  urlVerDetalles: 'http://25.78.92.29/ReportServer_SQLEXPRESS/Pages/ReportViewer.aspx?%2fContabilidad%2fADMCONT005RS&rs:Command=Render&DoctoOrigen=',
+  urlProcesoVerlog:''
 };
