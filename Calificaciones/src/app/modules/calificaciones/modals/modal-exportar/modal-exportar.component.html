@@ -1,0 +1,30 @@
+<div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Importar datos</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modalActive.dismiss()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<form>
+
+    <div class="modal-body">
+
+        <div class="row">
+
+            <div class="col-12 mt-2">
+                <label class="h6 mt-2">Seleccionar archivo</label>
+                <div class="form-group">
+                    <label for="file"></label>
+                    <input #inpUpload type="file" id="file" (change)="onChangeFile($event)" accept=".xls,.xlsx,.csv">
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="modal-footer">
+        <a download="FormatoPoliza" target="_blank" href="../../../../../assets/Excel/Calificaciones.xlsx" class="btn btn-default">Descargar ejemplo</a>
+        <button (click)="cerrar()" type="submit" class="btn btn-primary">Aceptar</button>
+    </div>
+
+</form>

@@ -1,0 +1,94 @@
+<div class="row top-title">
+    <div class="col-12">
+        <h1 class="text-white-lighter ml-1"> Calificaciones
+
+            <a (click)="abrirModal()" class="btn btn-primary pull-right ml-1 mt-1 d-flex">
+                <i class="fa fa-2x far fa-file-excel" aria-hidden="true"></i>
+                <span class="align-self-center ml-1">Importar datos</span>
+            </a>
+
+        </h1>
+
+    </div>
+</div>
+
+<div class="row mt-4" *ngIf="calificaciones.length > 0">
+    <div class="col-4">
+        <div class="widget widget-stats bg-red">
+            <div class="stats-icon"></div>
+            <div class="stats-info">
+                <h4>Alumno con mejor calificación</h4>
+                <p>{{ alumnoMejor }}</p>
+            </div>
+            <div class="stats-link">
+                <a></a>
+            </div>
+        </div>
+    </div>
+    <div class="col-4">
+        <div class="widget widget-stats bg-black-lighter">
+            <div class="stats-icon"></div>
+            <div class="stats-info">
+                <h4>Alumno con peor calificación</h4>
+                <p>{{ alumnoPeor }}</p>
+            </div>
+            <div class="stats-link">
+                <a></a>
+            </div>
+        </div>
+    </div>
+    <div class="col-4">
+        <div class="widget widget-stats bg-grey-darker">
+            <div class="stats-icon"></div>
+            <div class="stats-info">
+                <h4>Promedio de calificación</h4>
+                <p>{{ promedioCalificacion|number: '1.2-2' }}</p>
+            </div>
+            <div class="stats-link">
+                <a></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-12">
+        <table class="table table-hover table-striped" *ngIf="calificaciones.length > 0">
+            <thead class="thead-dark">
+                <tr class="text-center">
+                    <th>Nombre</th>
+                    <th>Apellido Paterno</th>
+                    <th>Apellido Materno</th>
+                    <th>Fecha de Nacimiento</th>
+                    <th>Grado</th>
+                    <th>Grupo</th>
+                    <th>Calificación</th>
+                    <th>Clave</th>
+                    <th>Rotar</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of calificaciones" class="text-center">
+                    <td>{{ item.nombre }}</td>
+                    <td>{{ item.apellido_paterno }}</td>
+                    <td>{{ item.apellido_materno }}</td>
+                    <td>{{ item.fecha_nacimiento|date:'dd/MM/yyyy' }}</td>
+                    <td>{{ item.grado }}</td>
+                    <td>{{ item.grupo }}</td>
+                    <td>{{ item.calificacion }}</td>
+                    <td>{{ item.clave }}</td>
+                    <td><input name="rotar" [(ngModel)]="item.rotar" class="text-center" style="width: 60px;" type="number" value="1"> <button (click)="rotarClave(item)" class="btn btn-xs btn-success ml-2"><i class="fa fa-check" aria-hidden="true"></i></button></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="chart-wrapper" *ngIf="calificaciones.length > 0">
+            <canvas baseChart [datasets]="barChartData" [labels]="barChartLabels" [options]="barChartOptions" [legend]="barChartLegend" [chartType]="barChartType">
+          </canvas>
+        </div>
+    </div>
+</div>
